@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <radialGradient id="zPlatter" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FAF7F0"/>
+      <stop offset="85%" stop-color="#E2D8C3"/>
+      <stop offset="100%" stop-color="#BAAC91"/>
+    </radialGradient>
+    <radialGradient id="zRice" cx="45%" cy="45%" r="55%">
+      <stop offset="0%" stop-color="#E88B27"/>
+      <stop offset="50%" stop-color="#C25F0A"/>
+      <stop offset="100%" stop-color="#8C3E00"/>
+    </radialGradient>
+    <radialGradient id="potatoGrad" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#FFCE6B"/>
+      <stop offset="70%" stop-color="#C98816"/>
+      <stop offset="100%" stop-color="#8F5700"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="400" fill="transparent"/>
+  <!-- Shadow & Platter -->
+  <ellipse cx="200" cy="285" rx="160" ry="55" fill="#063B29" opacity="0.14" filter="blur(16px)"/>
+  <ellipse cx="200" cy="205" rx="175" ry="125" fill="url(#zPlatter)" stroke="#B8AC94" stroke-width="4"/>
+  <ellipse cx="200" cy="205" rx="142" ry="92" fill="url(#zRice)"/>
+  <!-- Caramelized Golden-Brown Onion Strands -->
+  <path d="M110 180 Q130 160 160 175" stroke="#4A1E05" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <path d="M240 170 Q265 190 290 175" stroke="#4A1E05" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <path d="M150 240 Q180 260 210 245" stroke="#4A1E05" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <!-- Spiced Golden Potatoes (Zurbian Specialty) -->
+  <ellipse cx="130" cy="210" rx="22" ry="16" fill="url(#potatoGrad)" stroke="#784800" stroke-width="1.5" transform="rotate(-15 130 210)"/>
+  <ellipse cx="265" cy="225" rx="24" ry="18" fill="url(#potatoGrad)" stroke="#784800" stroke-width="1.5" transform="rotate(20 265 225)"/>
+  <ellipse cx="160" cy="145" rx="20" ry="15" fill="url(#potatoGrad)" stroke="#784800" stroke-width="1.5" transform="rotate(10 160 145)"/>
+  <!-- Tender Zurbian Spiced Chicken Centerpiece -->
+  <path d="M160 160 C 150 120, 220 110, 250 135 C 275 160, 260 205, 230 220 C 190 235, 165 200, 160 160 Z" fill="#9C3A08" stroke="#5E1D00" stroke-width="2"/>
+  <circle cx="210" cy="160" r="10" fill="#E87625" opacity="0.8"/>
+  <circle cx="230" cy="180" r="12" fill="#E87625" opacity="0.8"/>
+  <!-- Daqoos Bowl -->
+  <g transform="translate(265, 105)">
+    <circle cx="40" cy="40" r="36" fill="#F4EFE6" stroke="#C9BFA8" stroke-width="3"/>
+    <circle cx="40" cy="40" r="30" fill="#C71D08"/>
+    <circle cx="36" cy="36" r="3" fill="#2E7D32"/>
+  </g>
+</svg>

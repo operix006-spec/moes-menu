@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <radialGradient id="kRice" cx="45%" cy="45%" r="55%">
+      <stop offset="0%" stop-color="#FF9E3B"/>
+      <stop offset="60%" stop-color="#D95708"/>
+      <stop offset="100%" stop-color="#8C2C00"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="400" fill="transparent"/>
+  <ellipse cx="200" cy="285" rx="160" ry="55" fill="#063B29" opacity="0.14" filter="blur(16px)"/>
+  <ellipse cx="200" cy="205" rx="175" ry="125" fill="#F7F2E6" stroke="#B8AC94" stroke-width="4"/>
+  <ellipse cx="200" cy="205" rx="142" ry="92" fill="url(#kRice)"/>
+  <!-- Julienne Carrots & Raisins -->
+  <line x1="110" y1="180" x2="135" y2="175" stroke="#FF5722" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="250" y1="190" x2="275" y2="185" stroke="#FF5722" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="170" y1="245" x2="195" y2="250" stroke="#FF5722" stroke-width="3.5" stroke-linecap="round"/>
+  <circle cx="130" cy="210" r="4.5" fill="#360E03"/>
+  <circle cx="270" cy="220" r="4.5" fill="#360E03"/>
+  <!-- Roasted Chicken -->
+  <path d="M150 170 C 140 125, 210 115, 250 135 C 280 155, 270 200, 240 220 C 195 240, 160 215, 150 170 Z" fill="#993605" stroke="#5E1D00" stroke-width="2"/>
+  <path d="M170 145 Q210 140 240 160" stroke="#FFA752" stroke-width="4.5" stroke-linecap="round" opacity="0.8"/>
+</svg>

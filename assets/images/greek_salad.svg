@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bowlBg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FBF9F4"/>
+      <stop offset="70%" stop-color="#EBE4D5"/>
+      <stop offset="100%" stop-color="#D7CDBC"/>
+    </radialGradient>
+    <radialGradient id="cucGrad" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#80B967"/>
+      <stop offset="80%" stop-color="#3F7A2C"/>
+      <stop offset="100%" stop-color="#245116"/>
+    </radialGradient>
+    <radialGradient id="tomGrad" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#FF6B52"/>
+      <stop offset="70%" stop-color="#D92B14"/>
+      <stop offset="100%" stop-color="#931303"/>
+    </radialGradient>
+    <radialGradient id="fetaGrad" cx="25%" cy="25%" r="75%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="75%" stop-color="#F4EFE6"/>
+      <stop offset="100%" stop-color="#DED6C8"/>
+    </radialGradient>
+    <radialGradient id="oliveGrad" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#544B5E"/>
+      <stop offset="70%" stop-color="#221B2A"/>
+      <stop offset="100%" stop-color="#0E0A12"/>
+    </radialGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#063B29" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+  <rect width="400" height="400" fill="transparent"/>
+  <!-- Bowl Base Shadow -->
+  <ellipse cx="200" cy="275" rx="145" ry="50" fill="#063B29" opacity="0.12" filter="blur(14px)"/>
+  <!-- Ceramic Bowl -->
+  <circle cx="200" cy="200" r="160" fill="url(#bowlBg)" filter="url(#shadow)" stroke="#D4C8B5" stroke-width="3"/>
+  <circle cx="200" cy="200" r="142" fill="#E8DEC9" opacity="0.6"/>
+  <!-- Lettuce Base -->
+  <g opacity="0.95">
+    <path d="M120 180 Q100 130 160 120 Q200 90 250 120 Q300 130 280 180 Q320 220 280 260 Q240 300 180 280 Q110 270 110 220 Z" fill="#679C42"/>
+    <path d="M135 190 Q120 150 170 140 Q210 110 245 135 Q285 145 265 190 Q295 225 265 255 Q225 285 180 265 Q125 255 125 215 Z" fill="#7BB554"/>
+  </g>
+  <!-- Sliced Cucumbers -->
+  <circle cx="150" cy="170" r="26" fill="url(#cucGrad)" stroke="#A9E090" stroke-width="3"/>
+  <circle cx="150" cy="170" r="18" fill="#C2EDB0"/>
+  <circle cx="245" cy="160" r="25" fill="url(#cucGrad)" stroke="#A9E090" stroke-width="3"/>
+  <circle cx="245" cy="160" r="17" fill="#C2EDB0"/>
+  <circle cx="210" cy="240" r="28" fill="url(#cucGrad)" stroke="#A9E090" stroke-width="3"/>
+  <circle cx="210" cy="240" r="20" fill="#C2EDB0"/>
+  <!-- Fresh Red Tomatoes -->
+  <circle cx="185" cy="140" r="22" fill="url(#tomGrad)"/>
+  <path d="M185 122 Q180 130 175 140" stroke="#FFF" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+  <circle cx="255" cy="215" r="24" fill="url(#tomGrad)"/>
+  <circle cx="140" cy="235" r="21" fill="url(#tomGrad)"/>
+  <!-- Feta Cheese Cubes -->
+  <rect x="180" y="180" width="36" height="32" rx="4" fill="url(#fetaGrad)" stroke="#C8C0B2" stroke-width="1.5" transform="rotate(15 198 196)"/>
+  <rect x="140" y="140" width="30" height="28" rx="4" fill="url(#fetaGrad)" stroke="#C8C0B2" stroke-width="1.5" transform="rotate(-20 155 154)"/>
+  <rect x="220" y="170" width="32" height="30" rx="4" fill="url(#fetaGrad)" stroke="#C8C0B2" stroke-width="1.5" transform="rotate(45 236 185)"/>
+  <rect x="175" y="225" width="28" height="28" rx="4" fill="url(#fetaGrad)" stroke="#C8C0B2" stroke-width="1.5" transform="rotate(-10 189 239)"/>
+  <!-- Kalamata Olives -->
+  <ellipse cx="215" cy="145" rx="14" ry="10" fill="url(#oliveGrad)" transform="rotate(-30 215 145)"/>
+  <circle cx="212" cy="143" r="2.5" fill="#FFF" opacity="0.7"/>
+  <ellipse cx="145" cy="195" rx="15" ry="11" fill="url(#oliveGrad)" transform="rotate(25 145 195)"/>
+  <ellipse cx="225" cy="225" rx="14" ry="10" fill="url(#oliveGrad)" transform="rotate(70 225 225)"/>
+  <!-- Red Onion Slivers -->
+  <path d="M160 125 C 190 115, 230 120, 245 140" stroke="#AF2F6E" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+  <path d="M130 210 C 150 250, 190 265, 220 260" stroke="#AF2F6E" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+  <!-- Herb Garnish & Olive Oil Gloss -->
+  <circle cx="195" cy="190" r="2" fill="#E99A16"/>
+  <circle cx="205" cy="185" r="1.5" fill="#063B29"/>
+  <circle cx="160" cy="175" r="2" fill="#063B29"/>
+  <circle cx="230" cy="195" r="2" fill="#E99A16"/>
+</svg>

@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <radialGradient id="uRice" cx="45%" cy="45%" r="55%">
+      <stop offset="0%" stop-color="#FAC25A"/>
+      <stop offset="60%" stop-color="#C78316"/>
+      <stop offset="100%" stop-color="#804D03"/>
+    </radialGradient>
+    <radialGradient id="meatGrad" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#8A341A"/>
+      <stop offset="70%" stop-color="#541B0B"/>
+      <stop offset="100%" stop-color="#300C03"/>
+    </radialGradient>
+    <radialGradient id="chickpeaGrad" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#FFE8A3"/>
+      <stop offset="80%" stop-color="#CCA03B"/>
+      <stop offset="100%" stop-color="#9E741B"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="400" fill="transparent"/>
+  <ellipse cx="200" cy="285" rx="160" ry="55" fill="#063B29" opacity="0.14" filter="blur(16px)"/>
+  <ellipse cx="200" cy="205" rx="175" ry="125" fill="#F7F2E6" stroke="#B8AC94" stroke-width="4"/>
+  <ellipse cx="200" cy="205" rx="142" ry="92" fill="url(#uRice)"/>
+  <!-- Sweet Yellow & Red Carrots -->
+  <line x1="120" y1="180" x2="145" y2="170" stroke="#FF9800" stroke-width="4" stroke-linecap="round"/>
+  <line x1="250" y1="170" x2="275" y2="180" stroke="#FF5722" stroke-width="4" stroke-linecap="round"/>
+  <line x1="160" y1="240" x2="185" y2="245" stroke="#FF9800" stroke-width="4" stroke-linecap="round"/>
+  <!-- Golden Chickpeas (Garbanzo) -->
+  <circle cx="135" cy="205" r="7.5" fill="url(#chickpeaGrad)"/>
+  <circle cx="260" cy="210" r="8" fill="url(#chickpeaGrad)"/>
+  <circle cx="180" cy="245" r="7.5" fill="url(#chickpeaGrad)"/>
+  <circle cx="225" cy="240" r="7.5" fill="url(#chickpeaGrad)"/>
+  <circle cx="210" cy="140" r="7" fill="url(#chickpeaGrad)"/>
+  <!-- Dark Sweet Raisins -->
+  <circle cx="150" cy="170" r="4.5" fill="#2B0E05"/>
+  <circle cx="240" cy="190" r="4.5" fill="#2B0E05"/>
+  <!-- Braised Tender Meat Chunks -->
+  <rect x="160" y="160" width="38" height="32" rx="8" fill="url(#meatGrad)" stroke="#300C03" stroke-width="1.5" transform="rotate(-10 179 176)"/>
+  <rect x="205" y="165" width="42" height="35" rx="8" fill="url(#meatGrad)" stroke="#300C03" stroke-width="1.5" transform="rotate(15 226 182)"/>
+  <rect x="180" y="195" width="40" height="30" rx="8" fill="url(#meatGrad)" stroke="#300C03" stroke-width="1.5" transform="rotate(5 200 210)"/>
+</svg>

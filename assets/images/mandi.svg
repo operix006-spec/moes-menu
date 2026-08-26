@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <radialGradient id="platterBg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="80%" stop-color="#EAE3D2"/>
+      <stop offset="100%" stop-color="#C5BAA3"/>
+    </radialGradient>
+    <radialGradient id="riceGrad" cx="40%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#FFF2A3"/>
+      <stop offset="50%" stop-color="#E8B923"/>
+      <stop offset="100%" stop-color="#C28E0D"/>
+    </radialGradient>
+    <radialGradient id="roastGrad" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#D6681E"/>
+      <stop offset="60%" stop-color="#9E3B06"/>
+      <stop offset="100%" stop-color="#601E00"/>
+    </radialGradient>
+    <radialGradient id="daqoosGrad" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#FF4D36"/>
+      <stop offset="70%" stop-color="#C71D08"/>
+      <stop offset="100%" stop-color="#780A00"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="400" fill="transparent"/>
+  <!-- Platter Shadow -->
+  <ellipse cx="200" cy="285" rx="160" ry="55" fill="#063B29" opacity="0.14" filter="blur(16px)"/>
+  <!-- Ceramic / Metal Platter -->
+  <ellipse cx="200" cy="205" rx="175" ry="125" fill="url(#platterBg)" stroke="#B8AC94" stroke-width="4"/>
+  <ellipse cx="200" cy="205" rx="155" ry="105" fill="#DFD6C2"/>
+  <!-- Fragrant Mandi Spiced Yellow Rice Bed -->
+  <ellipse cx="200" cy="205" rx="142" ry="92" fill="url(#riceGrad)"/>
+  <!-- Rice grains pattern & toasted almonds / raisins -->
+  <g opacity="0.8" stroke="#8C6507" stroke-width="2" stroke-linecap="round">
+    <line x1="100" y1="180" x2="110" y2="185"/>
+    <line x1="120" y1="160" x2="132" y2="162"/>
+    <line x1="140" y1="210" x2="152" y2="216"/>
+    <line x1="260" y1="160" x2="272" y2="165"/>
+    <line x1="280" y1="200" x2="292" y2="204"/>
+    <line x1="240" y1="240" x2="252" y2="242"/>
+    <line x1="170" y1="250" x2="182" y2="255"/>
+  </g>
+  <!-- Toasted Golden Almond Slivers & Raisins -->
+  <ellipse cx="125" cy="190" rx="8" ry="3.5" fill="#FFE59E" transform="rotate(30 125 190)"/>
+  <ellipse cx="270" cy="180" rx="8" ry="3.5" fill="#FFE59E" transform="rotate(-20 270 180)"/>
+  <ellipse cx="230" cy="250" rx="8" ry="3.5" fill="#FFE59E" transform="rotate(40 230 250)"/>
+  <circle cx="150" cy="170" r="4.5" fill="#42140B"/>
+  <circle cx="250" cy="220" r="4.5" fill="#42140B"/>
+  <circle cx="160" cy="240" r="4" fill="#42140B"/>
+  <!-- Roasted Whole Golden Half-Chicken Centerpiece -->
+  <path d="M140 180 C 130 130, 200 110, 245 125 C 275 140, 280 185, 255 215 C 220 240, 160 230, 140 180 Z" fill="url(#roastGrad)" stroke="#4A1800" stroke-width="2"/>
+  <!-- Chicken Glaze / Char highlights -->
+  <path d="M165 140 Q210 135 240 155" stroke="#FFA752" stroke-width="5" stroke-linecap="round" opacity="0.8"/>
+  <path d="M160 170 Q200 175 235 200" stroke="#FFA752" stroke-width="4" stroke-linecap="round" opacity="0.75"/>
+  <ellipse cx="195" cy="150" rx="14" ry="8" fill="#541B01" opacity="0.7"/>
+  <!-- Fresh Daqoos Sauce Bowl (Right corner) -->
+  <g transform="translate(265, 110)">
+    <circle cx="40" cy="40" r="38" fill="#F4EFE6" stroke="#C9BFA8" stroke-width="3"/>
+    <circle cx="40" cy="40" r="32" fill="url(#daqoosGrad)"/>
+    <circle cx="34" cy="34" r="3" fill="#2E7D32"/>
+    <circle cx="44" cy="38" r="2.5" fill="#1B5E20"/>
+    <circle cx="40" cy="46" r="2" fill="#E99A16"/>
+  </g>
+</svg>
