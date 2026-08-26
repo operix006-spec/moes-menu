@@ -44,56 +44,28 @@ class PureBiteStore {
   }
 
   loadDatabase() {
-    try {
-      const raw = localStorage.getItem(this.STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        let state = {
-          settings: { ...DEFAULT_DATA.settings, ...(parsed.settings || {}) },
-          trustIndicators: parsed.trustIndicators || DEFAULT_DATA.trustIndicators,
-          brandPillars: parsed.brandPillars || DEFAULT_DATA.brandPillars,
-          categories: parsed.categories || DEFAULT_DATA.categories,
-          products: parsed.products || DEFAULT_DATA.products,
-          homeContent: { ...DEFAULT_DATA.homeContent, ...(parsed.homeContent || {}) },
-          aboutContent: { ...DEFAULT_DATA.aboutContent, ...(parsed.aboutContent || {}) },
-          orderHandoffs: parsed.orderHandoffs || []
-        };
-        
-        // --- BILINGUAL DATA MIGRATION ---
-        state.products.forEach(p => {
-          p.name_ar = p.name_ar || "";
-          p.description_ar = p.description_ar || "";
-          if (p.ingredients) {
-            p.ingredients.forEach(i => { i.name_ar = i.name_ar || ""; });
-          }
-          if (p.optionGroups) {
-            p.optionGroups.forEach(og => {
-              og.name_ar = og.name_ar || "";
-              if (og.options) {
-                og.options.forEach(opt => { opt.name_ar = opt.name_ar || ""; });
-              }
-            });
-          }
-          if (p.modifiers) {
-            p.modifiers.forEach(m => { m.name_ar = m.name_ar || ""; });
-          }
-        });
-        
-        return state;
-      }
-    } catch (e) {
-      console.warn("Could not load stored database, falling back to defaults", e);
-    }
-    return JSON.parse(JSON.stringify(DEFAULT_DATA));
+    return {
+      settings: { lang: 'en', currency: 'JOD' },
+      categories: [],
+      products: [],
+      homeContent: {},
+      aboutContent: {},
+      orderHandoffs: [],
+      trustIndicators: [
+        { icon: "🛡️", title: "100% Celiac Safe", desc: "No cross-contamination" },
+        { icon: "🌾", title: "Dedicated Kitchen", desc: "Certified gluten-free facility" },
+        { icon: "👨‍🍳", title: "Expert Chefs", desc: "Crafting pure flavors" }
+      ],
+      brandPillars: [
+        { icon: "assets/images/ing_bun.png", title: "Artisan GF Buns", desc: "Baked fresh daily" },
+        { icon: "assets/images/ing_chicken.png", title: "Premium Proteins", desc: "100% Halal fresh meat" },
+        { icon: "assets/images/ing_lettuce.png", title: "Farm Fresh", desc: "Locally sourced veggies" }
+      ]
+    };
   }
 
   saveDatabase() {
-    try {
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.state));
-      this.emit("data-updated", this.state);
-    } catch (e) {
-      console.error("Failed to save database to localStorage", e);
-    }
+    this.emit("data-updated", this.state);
   }
 
   loadCart() {
