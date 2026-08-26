@@ -108,22 +108,38 @@ const App = {
     window.scrollTo({ top: 0, behavior: "smooth" });
   },
 
-  handleAdminLogin() {
-    const user = document.getElementById("admin-username-input").value.trim();
+  async handleAdminLogin() {
+    const email = document.getElementById("admin-username-input").value.trim();
     const pass = document.getElementById("admin-password-input").value.trim();
     const errorEl = document.getElementById("admin-login-error");
     
-    if (user === "user1234" && pass === "123456") {
+    if (!window.supabaseClient) {
+      errorEl.textContent = "Supabase connection error.";
+      errorEl.style.display = "block";
+      return;
+    }
+
+    const { data, error } = await window.supabaseClient.auth.signInWithPassword({
+      email: email,
+      password: pass,
+    });
+
+    if (error) {
+      errorEl.textContent = error.message;
+      errorEl.style.display = "block";
+    } else {
       sessionStorage.setItem("adminAuth", "true");
       errorEl.style.display = "none";
       window.location.hash = "#admin";
       App.handleRouting();
-    } else {
-      errorEl.style.display = "block";
+      App.showToast("Admin access granted.");
     }
   },
 
-  handleAdminLogout() {
+  async handleAdminLogout() {
+    if (window.supabaseClient) {
+      await window.supabaseClient.auth.signOut();
+    }
     sessionStorage.removeItem("adminAuth");
     window.location.hash = "#home";
     App.handleRouting();

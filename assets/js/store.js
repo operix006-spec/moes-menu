@@ -9,6 +9,38 @@ class PureBiteStore {
     this.listeners = [];
     this.state = this.loadDatabase();
     this.cart = this.loadCart();
+    
+    // Automatically fetch latest data from Supabase on load
+    this.initSupabaseData();
+  }
+
+  async initSupabaseData() {
+    if (!window.supabaseClient) return;
+    try {
+      const [
+        { data: categories },
+        { data: products },
+        { data: settingsData },
+        { data: homeData },
+        { data: aboutData }
+      ] = await Promise.all([
+        window.supabaseClient.from('categories').select('*').order('order', { ascending: true }),
+        window.supabaseClient.from('products').select('*'),
+        window.supabaseClient.from('settings').select('*').eq('id', 'global').single(),
+        window.supabaseClient.from('home_content').select('*').eq('id', 'global').single(),
+        window.supabaseClient.from('about_content').select('*').eq('id', 'global').single()
+      ]);
+
+      if (categories) this.state.categories = categories;
+      if (products) this.state.products = products;
+      if (settingsData) this.state.settings = { ...this.state.settings, ...settingsData };
+      if (homeData) this.state.homeContent = { ...this.state.homeContent, ...homeData };
+      if (aboutData) this.state.aboutContent = { ...this.state.aboutContent, ...aboutData };
+
+      this.saveDatabase(); // Persist and trigger UI update
+    } catch (e) {
+      console.error("Failed to load data from Supabase", e);
+    }
   }
 
   loadDatabase() {
@@ -135,7 +167,7 @@ class PureBiteStore {
   getOrderHandoffs() { return this.state.orderHandoffs || []; }
 
   // --- PRODUCT CRUD ---
-  saveProduct(productData) {
+  async saveProduct(productData) {
     const isNew = !productData.id || !this.getProductById(productData.id);
     if (isNew) {
       if (!productData.id) {
@@ -149,12 +181,20 @@ class PureBiteStore {
       }
     }
     this.saveDatabase();
+    
+    // Supabase push
+    if (window.supabaseClient) {
+      await window.supabaseClient.from('products').upsert(productData);
+    }
     return productData;
   }
 
-  deleteProduct(id) {
+  async deleteProduct(id) {
     this.state.products = this.state.products.filter(p => p.id !== id);
     this.saveDatabase();
+    if (window.supabaseClient) {
+      await window.supabaseClient.from('products').delete().eq('id', id);
+    }
   }
 
   toggleProductAvailability(id) {
@@ -168,7 +208,7 @@ class PureBiteStore {
   }
 
   // --- CATEGORY CRUD ---
-  saveCategory(catData) {
+  async saveCategory(catData) {
     if (!catData.id) {
       catData.id = "cat-" + Date.now().toString(36);
     }
@@ -180,37 +220,58 @@ class PureBiteStore {
       this.state.categories.push(catData);
     }
     this.saveDatabase();
+    if (window.supabaseClient) {
+      await window.supabaseClient.from('categories').upsert(catData);
+    }
   }
 
-  deleteCategory(id) {
+  async deleteCategory(id) {
     if (id === "all") return; // prevent deleting default
     this.state.categories = this.state.categories.filter(c => c.id !== id);
     
     // Reassign orphaned products to the first available category (excluding "all" as a strict parent)
     const fallbackCategory = this.state.categories.find(c => c.id !== "all")?.id || "all";
+    const updatedProducts = [];
     this.state.products.forEach(p => {
       if (p.category === id) {
         p.category = fallbackCategory;
+        updatedProducts.push(p);
       }
     });
 
     this.saveDatabase();
+    
+    if (window.supabaseClient) {
+      await window.supabaseClient.from('categories').delete().eq('id', id);
+      if (updatedProducts.length > 0) {
+        await window.supabaseClient.from('products').upsert(updatedProducts);
+      }
+    }
   }
 
   // --- SETTINGS & CMS UPDATES ---
-  updateSettings(newSettings) {
+  async updateSettings(newSettings) {
     this.state.settings = { ...this.state.settings, ...newSettings };
     this.saveDatabase();
+    if (window.supabaseClient) {
+      await window.supabaseClient.from('settings').upsert({ id: 'global', ...this.state.settings });
+    }
   }
 
-  updateHomeContent(newContent) {
+  async updateHomeContent(newContent) {
     this.state.homeContent = { ...this.state.homeContent, ...newContent };
     this.saveDatabase();
+    if (window.supabaseClient) {
+      await window.supabaseClient.from('home_content').upsert({ id: 'global', ...this.state.homeContent });
+    }
   }
 
-  updateAboutContent(newContent) {
+  async updateAboutContent(newContent) {
     this.state.aboutContent = { ...this.state.aboutContent, ...newContent };
     this.saveDatabase();
+    if (window.supabaseClient) {
+      await window.supabaseClient.from('about_content').upsert({ id: 'global', ...this.state.aboutContent });
+    }
   }
 
   // --- CART MANAGEMENT ---

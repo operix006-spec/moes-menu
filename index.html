@@ -133,8 +133,8 @@
       <p style="color: #666; margin-bottom: 24px; font-size: 0.9rem;">Please sign in to access the dashboard.</p>
       
       <div style="margin-bottom: 16px; text-align: left;">
-        <label style="display: block; font-size: 0.85rem; font-weight: 700; color: var(--c-forest); margin-bottom: 6px;">Username</label>
-        <input type="text" id="admin-username-input" placeholder="Enter username" style="width: 100%; padding: 12px 16px; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--c-forest)'" onblur="this.style.borderColor='#ddd'" />
+        <label style="display: block; font-size: 0.85rem; font-weight: 700; color: var(--c-forest); margin-bottom: 6px;">Admin Email</label>
+        <input type="email" id="admin-username-input" placeholder="Enter your email" style="width: 100%; padding: 12px 16px; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--c-forest)'" onblur="this.style.borderColor='#ddd'" />
       </div>
       
       <div style="margin-bottom: 24px; text-align: left;">
@@ -153,6 +153,10 @@
   <div id="admin-view-container" style="display: none;"></div>
 
   <!-- Application Logic Scripts -->
+  <!-- Supabase JS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabaseClient.js"></script>
+
   <script src="assets/js/data.js"></script>
   <script src="assets/js/i18n.js"></script>
   <script src="assets/js/store.js"></script>
