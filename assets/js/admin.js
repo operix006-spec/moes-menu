@@ -111,7 +111,56 @@ const AdminApp = {
 
       <!-- Product Builder Modal Mount -->
       <div id="admin-product-builder-modal-mount"></div>
+      
+      <!-- Category Builder Modal Mount -->
+      <div id="admin-category-modal-mount"></div>
+      
+      <!-- Confirmation Modal Mount -->
+      <div id="admin-confirmation-modal-mount"></div>
     `;
+  },
+
+  toggleAdminSidebar() {
+    const sidebar = document.getElementById("admin-sidebar-drawer");
+    if (sidebar) {
+      sidebar.classList.toggle("open");
+    }
+  },
+
+  openConfirmationModal(title, text, confirmText, onConfirm) {
+    const mount = document.getElementById("admin-confirmation-modal-mount");
+    if (!mount) return;
+    
+    // Store the callback
+    this._confirmCallback = onConfirm;
+    
+    mount.innerHTML = `
+      <div class="admin-modal" style="z-index: 99999;">
+        <div class="modal-overlay active" onclick="AdminApp.closeConfirmationModal()" style="z-index: 99990;"></div>
+        <div class="admin-modal-box" style="max-width: 400px; z-index: 99991;">
+          <div class="admin-modal-header">
+            <h2 class="admin-modal-title" style="color: var(--c-danger);">${title}</h2>
+            <button class="btn-action-icon" onclick="AdminApp.closeConfirmationModal()">✕</button>
+          </div>
+          <div class="admin-modal-body" style="flex: unset;">
+            <p>${text}</p>
+          </div>
+          <div class="admin-modal-footer">
+            <button class="btn btn-outline" onclick="AdminApp.closeConfirmationModal()">Cancel</button>
+            <button class="btn btn-primary" style="background-color: var(--c-danger); border-color: var(--c-danger);" onclick="
+              if (AdminApp._confirmCallback) AdminApp._confirmCallback();
+              AdminApp.closeConfirmationModal();
+            ">${confirmText}</button>
+          </div>
+        </div>
+      </div>
+    `;
+  },
+
+  closeConfirmationModal() {
+    const mount = document.getElementById("admin-confirmation-modal-mount");
+    if (mount) mount.innerHTML = "";
+    this._confirmCallback = null;
   },
 
   toggleAdminSidebar() {
@@ -386,11 +435,16 @@ const AdminApp = {
   deleteProductPrompt(productId) {
     const prod = MoeStore.getProductById(productId);
     if (!prod) return;
-    if (confirm(`Are you sure you want to delete "${prod.name}" from the menu?`)) {
-      MoeStore.deleteProduct(productId);
-      App.showToast(`Deleted ${prod.name}`, "info");
-      this.renderMenuTab();
-    }
+    this.openConfirmationModal(
+      "Delete Product?",
+      `Are you sure you want to delete "${prod.name}" from the menu? This action cannot be undone.`,
+      "Delete Product",
+      () => {
+        MoeStore.deleteProduct(productId);
+        App.showToast(`Deleted ${prod.name}`, "info");
+        AdminApp.renderMenuTab();
+      }
+    );
   },
 
   // ==========================================================================
@@ -436,9 +490,9 @@ const AdminApp = {
     const isNew = !p.id;
 
     mount.innerHTML = `
-      <div class="admin-modal">
-        <div class="modal-overlay active" onclick="AdminApp.closeProductBuilder()"></div>
-        <div class="admin-modal-box">
+      <div class="admin-modal" style="z-index: 99999;">
+        <div class="modal-overlay active" onclick="AdminApp.closeProductBuilder()" style="z-index: 99990;"></div>
+        <div class="admin-modal-box" style="z-index: 99991;">
           <div class="admin-modal-header">
             <h2 class="admin-modal-title">${isNew ? "+ Create New Gluten-Free Product" : `Edit Product: ${p.name}`}</h2>
             <button class="btn-action-icon" onclick="AdminApp.closeProductBuilder()">✕</button>
@@ -471,8 +525,14 @@ const AdminApp = {
                 <input type="number" step="0.05" id="builder-price" class="admin-form-input" value="${p.basePrice}" required />
               </div>
               <div class="admin-form-group">
-                <label class="admin-form-label">Image Asset Path / URL</label>
-                <input type="text" id="builder-image" class="admin-form-input" value="${p.image}" />
+                <label class="admin-form-label">Image Asset Path / Upload</label>
+                <div style="display: flex; gap: 8px;">
+                  <input type="text" id="builder-image" class="admin-form-input" value="${p.image}" style="flex: 1;" />
+                  <label class="btn btn-outline" style="cursor: pointer;">
+                    Upload
+                    <input type="file" accept="image/*" style="display: none;" onchange="AdminApp.handleImageUpload(event)">
+                  </label>
+                </div>
               </div>
             </div>
 
@@ -516,7 +576,8 @@ const AdminApp = {
               <div id="builder-ingredients-list" style="display: flex; flex-direction: column; gap: 6px;">
                 ${p.ingredients.map((ing, idx) => `
                   <div class="builder-item-row" data-idx="${idx}">
-                    <input type="text" class="admin-form-input" style="flex: 2;" value="${ing.name}" placeholder="Ingredient Name" onchange="AdminApp.updateIngredient(${idx}, 'name', this.value)" />
+                    <input type="text" class="admin-form-input" style="flex: 2;" value="${ing.name}" placeholder="Ingredient (EN)" onchange="AdminApp.updateIngredient(${idx}, 'name', this.value)" />
+                    <input type="text" class="admin-form-input" style="flex: 2;" value="${ing.name_ar || ''}" placeholder="Ingredient (AR)" dir="rtl" onchange="AdminApp.updateIngredient(${idx}, 'name_ar', this.value)" />
                     <label style="display: flex; align-items: center; gap: 4px; font-size: 0.78rem;">
                       <input type="checkbox" ${ing.removable ? "checked" : ""} onchange="AdminApp.updateIngredient(${idx}, 'removable', this.checked)" />
                       <span>Removable</span>
@@ -537,7 +598,8 @@ const AdminApp = {
                 ${p.optionGroups.map((g, gIdx) => `
                   <div style="background: #FFFFFF; border: 1px solid #D5DDD5; border-radius: var(--radius-sm); padding: 12px;">
                     <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px;">
-                      <input type="text" class="admin-form-input" style="font-weight: 700;" value="${g.name}" placeholder="Group Name (e.g. Make it a Meal)" onchange="AdminApp.updateOptionGroup(${gIdx}, 'name', this.value)" />
+                      <input type="text" class="admin-form-input" style="font-weight: 700; flex: 1;" value="${g.name}" placeholder="Group Name (EN)" onchange="AdminApp.updateOptionGroup(${gIdx}, 'name', this.value)" />
+                      <input type="text" class="admin-form-input" style="font-weight: 700; flex: 1;" value="${g.name_ar || ''}" placeholder="Group Name (AR)" dir="rtl" onchange="AdminApp.updateOptionGroup(${gIdx}, 'name_ar', this.value)" />
                       <label style="display: flex; align-items: center; gap: 4px; font-size: 0.78rem; white-space: nowrap;">
                         <input type="checkbox" ${g.required ? "checked" : ""} onchange="AdminApp.updateOptionGroup(${gIdx}, 'required', this.checked)" />
                         <span>Required</span>
@@ -548,8 +610,9 @@ const AdminApp = {
                     <div style="display: flex; flex-direction: column; gap: 4px; padding-left: 8px; border-left: 2px solid var(--c-orange);">
                       ${g.options.map((opt, optIdx) => `
                         <div style="display: flex; gap: 6px; align-items: center;">
-                          <input type="text" class="admin-form-input" style="font-size: 0.82rem;" value="${opt.name}" placeholder="Option label" onchange="AdminApp.updateOptionChoice(${gIdx}, ${optIdx}, 'name', this.value)" />
-                          <input type="number" step="0.05" class="admin-form-input" style="width: 100px; font-size: 0.82rem;" value="${opt.price}" placeholder="+Price JOD" onchange="AdminApp.updateOptionChoice(${gIdx}, ${optIdx}, 'price', parseFloat(this.value) || 0)" />
+                          <input type="text" class="admin-form-input" style="font-size: 0.82rem; flex: 2;" value="${opt.name}" placeholder="Option (EN)" onchange="AdminApp.updateOptionChoice(${gIdx}, ${optIdx}, 'name', this.value)" />
+                          <input type="text" class="admin-form-input" style="font-size: 0.82rem; flex: 2;" value="${opt.name_ar || ''}" placeholder="Option (AR)" dir="rtl" onchange="AdminApp.updateOptionChoice(${gIdx}, ${optIdx}, 'name_ar', this.value)" />
+                          <input type="number" step="0.05" class="admin-form-input" style="width: 90px; font-size: 0.82rem;" value="${opt.price}" placeholder="+Price JOD" onchange="AdminApp.updateOptionChoice(${gIdx}, ${optIdx}, 'price', parseFloat(this.value) || 0)" />
                           <button type="button" class="btn-action-icon delete" onclick="AdminApp.removeOptionChoice(${gIdx}, ${optIdx})">✕</button>
                         </div>
                       `).join("")}
@@ -569,8 +632,9 @@ const AdminApp = {
               <div id="builder-modifiers-list" style="display: flex; flex-direction: column; gap: 6px;">
                 ${p.modifiers.map((m, mIdx) => `
                   <div class="builder-item-row">
-                    <input type="text" class="admin-form-input" style="flex: 2;" value="${m.name}" placeholder="Modifier Name (e.g. Extra Cheese)" onchange="AdminApp.updateModifier(${mIdx}, 'name', this.value)" />
-                    <input type="number" step="0.05" class="admin-form-input" style="width: 110px;" value="${m.price}" placeholder="+Price JOD" onchange="AdminApp.updateModifier(${mIdx}, 'price', parseFloat(this.value) || 0)" />
+                    <input type="text" class="admin-form-input" style="flex: 2;" value="${m.name}" placeholder="Modifier (EN)" onchange="AdminApp.updateModifier(${mIdx}, 'name', this.value)" />
+                    <input type="text" class="admin-form-input" style="flex: 2;" value="${m.name_ar || ''}" placeholder="Modifier (AR)" dir="rtl" onchange="AdminApp.updateModifier(${mIdx}, 'name_ar', this.value)" />
+                    <input type="number" step="0.05" class="admin-form-input" style="width: 100px;" value="${m.price}" placeholder="+Price JOD" onchange="AdminApp.updateModifier(${mIdx}, 'price', parseFloat(this.value) || 0)" />
                     <button type="button" class="btn-action-icon delete" onclick="AdminApp.removeModifierRow(${mIdx})">✕</button>
                   </div>
                 `).join("")}
@@ -680,6 +744,27 @@ const AdminApp = {
     this.currentBuilderProduct.modifiers.splice(mIdx, 1);
     this.renderProductBuilderModal();
   },
+  
+  handleImageUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    // Check size limit (max ~500kb to prevent localStorage overflow)
+    if (file.size > 500 * 1024) {
+      alert("Image is too large! Please select an image under 500KB to fit in local storage.");
+      return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const input = document.getElementById("builder-image");
+      if (input) {
+        input.value = e.target.result;
+        App.showToast("Image loaded successfully!");
+      }
+    };
+    reader.readAsDataURL(file);
+  },
 
   saveProductFromBuilder() {
     const name = document.getElementById("builder-name")?.value.trim();
@@ -727,7 +812,7 @@ const AdminApp = {
       <div class="admin-panel-card">
         <div class="admin-panel-header">
           <h2 class="admin-panel-title">Menu Categories (${categories.length})</h2>
-          <button class="btn btn-accent btn-pill-sm" onclick="AdminApp.addNewCategoryPrompt()">+ Add Category</button>
+          <button class="btn btn-accent btn-pill-sm" onclick="AdminApp.openCategoryBuilder()">+ Add Category</button>
         </div>
 
         <div class="admin-table-wrap">
@@ -760,7 +845,9 @@ const AdminApp = {
                   <td>
                     ${c.id !== "all" ? `
                       <div class="action-btns-group">
-                        <button class="btn-action-icon" onclick="AdminApp.editCategoryPrompt('${c.id}')" title="Edit">✏️</button>
+                        <button class="btn-action-icon" onclick="AdminApp.moveCategory('${c.id}', -1)" title="Move Up" ${idx === 1 ? 'disabled style="opacity:0.3"' : ''}>⬆️</button>
+                        <button class="btn-action-icon" onclick="AdminApp.moveCategory('${c.id}', 1)" title="Move Down" ${idx === categories.length - 1 ? 'disabled style="opacity:0.3"' : ''}>⬇️</button>
+                        <button class="btn-action-icon" onclick="AdminApp.openCategoryBuilder('${c.id}')" title="Edit">✏️</button>
                         <button class="btn-action-icon delete" onclick="AdminApp.deleteCategoryPrompt('${c.id}')" title="Delete">🗑️</button>
                       </div>
                     ` : ""}
@@ -774,42 +861,145 @@ const AdminApp = {
     `;
   },
 
-  addNewCategoryPrompt() {
-    const name = prompt("Enter category name (e.g. Desserts & Sweet Bites):");
-    if (!name) return;
-    const icon = prompt("Enter category emoji icon (e.g. 🍰):", "🍽️");
-    const id = name.toLowerCase().replace(/[^a-z0-9]/g, "-");
+  // --- CUSTOM CONFIRMATION MODAL ---
+  openConfirmationModal(title, text, confirmText, confirmAction) {
+    const mount = document.getElementById("admin-confirmation-modal-mount");
+    if (!mount) return;
+    
+    // Store action string or function globally for execution
+    window._currentConfirmAction = confirmAction;
 
-    MoeStore.saveCategory({
-      id,
-      name,
-      icon: icon || "🍽️",
-      enabled: true
-    });
-    App.showToast(`Added category: ${name}`);
-    this.renderCategoriesTab();
+    mount.innerHTML = `
+      <div class="admin-modal" style="z-index: 99999;">
+        <div class="modal-overlay active" onclick="AdminApp.closeConfirmationModal()" style="z-index: 99990;"></div>
+        <div class="admin-modal-box" style="max-width: 400px; z-index: 99991;">
+          <div class="admin-modal-header">
+            <h2 class="admin-modal-title" style="color: var(--c-danger);">${title}</h2>
+            <button class="btn-action-icon" onclick="AdminApp.closeConfirmationModal()">✕</button>
+          </div>
+          <div class="admin-modal-body" style="flex: unset; overflow-y: hidden;">
+            <p>${text}</p>
+          </div>
+          <div class="admin-modal-footer">
+            <button class="btn btn-outline" onclick="AdminApp.closeConfirmationModal()">Cancel</button>
+            <button class="btn btn-primary" style="background-color: var(--c-danger); border-color: var(--c-danger);" onclick="if(window._currentConfirmAction) window._currentConfirmAction(); AdminApp.closeConfirmationModal();">${confirmText}</button>
+          </div>
+        </div>
+      </div>
+    `;
   },
 
-  editCategoryPrompt(catId) {
-    const cat = MoeStore.getCategories().find(c => c.id === catId);
-    if (!cat) return;
-    const name = prompt("Update category name:", cat.name);
-    if (!name) return;
-    const icon = prompt("Update category icon:", cat.icon);
+  closeConfirmationModal() {
+    const mount = document.getElementById("admin-confirmation-modal-mount");
+    if (mount) mount.innerHTML = "";
+    window._currentConfirmAction = null;
+  },
 
+  // --- CATEGORY BUILDER MODAL ---
+  openCategoryBuilder(catId = null) {
+    const mount = document.getElementById("admin-category-modal-mount");
+    if (!mount) return;
+
+    let cat = { id: "", name: "", name_ar: "", icon: "🍽️", enabled: true, order: MoeStore.getCategories().length + 1 };
+    let isNew = true;
+
+    if (catId) {
+      const existing = MoeStore.getCategories().find(c => c.id === catId);
+      if (existing) {
+        cat = { ...existing };
+        isNew = false;
+      }
+    }
+    
+    this.currentBuilderCategory = cat;
+
+    mount.innerHTML = `
+      <div class="admin-modal" style="z-index: 99999;">
+        <div class="modal-overlay active" onclick="AdminApp.closeCategoryBuilder()" style="z-index: 99990;"></div>
+        <div class="admin-modal-box" style="max-width: 500px; z-index: 99991;">
+          <div class="admin-modal-header">
+            <h2 class="admin-modal-title">${isNew ? "+ Create New Category" : `Edit Category: ${cat.name}`}</h2>
+            <button class="btn-action-icon" onclick="AdminApp.closeCategoryBuilder()">✕</button>
+          </div>
+
+          <div class="admin-modal-body">
+            <div class="admin-form-group">
+              <label class="admin-form-label">Category Name (EN) *</label>
+              <input type="text" id="builder-cat-name" class="admin-form-input" value="${cat.name}" placeholder="e.g. Desserts & Sweet Bites" required />
+            </div>
+            
+            <div class="admin-form-group">
+              <label class="admin-form-label">Category Name (AR) *</label>
+              <input type="text" id="builder-cat-name-ar" class="admin-form-input" value="${cat.name_ar || ''}" placeholder="e.g. حلويات" dir="rtl" required />
+            </div>
+
+            <div class="admin-form-group">
+              <label class="admin-form-label">Emoji Icon</label>
+              <input type="text" id="builder-cat-icon" class="admin-form-input" value="${cat.icon}" placeholder="e.g. 🍰" />
+            </div>
+            
+            <div class="admin-form-group">
+              <label class="admin-form-label">Enabled</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="builder-cat-enabled" ${cat.enabled ? "checked" : ""}>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="admin-modal-footer">
+            <button class="btn btn-outline" onclick="AdminApp.closeCategoryBuilder()">Cancel</button>
+            <button class="btn btn-primary" onclick="AdminApp.saveCategoryFromBuilder()">Save Category</button>
+          </div>
+        </div>
+      </div>
+    `;
+  },
+
+  closeCategoryBuilder() {
+    const mount = document.getElementById("admin-category-modal-mount");
+    if (mount) mount.innerHTML = "";
+    this.currentBuilderCategory = null;
+  },
+  
+  saveCategoryFromBuilder() {
+    const name = document.getElementById("builder-cat-name").value.trim();
+    const name_ar = document.getElementById("builder-cat-name-ar").value.trim();
+    const icon = document.getElementById("builder-cat-icon").value.trim() || "🍽️";
+    const enabled = document.getElementById("builder-cat-enabled").checked;
+    
+    if (!name || !name_ar) {
+      alert("Please fill in both English and Arabic category names.");
+      return;
+    }
+    
+    const cat = this.currentBuilderCategory;
     cat.name = name;
-    cat.icon = icon || cat.icon;
+    cat.name_ar = name_ar;
+    cat.icon = icon;
+    cat.enabled = enabled;
+    
+    if (!cat.id) {
+      cat.id = name.toLowerCase().replace(/[^a-z0-9]/g, "-");
+    }
+    
     MoeStore.saveCategory(cat);
-    App.showToast(`Updated category: ${name}`);
+    App.showToast(`Category ${name} saved successfully`);
+    this.closeCategoryBuilder();
     this.renderCategoriesTab();
   },
 
   deleteCategoryPrompt(catId) {
-    if (confirm("Delete this category? Products in this category will need reassignment.")) {
-      MoeStore.deleteCategory(catId);
-      App.showToast("Category deleted", "info");
-      this.renderCategoriesTab();
-    }
+    this.openConfirmationModal(
+      "Delete Category?", 
+      "Are you sure you want to delete this category? Products in this category will need reassignment. This action cannot be undone.", 
+      "Delete Category", 
+      () => {
+        MoeStore.deleteCategory(catId);
+        App.showToast("Category deleted", "info");
+        AdminApp.renderCategoriesTab();
+      }
+    );
   },
 
   toggleCategoryEnabled(catId) {
@@ -819,6 +1009,24 @@ const AdminApp = {
       MoeStore.saveCategory(cat);
       App.showToast(`Category ${cat.name} ${cat.enabled ? "enabled" : "disabled"}`);
     }
+  },
+  
+  moveCategory(catId, dir) {
+    const categories = MoeStore.getCategories();
+    const idx = categories.findIndex(c => c.id === catId);
+    if (idx === -1 || (dir === -1 && idx <= 1) || (dir === 1 && idx === categories.length - 1)) return; // idx <= 1 because 0 is "All"
+    
+    // Swap order values
+    const catA = categories[idx];
+    const catB = categories[idx + dir];
+    
+    const tempOrder = catA.order;
+    catA.order = catB.order;
+    catB.order = tempOrder;
+    
+    MoeStore.saveCategory(catA);
+    MoeStore.saveCategory(catB);
+    this.renderCategoriesTab();
   },
 
   // ==========================================================================
@@ -896,52 +1104,101 @@ const AdminApp = {
         <div style="padding: 24px; display: flex; flex-direction: column; gap: 18px;">
           <div class="admin-form-row">
             <div class="admin-form-group">
-              <label class="admin-form-label">Hero Badge Text</label>
+              <label class="admin-form-label">Hero Badge Text (EN)</label>
               <input type="text" id="home-badge" class="admin-form-input" value="${home.heroBadge}" />
             </div>
             <div class="admin-form-group">
-              <label class="admin-form-label">Hero Main Title</label>
+              <label class="admin-form-label">Hero Badge Text (AR)</label>
+              <input type="text" id="home-badge-ar" class="admin-form-input" value="${home.heroBadge_ar || ''}" dir="rtl" />
+            </div>
+          </div>
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label">Hero Main Title (EN)</label>
               <input type="text" id="home-title" class="admin-form-input" value="${home.heroTitle}" />
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Hero Main Title (AR)</label>
+              <input type="text" id="home-title-ar" class="admin-form-input" value="${home.heroTitle_ar || ''}" dir="rtl" />
             </div>
           </div>
 
           <div class="admin-form-row">
             <div class="admin-form-group">
-              <label class="admin-form-label">Hero Subtitle</label>
+              <label class="admin-form-label">Hero Subtitle (EN)</label>
               <input type="text" id="home-sub" class="admin-form-input" value="${home.heroSubtitle}" />
             </div>
             <div class="admin-form-group">
-              <label class="admin-form-label">Hero Description</label>
+              <label class="admin-form-label">Hero Subtitle (AR)</label>
+              <input type="text" id="home-sub-ar" class="admin-form-input" value="${home.heroSubtitle_ar || ''}" dir="rtl" />
+            </div>
+          </div>
+          
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label">Hero Description (EN)</label>
               <input type="text" id="home-desc" class="admin-form-input" value="${home.heroDescription}" />
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Hero Description (AR)</label>
+              <input type="text" id="home-desc-ar" class="admin-form-input" value="${home.heroDescription_ar || ''}" dir="rtl" />
             </div>
           </div>
 
           <div class="admin-form-row">
             <div class="admin-form-group">
-              <label class="admin-form-label">Primary CTA Text</label>
+              <label class="admin-form-label">Primary CTA Text (EN)</label>
               <input type="text" id="home-cta" class="admin-form-input" value="${home.heroCtaText}" />
             </div>
             <div class="admin-form-group">
-              <label class="admin-form-label">Secondary CTA Text</label>
+              <label class="admin-form-label">Primary CTA Text (AR)</label>
+              <input type="text" id="home-cta-ar" class="admin-form-input" value="${home.heroCtaText_ar || ''}" dir="rtl" />
+            </div>
+          </div>
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label">Secondary CTA Text (EN)</label>
               <input type="text" id="home-sec-cta" class="admin-form-input" value="${home.heroSecondaryCta}" />
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Secondary CTA Text (AR)</label>
+              <input type="text" id="home-sec-cta-ar" class="admin-form-input" value="${home.heroSecondaryCta_ar || ''}" dir="rtl" />
             </div>
           </div>
 
           <hr style="border: none; border-top: 1px solid #E2E8E2; margin: 10px 0;" />
 
-          <div class="admin-form-group">
-            <label class="admin-form-label">Brand Promise Eyebrow</label>
-            <input type="text" id="home-promise-sub" class="admin-form-input" value="${home.promiseSubtitle}" />
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label">Brand Promise Eyebrow (EN)</label>
+              <input type="text" id="home-promise-sub" class="admin-form-input" value="${home.promiseSubtitle}" />
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Brand Promise Eyebrow (AR)</label>
+              <input type="text" id="home-promise-sub-ar" class="admin-form-input" value="${home.promiseSubtitle_ar || ''}" dir="rtl" />
+            </div>
           </div>
 
-          <div class="admin-form-group">
-            <label class="admin-form-label">Brand Promise Title</label>
-            <input type="text" id="home-promise-title" class="admin-form-input" value="${home.promiseTitle}" />
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label">Brand Promise Title (EN)</label>
+              <input type="text" id="home-promise-title" class="admin-form-input" value="${home.promiseTitle}" />
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Brand Promise Title (AR)</label>
+              <input type="text" id="home-promise-title-ar" class="admin-form-input" value="${home.promiseTitle_ar || ''}" dir="rtl" />
+            </div>
           </div>
 
-          <div class="admin-form-group">
-            <label class="admin-form-label">Brand Promise Paragraph Copy</label>
-            <textarea id="home-promise-text" class="admin-form-textarea" rows="3">${home.promiseText}</textarea>
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label">Brand Promise Text (EN)</label>
+              <textarea id="home-promise-text" class="admin-form-textarea" rows="3">${home.promiseText}</textarea>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Brand Promise Text (AR)</label>
+              <textarea id="home-promise-text-ar" class="admin-form-textarea" rows="3" dir="rtl">${home.promiseText_ar || ''}</textarea>
+            </div>
           </div>
         </div>
       </div>
@@ -951,14 +1208,23 @@ const AdminApp = {
   saveHomeCms() {
     const updated = {
       heroBadge: document.getElementById("home-badge")?.value,
+      heroBadge_ar: document.getElementById("home-badge-ar")?.value,
       heroTitle: document.getElementById("home-title")?.value,
+      heroTitle_ar: document.getElementById("home-title-ar")?.value,
       heroSubtitle: document.getElementById("home-sub")?.value,
+      heroSubtitle_ar: document.getElementById("home-sub-ar")?.value,
       heroDescription: document.getElementById("home-desc")?.value,
+      heroDescription_ar: document.getElementById("home-desc-ar")?.value,
       heroCtaText: document.getElementById("home-cta")?.value,
+      heroCtaText_ar: document.getElementById("home-cta-ar")?.value,
       heroSecondaryCta: document.getElementById("home-sec-cta")?.value,
+      heroSecondaryCta_ar: document.getElementById("home-sec-cta-ar")?.value,
       promiseSubtitle: document.getElementById("home-promise-sub")?.value,
+      promiseSubtitle_ar: document.getElementById("home-promise-sub-ar")?.value,
       promiseTitle: document.getElementById("home-promise-title")?.value,
-      promiseText: document.getElementById("home-promise-text")?.value
+      promiseTitle_ar: document.getElementById("home-promise-title-ar")?.value,
+      promiseText: document.getElementById("home-promise-text")?.value,
+      promiseText_ar: document.getElementById("home-promise-text-ar")?.value
     };
     MoeStore.updateHomeContent(updated);
     App.showToast("Home page CMS saved successfully! 🌿", "success");
@@ -978,34 +1244,69 @@ const AdminApp = {
         </div>
 
         <div style="padding: 24px; display: flex; flex-direction: column; gap: 18px;">
-          <div class="admin-form-group">
-            <label class="admin-form-label">Hero Title</label>
-            <input type="text" id="about-hero-title" class="admin-form-input" value="${about.heroTitle}" />
-          </div>
-
-          <div class="admin-form-group">
-            <label class="admin-form-label">Hero Subtitle</label>
-            <input type="text" id="about-hero-sub" class="admin-form-input" value="${about.heroSubtitle}" />
-          </div>
-
-          <div class="admin-form-group">
-            <label class="admin-form-label">Story Section Title</label>
-            <input type="text" id="about-story-title" class="admin-form-input" value="${about.storyTitle}" />
-          </div>
-
-          <div class="admin-form-group">
-            <label class="admin-form-label">Story Text (Careful Gluten-Free Preparation)</label>
-            <textarea id="about-story-text" class="admin-form-textarea" rows="4">${about.storyText}</textarea>
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label">Hero Title (EN)</label>
+              <input type="text" id="about-hero-title" class="admin-form-input" value="${about.heroTitle}" />
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Hero Title (AR)</label>
+              <input type="text" id="about-hero-title-ar" class="admin-form-input" value="${about.heroTitle_ar || ''}" dir="rtl" />
+            </div>
           </div>
 
           <div class="admin-form-row">
             <div class="admin-form-group">
-              <label class="admin-form-label">Closing Card Title</label>
+              <label class="admin-form-label">Hero Subtitle (EN)</label>
+              <input type="text" id="about-hero-sub" class="admin-form-input" value="${about.heroSubtitle}" />
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Hero Subtitle (AR)</label>
+              <input type="text" id="about-hero-sub-ar" class="admin-form-input" value="${about.heroSubtitle_ar || ''}" dir="rtl" />
+            </div>
+          </div>
+
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label">Story Section Title (EN)</label>
+              <input type="text" id="about-story-title" class="admin-form-input" value="${about.storyTitle}" />
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Story Section Title (AR)</label>
+              <input type="text" id="about-story-title-ar" class="admin-form-input" value="${about.storyTitle_ar || ''}" dir="rtl" />
+            </div>
+          </div>
+
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label">Story Text (EN)</label>
+              <textarea id="about-story-text" class="admin-form-textarea" rows="4">${about.storyText}</textarea>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Story Text (AR)</label>
+              <textarea id="about-story-text-ar" class="admin-form-textarea" rows="4" dir="rtl">${about.storyText_ar || ''}</textarea>
+            </div>
+          </div>
+
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label">Closing Card Title (EN)</label>
               <input type="text" id="about-closing-title" class="admin-form-input" value="${about.closingCardTitle}" />
             </div>
             <div class="admin-form-group">
-              <label class="admin-form-label">Closing Card Subtitle</label>
+              <label class="admin-form-label">Closing Card Title (AR)</label>
+              <input type="text" id="about-closing-title-ar" class="admin-form-input" value="${about.closingCardTitle_ar || ''}" dir="rtl" />
+            </div>
+          </div>
+          
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label">Closing Card Subtitle (EN)</label>
               <input type="text" id="about-closing-desc" class="admin-form-input" value="${about.closingCardText}" />
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Closing Card Subtitle (AR)</label>
+              <input type="text" id="about-closing-desc-ar" class="admin-form-input" value="${about.closingCardText_ar || ''}" dir="rtl" />
             </div>
           </div>
         </div>
@@ -1016,11 +1317,17 @@ const AdminApp = {
   saveAboutCms() {
     const updated = {
       heroTitle: document.getElementById("about-hero-title")?.value,
+      heroTitle_ar: document.getElementById("about-hero-title-ar")?.value,
       heroSubtitle: document.getElementById("about-hero-sub")?.value,
+      heroSubtitle_ar: document.getElementById("about-hero-sub-ar")?.value,
       storyTitle: document.getElementById("about-story-title")?.value,
+      storyTitle_ar: document.getElementById("about-story-title-ar")?.value,
       storyText: document.getElementById("about-story-text")?.value,
+      storyText_ar: document.getElementById("about-story-text-ar")?.value,
       closingCardTitle: document.getElementById("about-closing-title")?.value,
-      closingCardText: document.getElementById("about-closing-desc")?.value
+      closingCardTitle_ar: document.getElementById("about-closing-title-ar")?.value,
+      closingCardText: document.getElementById("about-closing-desc")?.value,
+      closingCardText_ar: document.getElementById("about-closing-desc-ar")?.value
     };
     MoeStore.updateAboutContent(updated);
     App.showToast("About Us page CMS saved successfully! 🌿", "success");
@@ -1111,22 +1418,52 @@ const AdminApp = {
   },
 
   importDataPrompt() {
-    const raw = prompt("Paste your exported JSON database string here:");
-    if (!raw) return;
-    if (MoeStore.importDatabase(raw)) {
-      App.showToast("Database imported successfully! 🚀", "success");
-      this.renderAdminView();
-    } else {
-      App.showToast("Invalid database JSON!", "danger");
-    }
+    const mount = document.getElementById("admin-confirmation-modal-mount");
+    if (!mount) return;
+    
+    mount.innerHTML = `
+      <div class="admin-modal" style="z-index: 99999;">
+        <div class="modal-overlay active" onclick="AdminApp.closeConfirmationModal()" style="z-index: 99990;"></div>
+        <div class="admin-modal-box" style="max-width: 500px; z-index: 99991;">
+          <div class="admin-modal-header">
+            <h2 class="admin-modal-title">Import Database</h2>
+            <button class="btn-action-icon" onclick="AdminApp.closeConfirmationModal()">✕</button>
+          </div>
+          <div class="admin-modal-body" style="flex: unset;">
+            <p style="margin-bottom: 12px;">Paste your exported JSON database string below:</p>
+            <textarea id="import-json-data" class="admin-form-textarea" rows="6"></textarea>
+          </div>
+          <div class="admin-modal-footer">
+            <button class="btn btn-outline" onclick="AdminApp.closeConfirmationModal()">Cancel</button>
+            <button class="btn btn-primary" onclick="
+              const raw = document.getElementById('import-json-data').value.trim();
+              if(raw) {
+                if (MoeStore.importDatabase(raw)) {
+                  App.showToast('Database imported successfully! 🚀', 'success');
+                  AdminApp.closeConfirmationModal();
+                  AdminApp.renderAdminView();
+                } else {
+                  App.showToast('Invalid database JSON!', 'danger');
+                }
+              }
+            ">Import Data</button>
+          </div>
+        </div>
+      </div>
+    `;
   },
 
   resetDefaultsPrompt() {
-    if (confirm("Are you sure you want to reset all menu items, categories, and settings to original defaults?")) {
-      MoeStore.resetToDefaults();
-      App.showToast("Database restored to default catalog 🌿", "info");
-      this.renderAdminView();
-    }
+    this.openConfirmationModal(
+      "Reset to Defaults?",
+      "Are you sure you want to reset all menu items, categories, and settings to original defaults? This action cannot be undone.",
+      "Reset Database",
+      () => {
+        MoeStore.resetToDefaults();
+        App.showToast("Database restored to default catalog 🌿", "info");
+        AdminApp.renderAdminView();
+      }
+    );
   }
 };
 

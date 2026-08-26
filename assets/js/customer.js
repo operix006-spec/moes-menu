@@ -258,19 +258,20 @@ const CustomerApp = {
             
             <div class="hero-trust-badge">
               <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
-              ${i18n("hero_badge")}
+              ${CustomerApp.T(homeContent, 'heroBadge') || i18n("hero_badge")}
             </div>
 
-            <h1 class="hero-intro-text">${i18n("hero_title")}</h1>
+            <h1 class="hero-intro-text">${CustomerApp.T(homeContent, 'heroTitle') || i18n("hero_title")}</h1>
+            <p style="color: var(--c-text-on-dark); opacity: 0.9; font-size: 1.1rem; margin-bottom: 24px; text-shadow: 0 1px 3px rgba(0,0,0,0.4);">${CustomerApp.T(homeContent, 'heroDescription') || i18n("good_food_worry")}</p>
             
             <div class="hero-actions">
               <a href="#menu" class="btn btn-primary-compact">
-                ${i18n("explore_menu")}
+                ${CustomerApp.T(homeContent, 'heroCtaText') || i18n("explore_menu")}
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
               </a>
               <button onclick="CustomerApp.directWhatsAppContact()" class="btn btn-wa-compact">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-                ${i18n("order_wa")}
+                ${CustomerApp.T(homeContent, 'heroSecondaryCta') || i18n("order_wa")}
               </button>
               <button onclick="#" class="btn btn-eshya-compact">
                 <img src="assets/images/eshya_logo.png" alt="My Things" style="width: 18px; height: 18px;" />
@@ -362,8 +363,9 @@ const CustomerApp = {
             <img src="assets/images/logo_transparent.png" alt="Moe's PureBite Logo" class="snippet-logo" loading="lazy" />
           </div>
           <div class="home-about-content">
-            <h3>${i18n("who_we_are")}</h3>
-            <p>${i18n("home_about_text")}</p>
+            <span style="font-size: 0.8rem; font-weight: 800; color: var(--c-orange); letter-spacing: 0.1em; text-transform: uppercase;">${CustomerApp.T(homeContent, 'promiseSubtitle') || i18n("who_we_are")}</span>
+            <h3 style="margin-top: 4px;">${CustomerApp.T(homeContent, 'promiseTitle') || i18n("who_we_are")}</h3>
+            <p>${CustomerApp.T(homeContent, 'promiseText') || i18n("home_about_text")}</p>
             <a href="#about" class="btn-outline-compact">${i18n("read_our_story")}</a>
           </div>
         </section>
@@ -847,6 +849,7 @@ const CustomerApp = {
         groupName: g ? g.name : groupId,
         optionId: opt ? opt.id : "",
         optionName: opt ? opt.name : "",
+        optionName_ar: opt ? opt.name_ar : "",
         price: opt ? opt.price : 0
       };
     });
@@ -857,6 +860,7 @@ const CustomerApp = {
       return {
         id: mId,
         name: m ? m.name : mId,
+        name_ar: m ? m.name_ar : "",
         price: m ? m.price : 0
       };
     });
@@ -864,12 +868,13 @@ const CustomerApp = {
     // Map removed ingredient names
     const removedNames = this.currentModalState.removedIngredients.map(ingId => {
       const ing = (p.ingredients || []).find(i => i.id === ingId);
-      return ing ? ing.name : ingId;
+      return ing ? { name: ing.name, name_ar: ing.name_ar } : { name: ingId, name_ar: "" };
     });
 
     MoeStore.addToCart({
       productId: p.id,
       name: p.name,
+      name_ar: p.name_ar,
       image: p.image,
       unitPrice: pricing.unitPrice,
       quantity: this.currentModalState.quantity,
@@ -932,16 +937,16 @@ const CustomerApp = {
               </div>
               <div class="cart-item-details">
                 <div class="cart-item-head">
-                  <h3 class="cart-item-title">${item.name}</h3>
+                  <h3 class="cart-item-title">${CustomerApp.T(item, "name")}</h3>
                   <button class="btn-cart-remove" onclick="CustomerApp.removeCartItem('${item.cartItemId}')" title="Remove item" aria-label="Remove item">
                     ✕
                   </button>
                 </div>
 
                 <div class="cart-item-customizations">
-                  ${(item.selectedOptions || []).map(o => `<span>• ${o.optionName}</span>`).join("")}
-                  ${(item.removedIngredients || []).map(r => `<span class="mod-rem">• ${i18n("no_item")} ${r}</span>`).join("")}
-                  ${(item.addedModifiers || []).map(m => `<span class="mod-add">• ${i18n("extra_item")} ${m.name} (+${m.price.toFixed(2)} ${settings.currency})</span>`).join("")}
+                  ${(item.selectedOptions || []).map(o => `<span>• ${CustomerApp.T(o, "optionName")}</span>`).join("")}
+                  ${(item.removedIngredients || []).map(r => `<span class="mod-rem">• ${i18n("no_item")} ${CustomerApp.T(r, "name")}</span>`).join("")}
+                  ${(item.addedModifiers || []).map(m => `<span class="mod-add">• ${i18n("extra_item")} ${CustomerApp.T(m, "name")} (+${m.price.toFixed(2)} ${settings.currency})</span>`).join("")}
                 </div>
 
                 <div class="cart-item-foot">
@@ -1015,14 +1020,14 @@ const CustomerApp = {
       const itemName = CustomerApp.T(item, "name");
       message += `${item.quantity} × ${itemName}\n`;
       
-      // Selected option groups
       (item.selectedOptions || []).forEach(opt => {
         message += `  - ${CustomerApp.T(opt, "optionName")}\n`;
       });
 
       // Removed ingredients
       (item.removedIngredients || []).forEach(rem => {
-        message += isAr ? `  - بدون ${rem}\n` : `  - No ${rem}\n`;
+        const remName = CustomerApp.T(rem, "name");
+        message += isAr ? `  - بدون ${remName}\n` : `  - No ${remName}\n`;
       });
 
       // Added extras
@@ -1084,6 +1089,7 @@ const CustomerApp = {
     if (!container) return;
 
     const settings = MoeStore.getSettings();
+    const aboutContent = MoeStore.getAboutContent();
 
     container.innerHTML = `
       <div class="about-view-refined">
@@ -1096,13 +1102,12 @@ const CustomerApp = {
         <!-- 2. Introduction -->
         <section class="about-intro-section">
           <span class="about-eyebrow">${i18n("about_eyebrow")}</span>
-          <h1 class="about-focal-point">${i18n("about_hero_title")}</h1>
+          <h1 class="about-focal-point">${CustomerApp.T(aboutContent, 'heroTitle') || i18n("about_hero_title")}</h1>
           
           <div class="about-story-paragraphs">
-            <p>${i18n("about_p1")}</p>
-            <p>${i18n("about_p2")}</p>
-            <p>${i18n("about_p3")}</p>
-            <p>${i18n("about_p4")}</p>
+            <h3 style="color: var(--c-forest); margin-bottom: 12px; font-size: 1.2rem;">${CustomerApp.T(aboutContent, 'heroSubtitle')}</h3>
+            <h2 style="color: var(--c-orange); margin-bottom: 16px; margin-top: 24px; font-size: 1.5rem;">${CustomerApp.T(aboutContent, 'storyTitle')}</h2>
+            <p>${CustomerApp.T(aboutContent, 'storyText') || i18n("about_p1")}</p>
           </div>
         </section>
 
@@ -1165,8 +1170,8 @@ const CustomerApp = {
         <!-- 6. Closing Brand Section -->
         <section class="about-closing-refined">
           <div class="closing-content">
-            <h2>${i18n("about_closing_title")}</h2>
-            <p>${i18n("about_closing_desc")}</p>
+            <h2>${CustomerApp.T(aboutContent, 'closingCardTitle') || i18n("about_closing_title")}</h2>
+            <p>${CustomerApp.T(aboutContent, 'closingCardText') || i18n("about_closing_desc")}</p>
           </div>
         </section>
 

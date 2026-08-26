@@ -441,7 +441,7 @@ input:checked + .toggle-slider:before {
   flex-direction: column;
   overflow: hidden;
   position: relative;
-  z-index: 2;
+  z-index: 9001;
 }
 
 .admin-modal-header {
@@ -465,6 +465,8 @@ input:checked + .toggle-slider:before {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  flex: 1;
+  min-height: 0;
 }
 
 .admin-form-group {

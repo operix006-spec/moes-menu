@@ -16,8 +16,7 @@ class PureBiteStore {
       const raw = localStorage.getItem(this.STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        // Merge with defaults to ensure any missing fields are present
-        return {
+        let state = {
           settings: { ...DEFAULT_DATA.settings, ...(parsed.settings || {}) },
           trustIndicators: parsed.trustIndicators || DEFAULT_DATA.trustIndicators,
           brandPillars: parsed.brandPillars || DEFAULT_DATA.brandPillars,
@@ -27,6 +26,28 @@ class PureBiteStore {
           aboutContent: { ...DEFAULT_DATA.aboutContent, ...(parsed.aboutContent || {}) },
           orderHandoffs: parsed.orderHandoffs || []
         };
+        
+        // --- BILINGUAL DATA MIGRATION ---
+        state.products.forEach(p => {
+          p.name_ar = p.name_ar || "";
+          p.description_ar = p.description_ar || "";
+          if (p.ingredients) {
+            p.ingredients.forEach(i => { i.name_ar = i.name_ar || ""; });
+          }
+          if (p.optionGroups) {
+            p.optionGroups.forEach(og => {
+              og.name_ar = og.name_ar || "";
+              if (og.options) {
+                og.options.forEach(opt => { opt.name_ar = opt.name_ar || ""; });
+              }
+            });
+          }
+          if (p.modifiers) {
+            p.modifiers.forEach(m => { m.name_ar = m.name_ar || ""; });
+          }
+        });
+        
+        return state;
       }
     } catch (e) {
       console.warn("Could not load stored database, falling back to defaults", e);
