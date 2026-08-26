@@ -81,10 +81,14 @@ const AdminApp = {
           </div>
 
           <div class="admin-sidebar-footer">
-            <a href="#home" class="btn-admin-switch-store">
+            <a href="#home" class="btn-admin-switch-store" style="margin-bottom: 8px;">
               <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
               <span>Back to Storefront</span>
             </a>
+            <button class="btn-admin-switch-store" onclick="App.handleAdminLogout()" style="background-color: transparent; color: var(--c-danger); border: 1px solid rgba(200,50,32,0.2);">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+              <span>Logout</span>
+            </button>
           </div>
         </aside>
 
@@ -775,6 +779,12 @@ const AdminApp = {
 
     const nameAr = document.getElementById("builder-name-ar")?.value.trim();
     const price = parseFloat(document.getElementById("builder-price")?.value) || 0;
+    
+    if (price < 0) {
+      App.showToast("Product price cannot be negative.", "danger");
+      return;
+    }
+
     const cat = document.getElementById("builder-category")?.value;
     const img = document.getElementById("builder-image")?.value.trim();
     const desc = document.getElementById("builder-desc")?.value.trim();
@@ -969,7 +979,7 @@ const AdminApp = {
     const enabled = document.getElementById("builder-cat-enabled").checked;
     
     if (!name || !name_ar) {
-      alert("Please fill in both English and Arabic category names.");
+      App.showToast("Please fill in both English and Arabic category names.", "danger");
       return;
     }
     

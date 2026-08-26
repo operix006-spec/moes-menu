@@ -185,6 +185,15 @@ class PureBiteStore {
   deleteCategory(id) {
     if (id === "all") return; // prevent deleting default
     this.state.categories = this.state.categories.filter(c => c.id !== id);
+    
+    // Reassign orphaned products to the first available category (excluding "all" as a strict parent)
+    const fallbackCategory = this.state.categories.find(c => c.id !== "all")?.id || "all";
+    this.state.products.forEach(p => {
+      if (p.category === id) {
+        p.category = fallbackCategory;
+      }
+    });
+
     this.saveDatabase();
   }
 

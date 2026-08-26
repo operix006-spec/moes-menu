@@ -1077,7 +1077,11 @@ const CustomerApp = {
   directWhatsAppContact() {
     const settings = MoeStore.getSettings();
     const rawNumber = settings.whatsappNumber.replace(/[^0-9]/g, "");
-    const msg = encodeURIComponent(`Hello ${settings.restaurantName}! I'm visiting your website and have a question.`);
+    const lang = MoeStore.getLang();
+    const msgText = lang === "ar" 
+      ? `مرحباً ${settings.restaurantName}! أتصفح موقعكم ولدي استفسار.`
+      : `Hello ${settings.restaurantName}! I'm visiting your website and have a question.`;
+    const msg = encodeURIComponent(msgText);
     window.open(`https://wa.me/${rawNumber}?text=${msg}`, "_blank");
   },
 

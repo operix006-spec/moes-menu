@@ -123,6 +123,13 @@ const App = {
     }
   },
 
+  handleAdminLogout() {
+    sessionStorage.removeItem("adminAuth");
+    window.location.hash = "#home";
+    App.handleRouting();
+    App.showToast("Logged out of Admin dashboard.", "info");
+  },
+
   showToast(message, type = "success") {
     const container = document.getElementById("toast-container");
     if (!container) return;
