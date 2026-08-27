@@ -253,7 +253,7 @@ const CustomerApp = {
         <section class="home-hero-compact" style="background: linear-gradient(135deg, rgba(4, 43, 30, 0.88) 0%, rgba(6, 59, 41, 0.70) 50%, rgba(4, 43, 30, 0.88) 100%), url('${CustomerApp.T(homeContent, 'heroImageBg') || 'assets/images/user_kitchen_bg.png'}') center/cover no-repeat; background-size: 200% 200%, cover;">
           <div class="hero-brand-col">
             <div class="hero-logo-small logo-subtle-glow">
-              <img src="${settings.logoPath || 'assets/images/logo_new.jpg'}" alt="${settings.restaurantName} Logo" />
+              <img src="${CustomerApp.T(homeContent, 'heroLogo') || settings.logoPath || 'assets/images/logo_new.jpg'}" alt="${settings.restaurantName} Logo" />
             </div>
             
             <div class="hero-trust-badge">

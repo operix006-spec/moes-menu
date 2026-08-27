@@ -1171,6 +1171,21 @@ const AdminApp = {
           </div>
           <div class="admin-form-row">
             <div class="admin-form-group">
+              <label class="admin-form-label">Hero Circle Logo Image</label>
+              <div style="display: flex; gap: 8px;">
+                <input type="text" id="home-img-logo" class="admin-form-input" value="${home.heroLogo || ''}" style="flex: 1;" placeholder="assets/images/logo_new.jpg" />
+                <label class="btn btn-outline" style="cursor: pointer; padding: 8px 12px;">
+                  Upload
+                  <input type="file" accept="image/*" style="display: none;" onchange="AdminApp.handleImageUpload(event, 'home-img-logo')">
+                </label>
+              </div>
+            </div>
+            <div class="admin-form-group">
+              <!-- Empty spacer -->
+            </div>
+          </div>
+          <div class="admin-form-row">
+            <div class="admin-form-group">
               <label class="admin-form-label">Hero Badge Text (EN)</label>
               <input type="text" id="home-badge" class="admin-form-input" value="${home.heroBadge}" />
             </div>
@@ -1280,6 +1295,7 @@ const AdminApp = {
     const updated = {
       heroImageBg: document.getElementById("home-img-bg")?.value,
       heroImageSecondary: document.getElementById("home-img-sec")?.value,
+      heroLogo: document.getElementById("home-img-logo")?.value,
       heroBadge: document.getElementById("home-badge")?.value,
       heroBadge_ar: document.getElementById("home-badge-ar")?.value,
       heroTitle: document.getElementById("home-title")?.value,
