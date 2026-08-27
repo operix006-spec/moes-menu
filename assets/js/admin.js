@@ -749,7 +749,7 @@ const AdminApp = {
     this.renderProductBuilderModal();
   },
   
-  handleImageUpload(event) {
+  handleImageUpload(event, targetId = "builder-image") {
     const file = event.target.files[0];
     if (!file) return;
     
@@ -761,7 +761,7 @@ const AdminApp = {
     
     const reader = new FileReader();
     reader.onload = (e) => {
-      const input = document.getElementById("builder-image");
+      const input = document.getElementById(targetId);
       if (input) {
         input.value = e.target.result;
         App.showToast("Image loaded successfully!");
@@ -1119,6 +1119,28 @@ const AdminApp = {
         <div style="padding: 24px; display: flex; flex-direction: column; gap: 18px;">
           <div class="admin-form-row">
             <div class="admin-form-group">
+              <label class="admin-form-label">Hero Background Image</label>
+              <div style="display: flex; gap: 8px;">
+                <input type="text" id="home-img-bg" class="admin-form-input" value="${home.heroImageBg || ''}" style="flex: 1;" placeholder="assets/images/hero_bg.jpg" />
+                <label class="btn btn-outline" style="cursor: pointer; padding: 8px 12px;">
+                  Upload
+                  <input type="file" accept="image/*" style="display: none;" onchange="AdminApp.handleImageUpload(event, 'home-img-bg')">
+                </label>
+              </div>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Hero Secondary Image (Card)</label>
+              <div style="display: flex; gap: 8px;">
+                <input type="text" id="home-img-sec" class="admin-form-input" value="${home.heroImageSecondary || ''}" style="flex: 1;" placeholder="assets/images/home_card.jpg" />
+                <label class="btn btn-outline" style="cursor: pointer; padding: 8px 12px;">
+                  Upload
+                  <input type="file" accept="image/*" style="display: none;" onchange="AdminApp.handleImageUpload(event, 'home-img-sec')">
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="admin-form-row">
+            <div class="admin-form-group">
               <label class="admin-form-label">Hero Badge Text (EN)</label>
               <input type="text" id="home-badge" class="admin-form-input" value="${home.heroBadge}" />
             </div>
@@ -1237,6 +1259,8 @@ const AdminApp = {
 
   async saveHomeCms() {
     const updated = {
+      heroImageBg: document.getElementById("home-img-bg")?.value,
+      heroImageSecondary: document.getElementById("home-img-sec")?.value,
       heroBadge: document.getElementById("home-badge")?.value,
       heroBadge_ar: document.getElementById("home-badge-ar")?.value,
       heroTitle: document.getElementById("home-title")?.value,
@@ -1282,6 +1306,18 @@ const AdminApp = {
         </div>
 
         <div style="padding: 24px; display: flex; flex-direction: column; gap: 18px;">
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label">Hero Logo Image</label>
+              <div style="display: flex; gap: 8px;">
+                <input type="text" id="about-img-hero" class="admin-form-input" value="${about.heroImage || ''}" style="flex: 1;" placeholder="assets/images/logo_transparent.png" />
+                <label class="btn btn-outline" style="cursor: pointer; padding: 8px 12px;">
+                  Upload
+                  <input type="file" accept="image/*" style="display: none;" onchange="AdminApp.handleImageUpload(event, 'about-img-hero')">
+                </label>
+              </div>
+            </div>
+          </div>
           <div class="admin-form-row">
             <div class="admin-form-group">
               <label class="admin-form-label">Hero Title (EN)</label>
@@ -1451,6 +1487,7 @@ const AdminApp = {
 
   async saveAboutCms() {
     const updated = {
+      heroImage: document.getElementById("about-img-hero")?.value,
       heroTitle: document.getElementById("about-hero-title")?.value,
       heroTitle_ar: document.getElementById("about-hero-title-ar")?.value,
       heroSubtitle: document.getElementById("about-hero-sub")?.value,

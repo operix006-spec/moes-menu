@@ -250,7 +250,7 @@ const CustomerApp = {
       <div class="home-view">
         
         <!-- Compact Restaurant Hero -->
-        <section class="home-hero-compact">
+        <section class="home-hero-compact" style="background: linear-gradient(135deg, rgba(4, 43, 30, 0.88) 0%, rgba(6, 59, 41, 0.70) 50%, rgba(4, 43, 30, 0.88) 100%), url('${CustomerApp.T(homeContent, 'heroImageBg') || 'assets/images/user_kitchen_bg.png'}') center/cover no-repeat; background-size: 200% 200%, cover;">
           <div class="hero-brand-col">
             <div class="hero-logo-small logo-subtle-glow">
               <img src="${settings.logoPath || 'assets/images/logo_new.jpg'}" alt="${settings.restaurantName} Logo" />
@@ -281,7 +281,7 @@ const CustomerApp = {
           </div>
           
           <div class="hero-image-col">
-            <img src="assets/images/hero_apron.jpg" alt="PureBite Kitchen" class="hero-static-food" loading="eager" />
+            <img src="${CustomerApp.T(homeContent, 'heroImageSecondary') || 'assets/images/hero_apron.jpg'}" alt="PureBite Kitchen" class="hero-static-food" loading="eager" />
           </div>
         </section>
 
@@ -1100,7 +1100,7 @@ const CustomerApp = {
         
         <!-- 1. Hero Clean -->
         <section class="about-hero-clean">
-          <img src="assets/images/logo_transparent.png" alt="Moe's PureBite Logo" class="about-animated-logo" loading="eager" />
+          <img src="${CustomerApp.T(aboutContent, 'heroImage') || 'assets/images/logo_transparent.png'}" alt="Moe's PureBite Logo" class="about-animated-logo" loading="eager" />
         </section>
 
         <!-- 2. Introduction -->
