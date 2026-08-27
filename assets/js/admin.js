@@ -460,15 +460,18 @@ const AdminApp = {
     const idx = products.findIndex(p => p.id === productId);
     if (idx === -1 || (dir === -1 && idx === 0) || (dir === 1 && idx === products.length - 1)) return;
     
-    const prodA = products[idx];
-    const prodB = products[idx + dir];
+    // Swap in the local array
+    const targetIdx = idx + dir;
+    const temp = products[idx];
+    products[idx] = products[targetIdx];
+    products[targetIdx] = temp;
     
-    const tempOrder = prodA.order;
-    prodA.order = prodB.order;
-    prodB.order = tempOrder;
-    
-    MoeStore.saveProduct(prodA);
-    MoeStore.saveProduct(prodB);
+    // Reassign strict sequential orders to the entire visible list to guarantee no duplicates
+    // and save them all to Supabase.
+    products.forEach((p, i) => {
+      p.order = i;
+      MoeStore.saveProduct(p);
+    });
     
     this.renderMenuTab();
     
