@@ -156,7 +156,9 @@ class PureBiteStore {
 
   // --- PRODUCT CRUD ---
   async saveProduct(productData) {
+    const oldProducts = JSON.parse(JSON.stringify(this.state.products));
     const isNew = !productData.id || !this.getProductById(productData.id);
+    
     if (isNew) {
       if (!productData.id) {
         productData.id = "prod-" + Date.now().toString(36) + "-" + Math.random().toString(36).substr(2, 5);
@@ -170,11 +172,12 @@ class PureBiteStore {
     }
     this.saveDatabase();
     
-    // Supabase push
     if (window.supabaseClient) {
       const { error } = await window.supabaseClient.from('products').upsert(productData);
       if (error) {
         console.error("Supabase products save error:", error);
+        this.state.products = oldProducts;
+        this.saveDatabase();
         return { success: false, error };
       }
     }
@@ -182,12 +185,16 @@ class PureBiteStore {
   }
 
   async deleteProduct(id) {
+    const oldProducts = JSON.parse(JSON.stringify(this.state.products));
     this.state.products = this.state.products.filter(p => p.id !== id);
     this.saveDatabase();
+    
     if (window.supabaseClient) {
       const { error } = await window.supabaseClient.from('products').delete().eq('id', id);
       if (error) {
         console.error("Supabase products delete error:", error);
+        this.state.products = oldProducts;
+        this.saveDatabase();
         return { success: false, error };
       }
     }
@@ -199,6 +206,7 @@ class PureBiteStore {
     if (p) {
       p.available = !p.available;
       this.saveDatabase();
+      // Assume sync happens asynchronously or via a separate save call
       return p.available;
     }
     return false;
@@ -206,6 +214,8 @@ class PureBiteStore {
 
   // --- CATEGORY CRUD ---
   async saveCategory(catData) {
+    const oldCategories = JSON.parse(JSON.stringify(this.state.categories));
+    
     if (!catData.id) {
       catData.id = "cat-" + Date.now().toString(36);
     }
@@ -217,10 +227,13 @@ class PureBiteStore {
       this.state.categories.push(catData);
     }
     this.saveDatabase();
+    
     if (window.supabaseClient) {
       const { error } = await window.supabaseClient.from('categories').upsert(catData);
       if (error) {
         console.error("Supabase category save error:", error);
+        this.state.categories = oldCategories;
+        this.saveDatabase();
         return { success: false, error };
       }
     }
@@ -229,6 +242,10 @@ class PureBiteStore {
 
   async deleteCategory(id) {
     if (id === "all") return { success: false, error: { message: "Cannot delete default category" } };
+    
+    const oldCategories = JSON.parse(JSON.stringify(this.state.categories));
+    const oldProducts = JSON.parse(JSON.stringify(this.state.products));
+    
     this.state.categories = this.state.categories.filter(c => c.id !== id);
     
     // Reassign orphaned products to the first available category
@@ -245,7 +262,12 @@ class PureBiteStore {
     
     if (window.supabaseClient) {
       const { error } = await window.supabaseClient.from('categories').delete().eq('id', id);
-      if (error) return { success: false, error };
+      if (error) {
+        this.state.categories = oldCategories;
+        this.state.products = oldProducts;
+        this.saveDatabase();
+        return { success: false, error };
+      }
       if (updatedProducts.length > 0) {
         await window.supabaseClient.from('products').upsert(updatedProducts);
       }
@@ -255,12 +277,16 @@ class PureBiteStore {
 
   // --- SETTINGS & CMS UPDATES ---
   async updateSettings(newSettings) {
+    const oldSettings = { ...this.state.settings };
     this.state.settings = { ...this.state.settings, ...newSettings };
     this.saveDatabase();
+    
     if (window.supabaseClient) {
       const { error } = await window.supabaseClient.from('settings').upsert({ id: 'global', ...this.state.settings });
       if (error) {
         console.error("Supabase settings update error:", error);
+        this.state.settings = oldSettings;
+        this.saveDatabase();
         return { success: false, error };
       }
     }
@@ -268,12 +294,16 @@ class PureBiteStore {
   }
 
   async updateHomeContent(newContent) {
+    const oldHome = { ...this.state.homeContent };
     this.state.homeContent = { ...this.state.homeContent, ...newContent };
     this.saveDatabase();
+    
     if (window.supabaseClient) {
       const { error } = await window.supabaseClient.from('home_content').upsert({ id: 'global', ...this.state.homeContent });
       if (error) {
         console.error("Supabase home_content update error:", error);
+        this.state.homeContent = oldHome;
+        this.saveDatabase();
         return { success: false, error };
       }
     }
@@ -281,12 +311,16 @@ class PureBiteStore {
   }
 
   async updateAboutContent(newContent) {
+    const oldAbout = { ...this.state.aboutContent };
     this.state.aboutContent = { ...this.state.aboutContent, ...newContent };
     this.saveDatabase();
+    
     if (window.supabaseClient) {
       const { error } = await window.supabaseClient.from('about_content').upsert({ id: 'global', ...this.state.aboutContent });
       if (error) {
         console.error("Supabase about_content update error:", error);
+        this.state.aboutContent = oldAbout;
+        this.saveDatabase();
         return { success: false, error };
       }
     }
