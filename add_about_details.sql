@@ -23,3 +23,33 @@ ADD COLUMN IF NOT EXISTS "trust4Title" TEXT,
 ADD COLUMN IF NOT EXISTS "trust4Title_ar" TEXT,
 ADD COLUMN IF NOT EXISTS "trust4Desc" TEXT,
 ADD COLUMN IF NOT EXISTS "trust4Desc_ar" TEXT;
+
+UPDATE about_content
+SET 
+  "missionTitle" = 'Our Mission',
+  "missionTitle_ar" = 'رسالتنا',
+  "missionDesc" = 'To make gluten-free food something people look forward to — not something they have to settle for. We prepare satisfying meals with strict attention to safe preparation, so you can eat with confidence.',
+  "missionDesc_ar" = 'جعل الأكل الخالي من الغلوتين تجربة ممتعة لا مجرد بديل. نحضر وجبات لذيذة مع اهتمام فائق بالأمان لتأكل بكل ثقة.',
+  "visionTitle" = 'Our Vision',
+  "visionTitle_ar" = 'رؤيتنا',
+  "visionDesc" = 'To become Jordan’s most trusted gluten-free kitchen, setting a new standard for great taste, food safety, and reliability — and proving that living gluten-free should never mean compromising on the food you love.',
+  "visionDesc_ar" = 'أن نصبح المطبخ الخالي من الغلوتين الأكثر ثقة في الأردن، ونضع معياراً جديداً للطعم الرائع والأمان الغذائي والموثوقية — لنثبت أن الحياة بدون غلوتين لا تعني أبداً التنازل عن الأكل الذي تحبه.',
+  "trust1Title" = '100% Gluten-Free',
+  "trust1Title_ar" = '100% خالي من الغلوتين',
+  "trust1Desc" = 'Our kitchen is entirely free from gluten, ensuring safe food for everyone.',
+  "trust1Desc_ar" = 'مطبخنا خالٍ تماماً من الغلوتين، لضمان طعام آمن للجميع.',
+  "trust2Title" = 'Safe for Celiac',
+  "trust2Title_ar" = 'آمن لمرضى السيلياك',
+  "trust2Desc" = 'We follow strict protocols to ensure no cross-contamination.',
+  "trust2Desc_ar" = 'نتبع بروتوكولات صارمة لضمان عدم وجود تلوث متقاطع.',
+  "trust3Title" = 'No Cross-Contamination',
+  "trust3Title_ar" = 'بدون تلوث متقاطع',
+  "trust3Desc" = 'Every meal is prepared with dedicated equipment and utensils.',
+  "trust3Desc_ar" = 'يتم تحضير كل وجبة بمعدات وأدوات مخصصة تماماً.',
+  "trust4Title" = 'Fresh Ingredients',
+  "trust4Title_ar" = 'مكونات طازجة',
+  "trust4Desc" = 'We use the highest quality fresh ingredients in every dish.',
+  "trust4Desc_ar" = 'نستخدم أجود المكونات الطازجة في كل طبق نُحضّره.'
+WHERE id = 'global';
+
+NOTIFY pgrst, 'reload schema';
