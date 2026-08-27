@@ -156,17 +156,26 @@ class PureBiteStore {
     
     // Supabase push
     if (window.supabaseClient) {
-      await window.supabaseClient.from('products').upsert(productData);
+      const { error } = await window.supabaseClient.from('products').upsert(productData);
+      if (error) {
+        console.error("Supabase products save error:", error);
+        return { success: false, error };
+      }
     }
-    return productData;
+    return { success: true, product: productData };
   }
 
   async deleteProduct(id) {
     this.state.products = this.state.products.filter(p => p.id !== id);
     this.saveDatabase();
     if (window.supabaseClient) {
-      await window.supabaseClient.from('products').delete().eq('id', id);
+      const { error } = await window.supabaseClient.from('products').delete().eq('id', id);
+      if (error) {
+        console.error("Supabase products delete error:", error);
+        return { success: false, error };
+      }
     }
+    return { success: true };
   }
 
   toggleProductAvailability(id) {
@@ -193,15 +202,20 @@ class PureBiteStore {
     }
     this.saveDatabase();
     if (window.supabaseClient) {
-      await window.supabaseClient.from('categories').upsert(catData);
+      const { error } = await window.supabaseClient.from('categories').upsert(catData);
+      if (error) {
+        console.error("Supabase category save error:", error);
+        return { success: false, error };
+      }
     }
+    return { success: true };
   }
 
   async deleteCategory(id) {
-    if (id === "all") return; // prevent deleting default
+    if (id === "all") return { success: false, error: { message: "Cannot delete default category" } };
     this.state.categories = this.state.categories.filter(c => c.id !== id);
     
-    // Reassign orphaned products to the first available category (excluding "all" as a strict parent)
+    // Reassign orphaned products to the first available category
     const fallbackCategory = this.state.categories.find(c => c.id !== "all")?.id || "all";
     const updatedProducts = [];
     this.state.products.forEach(p => {
@@ -214,11 +228,13 @@ class PureBiteStore {
     this.saveDatabase();
     
     if (window.supabaseClient) {
-      await window.supabaseClient.from('categories').delete().eq('id', id);
+      const { error } = await window.supabaseClient.from('categories').delete().eq('id', id);
+      if (error) return { success: false, error };
       if (updatedProducts.length > 0) {
         await window.supabaseClient.from('products').upsert(updatedProducts);
       }
     }
+    return { success: true };
   }
 
   // --- SETTINGS & CMS UPDATES ---
@@ -226,24 +242,39 @@ class PureBiteStore {
     this.state.settings = { ...this.state.settings, ...newSettings };
     this.saveDatabase();
     if (window.supabaseClient) {
-      await window.supabaseClient.from('settings').upsert({ id: 'global', ...this.state.settings });
+      const { error } = await window.supabaseClient.from('settings').upsert({ id: 'global', ...this.state.settings });
+      if (error) {
+        console.error("Supabase settings update error:", error);
+        return { success: false, error };
+      }
     }
+    return { success: true };
   }
 
   async updateHomeContent(newContent) {
     this.state.homeContent = { ...this.state.homeContent, ...newContent };
     this.saveDatabase();
     if (window.supabaseClient) {
-      await window.supabaseClient.from('home_content').upsert({ id: 'global', ...this.state.homeContent });
+      const { error } = await window.supabaseClient.from('home_content').upsert({ id: 'global', ...this.state.homeContent });
+      if (error) {
+        console.error("Supabase home_content update error:", error);
+        return { success: false, error };
+      }
     }
+    return { success: true };
   }
 
   async updateAboutContent(newContent) {
     this.state.aboutContent = { ...this.state.aboutContent, ...newContent };
     this.saveDatabase();
     if (window.supabaseClient) {
-      await window.supabaseClient.from('about_content').upsert({ id: 'global', ...this.state.aboutContent });
+      const { error } = await window.supabaseClient.from('about_content').upsert({ id: 'global', ...this.state.aboutContent });
+      if (error) {
+        console.error("Supabase about_content update error:", error);
+        return { success: false, error };
+      }
     }
+    return { success: true };
   }
 
   // --- CART MANAGEMENT ---

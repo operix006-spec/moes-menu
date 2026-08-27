@@ -806,9 +806,13 @@ const AdminApp = {
     this.currentBuilderProduct.isFeatured = featured;
     this.currentBuilderProduct.isPreOrder24h = preOrder;
 
-    MoeStore.saveProduct(this.currentBuilderProduct);
+    const res = await MoeStore.saveProduct(this.currentBuilderProduct);
     this.closeProductBuilder();
-    App.showToast(`Saved ${name} successfully! 🌿`, "success");
+    if (res && res.error) {
+      App.showToast(`Error saving product: ${res.error.message}`, "danger");
+    } else {
+      App.showToast(`Saved ${name} successfully! 🌿`, "success");
+    }
     this.renderMenuTab();
   },
 
@@ -1216,7 +1220,7 @@ const AdminApp = {
     `;
   },
 
-  saveHomeCms() {
+  async saveHomeCms() {
     const updated = {
       heroBadge: document.getElementById("home-badge")?.value,
       heroBadge_ar: document.getElementById("home-badge-ar")?.value,
@@ -1237,8 +1241,13 @@ const AdminApp = {
       promiseText: document.getElementById("home-promise-text")?.value,
       promiseText_ar: document.getElementById("home-promise-text-ar")?.value
     };
-    MoeStore.updateHomeContent(updated);
-    App.showToast("Home page CMS saved successfully! 🌿", "success");
+    App.showToast("Saving Home content...", "info");
+    const res = await MoeStore.updateHomeContent(updated);
+    if (res && res.error) {
+      App.showToast(`Error saving: ${res.error.message}`, "danger");
+    } else {
+      App.showToast("Home page CMS saved successfully! 🌿", "success");
+    }
   },
 
   // ==========================================================================
@@ -1326,7 +1335,7 @@ const AdminApp = {
     `;
   },
 
-  saveAboutCms() {
+  async saveAboutCms() {
     const updated = {
       heroTitle: document.getElementById("about-hero-title")?.value,
       heroTitle_ar: document.getElementById("about-hero-title-ar")?.value,
@@ -1341,8 +1350,13 @@ const AdminApp = {
       closingCardText: document.getElementById("about-closing-desc")?.value,
       closingCardText_ar: document.getElementById("about-closing-desc-ar")?.value
     };
-    MoeStore.updateAboutContent(updated);
-    App.showToast("About Us page CMS saved successfully! 🌿", "success");
+    App.showToast("Saving About content...", "info");
+    const res = await MoeStore.updateAboutContent(updated);
+    if (res && res.error) {
+      App.showToast(`Error saving: ${res.error.message}`, "danger");
+    } else {
+      App.showToast("About Us page CMS saved successfully! 🌿", "success");
+    }
   },
 
   // ==========================================================================
@@ -1406,7 +1420,7 @@ const AdminApp = {
     `;
   },
 
-  saveSettings() {
+  async saveSettings() {
     const updated = {
       whatsappNumber: document.getElementById("settings-wa")?.value.trim(),
       phoneDisplay: document.getElementById("settings-phone-disp")?.value.trim(),
@@ -1416,8 +1430,13 @@ const AdminApp = {
       currency: document.getElementById("settings-curr")?.value.trim() || "JOD",
       workingHours: document.getElementById("settings-hours")?.value.trim()
     };
-    MoeStore.updateSettings(updated);
-    App.showToast("Settings updated successfully! ⚙️", "success");
+    App.showToast("Saving settings...", "info");
+    const res = await MoeStore.updateSettings(updated);
+    if (res && res.error) {
+      App.showToast(`Error saving: ${res.error.message}`, "danger");
+    } else {
+      App.showToast("Settings updated successfully! ⚙️", "success");
+    }
   },
 
   exportData() {
