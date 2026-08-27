@@ -753,19 +753,49 @@ const AdminApp = {
     const file = event.target.files[0];
     if (!file) return;
     
-    // Check size limit (max ~500kb to prevent localStorage overflow)
-    if (file.size > 500 * 1024) {
-      alert("Image is too large! Please select an image under 500KB to fit in local storage.");
-      return;
-    }
+    App.showToast("Processing image...", "info");
     
     const reader = new FileReader();
     reader.onload = (e) => {
-      const input = document.getElementById(targetId);
-      if (input) {
-        input.value = e.target.result;
-        App.showToast("Image loaded successfully!");
-      }
+      const img = new Image();
+      img.onload = () => {
+        const MAX_WIDTH = 800;
+        const MAX_HEIGHT = 800;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height = Math.round(height * (MAX_WIDTH / width));
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width = Math.round(width * (MAX_HEIGHT / height));
+            height = MAX_HEIGHT;
+          }
+        }
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Compress image to Base64 (WebP, 75% quality to preserve transparency)
+        const compressedDataUrl = canvas.toDataURL("image/webp", 0.75);
+        
+        const input = document.getElementById(targetId);
+        if (input) {
+          input.value = compressedDataUrl;
+          
+          // Show approximate new size
+          const kbSize = Math.round((compressedDataUrl.length * 3 / 4) / 1024);
+          App.showToast(`Image compressed to ~${kbSize}KB and loaded! 📸`, "success");
+        }
+      };
+      img.src = e.target.result;
     };
     reader.readAsDataURL(file);
   },
