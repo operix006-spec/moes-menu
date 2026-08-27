@@ -44,7 +44,7 @@ class PureBiteStore {
   }
 
   loadDatabase() {
-    return {
+    const defaults = {
       settings: { lang: 'en', currency: 'JOD' },
       categories: [],
       products: [],
@@ -62,9 +62,25 @@ class PureBiteStore {
         { icon: "assets/images/ing_lettuce.png", title: "Farm Fresh", desc: "Locally sourced veggies" }
       ]
     };
+
+    try {
+      const cached = localStorage.getItem(this.STORAGE_KEY);
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        return { ...defaults, ...parsed };
+      }
+    } catch (e) {
+      console.warn("Failed to load cached DB", e);
+    }
+    return defaults;
   }
 
   saveDatabase() {
+    try {
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.state));
+    } catch (e) {
+      console.warn("Failed to save DB to cache", e);
+    }
     this.emit("data-updated", this.state);
   }
 
