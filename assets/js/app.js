@@ -6,11 +6,17 @@
 const App = {
   currentRoute: "home",
 
-  init() {
+  async init() {
     // Initialize components
-    MoeStore; // Ensure store is ready
+    await MoeStore.dataReady; // Ensure store is ready and data is fetched
     CustomerApp.init();
     AdminApp.init();
+
+    const loader = document.getElementById("global-app-loader");
+    if (loader) {
+      loader.style.opacity = '0';
+      setTimeout(() => loader.style.display = 'none', 400);
+    }
 
     // Listen to hash change routing
     window.addEventListener("hashchange", () => this.handleRouting());

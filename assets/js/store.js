@@ -11,7 +11,7 @@ class PureBiteStore {
     this.cart = this.loadCart();
     
     // Automatically fetch latest data from Supabase on load
-    this.initSupabaseData();
+    this.dataReady = this.initSupabaseData();
   }
 
   async initSupabaseData() {
