@@ -1121,26 +1121,26 @@ const CustomerApp = {
             
             <div class="trust-compact-card">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-              <h4>${i18n("about_trust_1_title")}</h4>
-              <p>${i18n("about_trust_1_desc")}</p>
+              <h4>${CustomerApp.T(aboutContent, 'trust1Title') || i18n("about_trust_1_title")}</h4>
+              <p>${CustomerApp.T(aboutContent, 'trust1Desc') || i18n("about_trust_1_desc")}</p>
             </div>
             
             <div class="trust-compact-card">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
-              <h4>${i18n("about_trust_2_title")}</h4>
-              <p>${i18n("about_trust_2_desc")}</p>
+              <h4>${CustomerApp.T(aboutContent, 'trust2Title') || i18n("about_trust_2_title")}</h4>
+              <p>${CustomerApp.T(aboutContent, 'trust2Desc') || i18n("about_trust_2_desc")}</p>
             </div>
             
             <div class="trust-compact-card">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
-              <h4>${i18n("about_trust_3_title")}</h4>
-              <p>${i18n("about_trust_3_desc")}</p>
+              <h4>${CustomerApp.T(aboutContent, 'trust3Title') || i18n("about_trust_3_title")}</h4>
+              <p>${CustomerApp.T(aboutContent, 'trust3Desc') || i18n("about_trust_3_desc")}</p>
             </div>
             
             <div class="trust-compact-card">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-              <h4>${i18n("about_trust_4_title")}</h4>
-              <p>${i18n("about_trust_4_desc")}</p>
+              <h4>${CustomerApp.T(aboutContent, 'trust4Title') || i18n("about_trust_4_title")}</h4>
+              <p>${CustomerApp.T(aboutContent, 'trust4Desc') || i18n("about_trust_4_desc")}</p>
             </div>
 
           </div>
@@ -1158,16 +1158,16 @@ const CustomerApp = {
             <div class="mv-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
             </div>
-            <h3>${i18n("about_mission_title")}</h3>
-            <p>${i18n("about_mission_desc")}</p>
+            <h3>${CustomerApp.T(aboutContent, 'missionTitle') || i18n("about_mission_title")}</h3>
+            <p>${CustomerApp.T(aboutContent, 'missionDesc') || i18n("about_mission_desc")}</p>
           </div>
 
           <div class="mission-vision-card">
             <div class="mv-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
             </div>
-            <h3>${i18n("about_vision_title")}</h3>
-            <p>${i18n("about_vision_desc")}</p>
+            <h3>${CustomerApp.T(aboutContent, 'visionTitle') || i18n("about_vision_title")}</h3>
+            <p>${CustomerApp.T(aboutContent, 'visionDesc') || i18n("about_vision_desc")}</p>
           </div>
         </section>
 

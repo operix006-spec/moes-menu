@@ -1330,6 +1330,103 @@ const AdminApp = {
               <input type="text" id="about-closing-desc-ar" class="admin-form-input" value="${about.closingCardText_ar || ''}" dir="rtl" />
             </div>
           </div>
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label">Mission Title (EN)</label>
+              <input type="text" id="about-mission-title" class="admin-form-input" value="${about.missionTitle}" />
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Mission Title (AR)</label>
+              <input type="text" id="about-mission-title-ar" class="admin-form-input" value="${about.missionTitle_ar || ''}" dir="rtl" />
+            </div>
+          </div>
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label">Mission Text (EN)</label>
+              <textarea id="about-mission-text" class="admin-form-textarea" rows="2">${about.missionDesc}</textarea>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Mission Text (AR)</label>
+              <textarea id="about-mission-text-ar" class="admin-form-textarea" rows="2" dir="rtl">${about.missionDesc_ar || ''}</textarea>
+            </div>
+          </div>
+
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label">Vision Title (EN)</label>
+              <input type="text" id="about-vision-title" class="admin-form-input" value="${about.visionTitle}" />
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Vision Title (AR)</label>
+              <input type="text" id="about-vision-title-ar" class="admin-form-input" value="${about.visionTitle_ar || ''}" dir="rtl" />
+            </div>
+          </div>
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label">Vision Text (EN)</label>
+              <textarea id="about-vision-text" class="admin-form-textarea" rows="2">${about.visionDesc}</textarea>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Vision Text (AR)</label>
+              <textarea id="about-vision-text-ar" class="admin-form-textarea" rows="2" dir="rtl">${about.visionDesc_ar || ''}</textarea>
+            </div>
+          </div>
+
+          <hr style="border: none; border-top: 1px solid #E2E8E2; margin: 10px 0;" />
+          <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--c-forest); margin-bottom: 8px;">Trust Grid (4 Items)</h3>
+          
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label">Trust 1 Title (EN) / (AR)</label>
+              <input type="text" id="about-trust1-title" class="admin-form-input" value="${about.trust1Title}" style="margin-bottom:8px" />
+              <input type="text" id="about-trust1-title-ar" class="admin-form-input" value="${about.trust1Title_ar || ''}" dir="rtl" />
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Trust 1 Text (EN) / (AR)</label>
+              <textarea id="about-trust1-text" class="admin-form-textarea" rows="1" style="margin-bottom:8px">${about.trust1Desc}</textarea>
+              <textarea id="about-trust1-text-ar" class="admin-form-textarea" rows="1" dir="rtl">${about.trust1Desc_ar || ''}</textarea>
+            </div>
+          </div>
+
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label">Trust 2 Title (EN) / (AR)</label>
+              <input type="text" id="about-trust2-title" class="admin-form-input" value="${about.trust2Title}" style="margin-bottom:8px" />
+              <input type="text" id="about-trust2-title-ar" class="admin-form-input" value="${about.trust2Title_ar || ''}" dir="rtl" />
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Trust 2 Text (EN) / (AR)</label>
+              <textarea id="about-trust2-text" class="admin-form-textarea" rows="1" style="margin-bottom:8px">${about.trust2Desc}</textarea>
+              <textarea id="about-trust2-text-ar" class="admin-form-textarea" rows="1" dir="rtl">${about.trust2Desc_ar || ''}</textarea>
+            </div>
+          </div>
+
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label">Trust 3 Title (EN) / (AR)</label>
+              <input type="text" id="about-trust3-title" class="admin-form-input" value="${about.trust3Title}" style="margin-bottom:8px" />
+              <input type="text" id="about-trust3-title-ar" class="admin-form-input" value="${about.trust3Title_ar || ''}" dir="rtl" />
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Trust 3 Text (EN) / (AR)</label>
+              <textarea id="about-trust3-text" class="admin-form-textarea" rows="1" style="margin-bottom:8px">${about.trust3Desc}</textarea>
+              <textarea id="about-trust3-text-ar" class="admin-form-textarea" rows="1" dir="rtl">${about.trust3Desc_ar || ''}</textarea>
+            </div>
+          </div>
+
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label">Trust 4 Title (EN) / (AR)</label>
+              <input type="text" id="about-trust4-title" class="admin-form-input" value="${about.trust4Title}" style="margin-bottom:8px" />
+              <input type="text" id="about-trust4-title-ar" class="admin-form-input" value="${about.trust4Title_ar || ''}" dir="rtl" />
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Trust 4 Text (EN) / (AR)</label>
+              <textarea id="about-trust4-text" class="admin-form-textarea" rows="1" style="margin-bottom:8px">${about.trust4Desc}</textarea>
+              <textarea id="about-trust4-text-ar" class="admin-form-textarea" rows="1" dir="rtl">${about.trust4Desc_ar || ''}</textarea>
+            </div>
+          </div>
+          
         </div>
       </div>
     `;
@@ -1348,7 +1445,31 @@ const AdminApp = {
       closingCardTitle: document.getElementById("about-closing-title")?.value,
       closingCardTitle_ar: document.getElementById("about-closing-title-ar")?.value,
       closingCardText: document.getElementById("about-closing-desc")?.value,
-      closingCardText_ar: document.getElementById("about-closing-desc-ar")?.value
+      closingCardText_ar: document.getElementById("about-closing-desc-ar")?.value,
+      missionTitle: document.getElementById("about-mission-title")?.value,
+      missionTitle_ar: document.getElementById("about-mission-title-ar")?.value,
+      missionDesc: document.getElementById("about-mission-text")?.value,
+      missionDesc_ar: document.getElementById("about-mission-text-ar")?.value,
+      visionTitle: document.getElementById("about-vision-title")?.value,
+      visionTitle_ar: document.getElementById("about-vision-title-ar")?.value,
+      visionDesc: document.getElementById("about-vision-text")?.value,
+      visionDesc_ar: document.getElementById("about-vision-text-ar")?.value,
+      trust1Title: document.getElementById("about-trust1-title")?.value,
+      trust1Title_ar: document.getElementById("about-trust1-title-ar")?.value,
+      trust1Desc: document.getElementById("about-trust1-text")?.value,
+      trust1Desc_ar: document.getElementById("about-trust1-text-ar")?.value,
+      trust2Title: document.getElementById("about-trust2-title")?.value,
+      trust2Title_ar: document.getElementById("about-trust2-title-ar")?.value,
+      trust2Desc: document.getElementById("about-trust2-text")?.value,
+      trust2Desc_ar: document.getElementById("about-trust2-text-ar")?.value,
+      trust3Title: document.getElementById("about-trust3-title")?.value,
+      trust3Title_ar: document.getElementById("about-trust3-title-ar")?.value,
+      trust3Desc: document.getElementById("about-trust3-text")?.value,
+      trust3Desc_ar: document.getElementById("about-trust3-text-ar")?.value,
+      trust4Title: document.getElementById("about-trust4-title")?.value,
+      trust4Title_ar: document.getElementById("about-trust4-title-ar")?.value,
+      trust4Desc: document.getElementById("about-trust4-text")?.value,
+      trust4Desc_ar: document.getElementById("about-trust4-text-ar")?.value
     };
     App.showToast("Saving About content...", "info");
     const res = await MoeStore.updateAboutContent(updated);
