@@ -1189,17 +1189,6 @@ const AdminApp = {
               <input type="text" id="home-title-ar" class="admin-form-input" value="${home.heroTitle_ar || ''}" dir="rtl" />
             </div>
           </div>
-
-          <div class="admin-form-row">
-            <div class="admin-form-group">
-              <label class="admin-form-label">Hero Subtitle (EN)</label>
-              <input type="text" id="home-sub" class="admin-form-input" value="${home.heroSubtitle}" />
-            </div>
-            <div class="admin-form-group">
-              <label class="admin-form-label">Hero Subtitle (AR)</label>
-              <input type="text" id="home-sub-ar" class="admin-form-input" value="${home.heroSubtitle_ar || ''}" dir="rtl" />
-            </div>
-          </div>
           
           <div class="admin-form-row">
             <div class="admin-form-group">
@@ -1295,8 +1284,6 @@ const AdminApp = {
       heroBadge_ar: document.getElementById("home-badge-ar")?.value,
       heroTitle: document.getElementById("home-title")?.value,
       heroTitle_ar: document.getElementById("home-title-ar")?.value,
-      heroSubtitle: document.getElementById("home-sub")?.value,
-      heroSubtitle_ar: document.getElementById("home-sub-ar")?.value,
       heroDescription: document.getElementById("home-desc")?.value,
       heroDescription_ar: document.getElementById("home-desc-ar")?.value,
       heroCtaText: document.getElementById("home-cta")?.value,
