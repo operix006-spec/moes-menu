@@ -1102,7 +1102,8 @@ const AdminApp = {
   // 5. HOME PAGE CMS TAB
   // ==========================================================================
   renderHomeCmsTab() {
-    const home = MoeStore.getHomeContent();
+    const rawHome = MoeStore.getHomeContent() || {};
+    const home = new Proxy(rawHome, { get: (t, p) => t[p] === null || t[p] === undefined ? '' : t[p] });
 
     return `
       <div class="admin-panel-card">
@@ -1244,7 +1245,8 @@ const AdminApp = {
   // 6. ABOUT US CMS TAB
   // ==========================================================================
   renderAboutCmsTab() {
-    const about = MoeStore.getAboutContent();
+    const rawAbout = MoeStore.getAboutContent() || {};
+    const about = new Proxy(rawAbout, { get: (t, p) => t[p] === null || t[p] === undefined ? '' : t[p] });
 
     return `
       <div class="admin-panel-card">
