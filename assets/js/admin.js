@@ -1182,6 +1182,21 @@ const AdminApp = {
           </div>
 
           <hr style="border: none; border-top: 1px solid #E2E8E2; margin: 10px 0;" />
+          <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--c-forest); margin-bottom: 8px;">Menu Discovery Section</h3>
+
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label">Discovery Title (EN)</label>
+              <input type="text" id="home-craving-title" class="admin-form-input" value="${home.cravingTitle}" />
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Discovery Title (AR)</label>
+              <input type="text" id="home-craving-title-ar" class="admin-form-input" value="${home.cravingTitle_ar || ''}" dir="rtl" />
+            </div>
+          </div>
+
+          <hr style="border: none; border-top: 1px solid #E2E8E2; margin: 10px 0;" />
+          <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--c-forest); margin-bottom: 8px;">Brand Promise Section</h3>
 
           <div class="admin-form-row">
             <div class="admin-form-group">
@@ -1234,6 +1249,8 @@ const AdminApp = {
       heroCtaText_ar: document.getElementById("home-cta-ar")?.value,
       heroCtaSecondary: document.getElementById("home-sec-cta")?.value,
       heroCtaSecondary_ar: document.getElementById("home-sec-cta-ar")?.value,
+      cravingTitle: document.getElementById("home-craving-title")?.value,
+      cravingTitle_ar: document.getElementById("home-craving-title-ar")?.value,
       promiseSubtitle: document.getElementById("home-promise-sub")?.value,
       promiseSubtitle_ar: document.getElementById("home-promise-sub-ar")?.value,
       promiseTitle: document.getElementById("home-promise-title")?.value,

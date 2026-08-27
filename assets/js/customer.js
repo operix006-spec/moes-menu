@@ -319,7 +319,7 @@ const CustomerApp = {
 
         <!-- Food Discovery Section -->
         <section class="home-discovery-section">
-          <h2 class="discovery-title">${i18n("what_craving")}</h2>
+          <h2 class="discovery-title">${CustomerApp.T(homeContent, 'cravingTitle') || i18n("what_craving")}</h2>
           
           <div class="home-category-row">
             ${categories.map(c => `
