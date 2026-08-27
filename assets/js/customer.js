@@ -360,7 +360,7 @@ const CustomerApp = {
         <!-- About Snippet Card -->
         <section class="home-about-snippet-card">
           <div class="snippet-logo-wrapper">
-            <img src="assets/images/logo_transparent.png" alt="Moe's PureBite Logo" class="snippet-logo" loading="lazy" />
+            <img src="${CustomerApp.T(homeContent, 'snippetLogo') || 'assets/images/logo_transparent.png'}" alt="Moe's PureBite Logo" class="snippet-logo" loading="lazy" />
           </div>
           <div class="home-about-content">
             <span style="font-size: 0.8rem; font-weight: 800; color: var(--c-orange); letter-spacing: 0.1em; text-transform: uppercase;">${CustomerApp.T(homeContent, 'promiseSubtitle') || i18n("who_we_are")}</span>

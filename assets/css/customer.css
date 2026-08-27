@@ -889,7 +889,9 @@
 
 .snippet-logo {
   width: 110px;
-  height: auto;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
   margin: 0 auto 16px;
   display: block;
   filter: drop-shadow(0 4px 8px rgba(0,0,0,0.06));

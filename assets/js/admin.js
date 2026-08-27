@@ -1253,6 +1253,22 @@ const AdminApp = {
 
           <hr style="border: none; border-top: 1px solid #E2E8E2; margin: 10px 0;" />
           <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--c-forest); margin-bottom: 8px;">Brand Promise Section</h3>
+          
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label">Brand Promise Logo Image</label>
+              <div style="display: flex; gap: 8px;">
+                <input type="text" id="home-img-snippet" class="admin-form-input" value="${home.snippetLogo || ''}" style="flex: 1;" placeholder="assets/images/logo_transparent.png" />
+                <label class="btn btn-outline" style="cursor: pointer; padding: 8px 12px;">
+                  Upload
+                  <input type="file" accept="image/*" style="display: none;" onchange="AdminApp.handleImageUpload(event, 'home-img-snippet')">
+                </label>
+              </div>
+            </div>
+            <div class="admin-form-group">
+              <!-- Empty spacer -->
+            </div>
+          </div>
 
           <div class="admin-form-row">
             <div class="admin-form-group">
@@ -1308,6 +1324,7 @@ const AdminApp = {
       heroCtaSecondary_ar: document.getElementById("home-sec-cta-ar")?.value,
       cravingTitle: document.getElementById("home-craving-title")?.value,
       cravingTitle_ar: document.getElementById("home-craving-title-ar")?.value,
+      snippetLogo: document.getElementById("home-img-snippet")?.value,
       promiseSubtitle: document.getElementById("home-promise-sub")?.value,
       promiseSubtitle_ar: document.getElementById("home-promise-sub-ar")?.value,
       promiseTitle: document.getElementById("home-promise-title")?.value,
