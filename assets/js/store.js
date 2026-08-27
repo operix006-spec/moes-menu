@@ -296,6 +296,11 @@ class PureBiteStore {
   async updateHomeContent(newContent) {
     const oldHome = { ...this.state.homeContent };
     this.state.homeContent = { ...this.state.homeContent, ...newContent };
+    
+    // Clean up any old keys that shouldn't be sent to Supabase
+    delete this.state.homeContent.heroSecondaryCta;
+    delete this.state.homeContent.heroSecondaryCta_ar;
+    
     this.saveDatabase();
     
     if (window.supabaseClient) {

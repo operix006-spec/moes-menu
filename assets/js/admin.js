@@ -1173,11 +1173,11 @@ const AdminApp = {
           <div class="admin-form-row">
             <div class="admin-form-group">
               <label class="admin-form-label">Secondary CTA Text (EN)</label>
-              <input type="text" id="home-sec-cta" class="admin-form-input" value="${home.heroSecondaryCta}" />
+              <input type="text" id="home-sec-cta" class="admin-form-input" value="${home.heroCtaSecondary}" />
             </div>
             <div class="admin-form-group">
               <label class="admin-form-label">Secondary CTA Text (AR)</label>
-              <input type="text" id="home-sec-cta-ar" class="admin-form-input" value="${home.heroSecondaryCta_ar || ''}" dir="rtl" />
+              <input type="text" id="home-sec-cta-ar" class="admin-form-input" value="${home.heroCtaSecondary_ar || ''}" dir="rtl" />
             </div>
           </div>
 
