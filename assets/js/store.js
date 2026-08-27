@@ -140,7 +140,13 @@ class PureBiteStore {
     if (categoryId && categoryId !== "all") {
       prods = prods.filter(p => p.category === categoryId);
     }
-    return prods;
+    
+    // Assign index as default order if missing
+    prods.forEach((p, i) => {
+      if (typeof p.order !== 'number') p.order = i;
+    });
+    
+    return prods.sort((a, b) => a.order - b.order);
   }
   getProductById(id) {
     return this.state.products.find(p => p.id === id) || null;

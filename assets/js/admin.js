@@ -402,6 +402,8 @@ const AdminApp = {
                   </td>
                   <td>
                     <div class="action-btns-group">
+                      <button class="btn-action-icon" onclick="AdminApp.moveProduct('${p.id}', -1)" title="Move Up">⬆️</button>
+                      <button class="btn-action-icon" onclick="AdminApp.moveProduct('${p.id}', 1)" title="Move Down">⬇️</button>
                       <button class="btn-action-icon" onclick="AdminApp.openProductBuilder('${p.id}')" title="Edit Product">✏️</button>
                       <button class="btn-action-icon delete" onclick="AdminApp.deleteProductPrompt('${p.id}')" title="Delete Product">🗑️</button>
                     </div>
@@ -449,6 +451,35 @@ const AdminApp = {
         AdminApp.renderMenuTab();
       }
     );
+  },
+
+  moveProduct(productId, dir) {
+    const catVal = document.getElementById("admin-category-filter")?.value || "all";
+    const products = MoeStore.getProducts(catVal);
+    
+    const idx = products.findIndex(p => p.id === productId);
+    if (idx === -1 || (dir === -1 && idx === 0) || (dir === 1 && idx === products.length - 1)) return;
+    
+    const prodA = products[idx];
+    const prodB = products[idx + dir];
+    
+    const tempOrder = prodA.order;
+    prodA.order = prodB.order;
+    prodB.order = tempOrder;
+    
+    MoeStore.saveProduct(prodA);
+    MoeStore.saveProduct(prodB);
+    
+    this.renderMenuTab();
+    
+    // Restore the filter state after re-render
+    setTimeout(() => {
+      const filter = document.getElementById("admin-category-filter");
+      if (filter) {
+        filter.value = catVal;
+        this.filterMenuTable();
+      }
+    }, 10);
   },
 
   // ==========================================================================
