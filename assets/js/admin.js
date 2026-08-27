@@ -770,7 +770,7 @@ const AdminApp = {
     reader.readAsDataURL(file);
   },
 
-  saveProductFromBuilder() {
+  async saveProductFromBuilder() {
     const name = document.getElementById("builder-name")?.value.trim();
     if (!name) {
       App.showToast("Product name is required!", "warning");
