@@ -2111,73 +2111,22 @@
   background-color: var(--c-cream);
 }
 
-/* 1. Hero Showcase (Hyper-Realistic 3D Light Wall Mockup) */
+/* 1. Hero Full Bleed Banner */
 .about-hero-clean {
   width: 100%;
   height: 320px;
-  background: radial-gradient(ellipse at top, #ffffff 0%, var(--c-cream) 60%, #e2d9c8 100%);
   border-bottom-left-radius: var(--radius-xl);
   border-bottom-right-radius: var(--radius-xl);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   overflow: hidden;
-  box-shadow: 0 15px 35px rgba(6, 59, 41, 0.15), inset 0 -4px 20px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 15px 35px rgba(6, 59, 41, 0.15);
   position: relative;
-  perspective: 1000px;
-  /* Essential for 3D wall effect */
-}
-
-.about-hero-clean::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: repeating-linear-gradient(45deg, rgba(6, 59, 41, 0.02) 0px, rgba(6, 59, 41, 0.02) 1px, transparent 1px, transparent 4px);
-  opacity: 0.6;
-  pointer-events: none;
-}
-
-/* Gallery Spotlight hitting the light wall */
-.about-hero-clean::before {
-  content: '';
-  position: absolute;
-  top: -80px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle at top, rgba(255, 255, 255, 0.9), transparent 70%);
-  pointer-events: none;
 }
 
 .about-animated-logo {
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  background-color: #ffffff;
-  /* 3D mounting effect */
-  transform: translateZ(20px) rotateX(4deg);
-  filter:
-    drop-shadow(0 8px 12px rgba(6, 59, 41, 0.25)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
-  position: relative;
-  z-index: 2;
-  animation: logo-breathing-light 4s ease-in-out infinite alternate;
-}
-
-@keyframes logo-breathing-light {
-  0% {
-    transform: translateZ(20px) rotateX(2deg);
-    filter: drop-shadow(0 6px 10px rgba(6, 59, 41, 0.2)) drop-shadow(0 2px 3px rgba(0, 0, 0, 0.1));
-  }
-
-  100% {
-    transform: translateZ(30px) rotateX(6deg);
-    filter: drop-shadow(0 15px 20px rgba(6, 59, 41, 0.15)) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.08));
-  }
+  display: block;
 }
 
 /* 2. Intro Section (Who We Are) */
