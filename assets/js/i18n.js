@@ -120,7 +120,8 @@ const Translations = {
     "no_contamination": "No Contamination",
     "fresh_ingredients": "Fresh Ingredients",
     
-    "footer_rights": "All rights reserved. 100% Dedicated Gluten-Free."
+    "footer_rights": "All rights reserved. 100% Dedicated Gluten-Free.",
+    "powered_by": "Powered by"
   },
   
   ar: {
@@ -224,6 +225,7 @@ const Translations = {
     "fresh_ingredients": "مكونات طازجة",
     
     "footer_rights": "جميع الحقوق محفوظة. مطبخ خالٍ من الغلوتين 100%.",
+    "powered_by": "مشغل بواسطة",
 
     "also_available": "متوفرون أيضاً على",
     "delivery_app_text": "اطلب وجباتك الخالية من الغلوتين مباشرة عبر تطبيق أشيائي.",

@@ -16,12 +16,12 @@ const CustomerApp = {
   T(obj, field) {
     if (!obj) return "";
     const lang = (typeof MoeStore !== 'undefined' && MoeStore.getLang) ? MoeStore.getLang() : "en";
-    
+
     if (lang === "ar") {
       if (obj[`${field}_ar`]) {
         return obj[`${field}_ar`];
       }
-      
+
       const fallback = {
         "Sandwich Only": "ساندويش فقط",
         "Full Meal (+ Fries & Kinza)": "وجبة كاملة (+ بطاطا وكنزا)",
@@ -61,12 +61,12 @@ const CustomerApp = {
         "Red Onion": "بصل أحمر",
         "Special Dressing": "صوص خاص"
       };
-      
+
       if (fallback[obj[field]]) {
         return fallback[obj[field]];
       }
     }
-    
+
     return obj[field] || "";
   },
 
@@ -127,7 +127,7 @@ const CustomerApp = {
     const lang = MoeStore.getLang();
     document.documentElement.lang = lang;
     document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
-    
+
     const btn = document.getElementById("btn-lang-switcher");
     if (btn) {
       btn.textContent = lang === "en" ? "عربي" : "EN";
@@ -568,7 +568,7 @@ const CustomerApp = {
     if (!product) return;
 
     this.currentModalProduct = product;
-    
+
     // Initialize default modal options state
     const defaultOptions = {};
     (product.optionGroups || []).forEach(g => {
@@ -691,8 +691,8 @@ const CustomerApp = {
             </h3>
             <div class="ingredients-grid">
               ${p.ingredients.map(ing => {
-                const isRemoved = this.currentModalState.removedIngredients.includes(ing.id);
-                return `
+      const isRemoved = this.currentModalState.removedIngredients.includes(ing.id);
+      return `
                   <div class="ingredient-item-card ${isRemoved ? "removed" : ""}" onclick="CustomerApp.toggleIngredientRemoval('${ing.id}', ${ing.removable})">
                     <div class="ingredient-item-left">
                       <img src="${ing.icon}" alt="${ing.name}" class="ingredient-icon-img" />
@@ -707,7 +707,7 @@ const CustomerApp = {
                     `}
                   </div>
                 `;
-              }).join("")}
+    }).join("")}
             </div>
           </div>
         ` : ""}
@@ -721,15 +721,15 @@ const CustomerApp = {
             </div>
             <div class="options-pill-list">
               ${group.options.map(opt => {
-                const isSelected = this.currentModalState.selectedOptions[group.id] === opt.id;
-                const priceDelta = opt.price ? `+${opt.price.toFixed(2)} ${settings.currency}` : "";
-                return `
+      const isSelected = this.currentModalState.selectedOptions[group.id] === opt.id;
+      const priceDelta = opt.price ? `+${opt.price.toFixed(2)} ${settings.currency}` : "";
+      return `
                   <label class="option-radio-label ${isSelected ? "selected" : ""}" onclick="CustomerApp.selectOptionGroup('${group.id}', '${opt.id}')">
                     <span>${CustomerApp.T(opt, "name")}</span>
                     <span>${priceDelta}</span>
                   </label>
                 `;
-              }).join("")}
+    }).join("")}
             </div>
           </div>
         `).join("")}
@@ -743,8 +743,8 @@ const CustomerApp = {
             </h3>
             <div class="modifiers-grid">
               ${p.modifiers.map(m => {
-                const isChecked = this.currentModalState.addedModifiers.includes(m.id);
-                return `
+      const isChecked = this.currentModalState.addedModifiers.includes(m.id);
+      return `
                   <div class="modifier-check-card ${isChecked ? "checked" : ""}" onclick="CustomerApp.toggleModifier('${m.id}')">
                     <div>
                       <div class="modifier-name">${CustomerApp.T(m, "name")}</div>
@@ -753,7 +753,7 @@ const CustomerApp = {
                     <span style="font-weight: 800; font-size: 1rem; color: var(--c-orange);">${isChecked ? "✓" : "+"}</span>
                   </div>
                 `;
-              }).join("")}
+    }).join("")}
             </div>
           </div>
         ` : ""}
@@ -1012,14 +1012,14 @@ const CustomerApp = {
     const isAr = lang === "ar";
 
     // Build the formatted order text
-    let message = isAr 
+    let message = isAr
       ? `مرحباً ${settings.restaurantName} 👋\n\nأود طلب الآتي:\n\n`
       : `Hello ${settings.restaurantName} 👋\n\nI would like to order:\n\n`;
 
     cart.forEach((item) => {
       const itemName = CustomerApp.T(item, "name");
       message += `${item.quantity} × ${itemName}\n`;
-      
+
       (item.selectedOptions || []).forEach(opt => {
         message += `  - ${CustomerApp.T(opt, "optionName")}\n`;
       });
@@ -1033,7 +1033,7 @@ const CustomerApp = {
       // Added extras
       (item.addedModifiers || []).forEach(mod => {
         const extraName = CustomerApp.T(mod, "name");
-        message += isAr 
+        message += isAr
           ? `  - إضافة: ${extraName} (+${mod.price.toFixed(2)} ${i18n("currency")})\n`
           : `  - Extra: ${extraName} (+${mod.price.toFixed(2)} ${i18n("currency")})\n`;
       });
@@ -1042,13 +1042,13 @@ const CustomerApp = {
         message += isAr ? `  - [تم تأكيد تواصي 24 ساعة]\n` : `  - [24-Hour Pre-Order Confirmed]\n`;
       }
 
-      message += isAr 
+      message += isAr
         ? `  السعر: ${(item.unitPrice * item.quantity).toFixed(2)} ${i18n("currency")}\n\n`
         : `  Price: ${(item.unitPrice * item.quantity).toFixed(2)} ${i18n("currency")}\n\n`;
     });
 
     message += `------------------------------\n`;
-    message += isAr 
+    message += isAr
       ? `المجموع: ${total.toFixed(2)} ${i18n("currency")}\n`
       : `Total: ${total.toFixed(2)} ${i18n("currency")}\n`;
 
@@ -1078,7 +1078,7 @@ const CustomerApp = {
     const settings = MoeStore.getSettings();
     const rawNumber = settings.whatsappNumber.replace(/[^0-9]/g, "");
     const lang = MoeStore.getLang();
-    const msgText = lang === "ar" 
+    const msgText = lang === "ar"
       ? `مرحباً ${settings.restaurantName}! أتصفح موقعكم ولدي استفسار.`
       : `Hello ${settings.restaurantName}! I'm visiting your website and have a question.`;
     const msg = encodeURIComponent(msgText);
@@ -1239,6 +1239,10 @@ const CustomerApp = {
       </section>
       <footer class="about-minimal-footer">
         <p><span dir="ltr">© ${new Date().getFullYear()} ${settings.restaurantName}</span> - ${i18n("footer_rights")}</p>
+        <div style="margin-top: 12px; font-size: 0.85rem; color: var(--c-text-muted); display: flex; align-items: center; justify-content: center; gap: 6px;">
+          <span>${i18n("powered_by")}</span>
+          <a href="https://www.operixsys.online/" target="_blank" class="btn-operix" rel="noopener noreferrer">Operix</a>
+        </div>
       </footer>
     `;
   }
