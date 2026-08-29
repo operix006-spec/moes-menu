@@ -812,21 +812,21 @@
 
 .btn-operix {
   display: inline-block;
-  background-color: rgba(6, 59, 41, 0.05);
-  color: var(--c-forest);
-  padding: 4px 10px;
+  background-color: var(--c-forest);
+  color: #ffffff;
+  padding: 4px 12px;
   border-radius: var(--radius-md);
   font-weight: 800;
   text-decoration: none;
   transition: all 0.2s ease;
-  border: 1px solid rgba(6, 59, 41, 0.1);
+  box-shadow: 0 0 12px rgba(6, 59, 41, 0.4);
 }
 
 .btn-operix:hover {
-  background-color: var(--c-forest);
-  color: var(--c-cream);
+  background-color: #042017;
+  color: #ffffff;
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(6, 59, 41, 0.2);
+  box-shadow: 0 4px 16px rgba(6, 59, 41, 0.6);
 }
 
 .home-category-pill:hover {

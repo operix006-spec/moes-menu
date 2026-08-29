@@ -1208,6 +1208,10 @@ const CustomerApp = {
         <!-- 8. Minimal Footer -->
         <footer class="about-minimal-footer">
           <p><span dir="ltr">© ${new Date().getFullYear()} ${settings.restaurantName}</span> - ${i18n("footer_rights")}</p>
+          <div style="margin-top: 12px; font-size: 0.85rem; color: var(--c-text-muted); display: flex; align-items: center; justify-content: center; gap: 6px;">
+            <span>${i18n("powered_by")}</span>
+            <a href="https://www.operixsys.online/" target="_blank" class="btn-operix" rel="noopener noreferrer">Operix</a>
+          </div>
         </footer>
 
       </div>
