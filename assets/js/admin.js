@@ -693,7 +693,45 @@ const AdminApp = {
     this.currentBuilderProduct = null;
   },
 
+  syncProductBuilderState() {
+    if (!this.currentBuilderProduct) return;
+    
+    const name = document.getElementById("builder-name")?.value;
+    if (name !== undefined) this.currentBuilderProduct.name = name;
+    
+    const nameAr = document.getElementById("builder-name-ar")?.value;
+    if (nameAr !== undefined) this.currentBuilderProduct.name_ar = nameAr;
+    
+    const price = document.getElementById("builder-price")?.value;
+    if (price !== undefined) this.currentBuilderProduct.basePrice = parseFloat(price) || 0;
+    
+    const cat = document.getElementById("builder-category")?.value;
+    if (cat !== undefined) this.currentBuilderProduct.category = cat;
+    
+    const img = document.getElementById("builder-image")?.value;
+    if (img !== undefined) this.currentBuilderProduct.image = img || "assets/images/zinger_burger.png";
+    
+    const desc = document.getElementById("builder-desc")?.value;
+    if (desc !== undefined) this.currentBuilderProduct.description = desc;
+    
+    const descAr = document.getElementById("builder-desc-ar")?.value;
+    if (descAr !== undefined) this.currentBuilderProduct.description_ar = descAr;
+    
+    const available = document.getElementById("builder-available")?.checked;
+    if (available !== undefined) this.currentBuilderProduct.available = available;
+    
+    const bestSeller = document.getElementById("builder-bestseller")?.checked;
+    if (bestSeller !== undefined) this.currentBuilderProduct.isBestSeller = bestSeller;
+    
+    const featured = document.getElementById("builder-featured")?.checked;
+    if (featured !== undefined) this.currentBuilderProduct.isFeatured = featured;
+    
+    const preOrder = document.getElementById("builder-preorder")?.checked;
+    if (preOrder !== undefined) this.currentBuilderProduct.isPreOrder24h = preOrder;
+  },
+
   addIngredientRow() {
+    this.syncProductBuilderState();
     this.currentBuilderProduct.ingredients.push({
       id: "ing-" + Date.now().toString(36),
       name: "New Ingredient",
@@ -711,11 +749,13 @@ const AdminApp = {
   },
 
   removeIngredientRow(idx) {
+    this.syncProductBuilderState();
     this.currentBuilderProduct.ingredients.splice(idx, 1);
     this.renderProductBuilderModal();
   },
 
   addOptionGroup() {
+    this.syncProductBuilderState();
     this.currentBuilderProduct.optionGroups.push({
       id: "grp-" + Date.now().toString(36),
       name: "New Option Group",
@@ -736,11 +776,13 @@ const AdminApp = {
   },
 
   removeOptionGroup(gIdx) {
+    this.syncProductBuilderState();
     this.currentBuilderProduct.optionGroups.splice(gIdx, 1);
     this.renderProductBuilderModal();
   },
 
   addOptionChoice(gIdx) {
+    this.syncProductBuilderState();
     this.currentBuilderProduct.optionGroups[gIdx].options.push({
       id: "opt-" + Date.now().toString(36),
       name: "New Choice",
@@ -756,11 +798,13 @@ const AdminApp = {
   },
 
   removeOptionChoice(gIdx, optIdx) {
+    this.syncProductBuilderState();
     this.currentBuilderProduct.optionGroups[gIdx].options.splice(optIdx, 1);
     this.renderProductBuilderModal();
   },
 
   addModifierRow() {
+    this.syncProductBuilderState();
     this.currentBuilderProduct.modifiers.push({
       id: "mod-" + Date.now().toString(36),
       name: "Extra Sauce",
@@ -777,6 +821,7 @@ const AdminApp = {
   },
 
   removeModifierRow(mIdx) {
+    this.syncProductBuilderState();
     this.currentBuilderProduct.modifiers.splice(mIdx, 1);
     this.renderProductBuilderModal();
   },
@@ -833,40 +878,20 @@ const AdminApp = {
   },
 
   async saveProductFromBuilder() {
-    const name = document.getElementById("builder-name")?.value.trim();
+    this.syncProductBuilderState();
+    
+    // We already synced everything, but we can do validation checks using the synced data
+    const name = this.currentBuilderProduct.name;
     if (!name) {
       App.showToast("Product name is required!", "warning");
       return;
     }
 
-    const nameAr = document.getElementById("builder-name-ar")?.value.trim();
-    const price = parseFloat(document.getElementById("builder-price")?.value) || 0;
-    
+    const price = this.currentBuilderProduct.basePrice;
     if (price < 0) {
       App.showToast("Product price cannot be negative.", "danger");
       return;
     }
-
-    const cat = document.getElementById("builder-category")?.value;
-    const img = document.getElementById("builder-image")?.value.trim();
-    const desc = document.getElementById("builder-desc")?.value.trim();
-    const descAr = document.getElementById("builder-desc-ar")?.value.trim();
-    const available = document.getElementById("builder-available")?.checked;
-    const bestSeller = document.getElementById("builder-bestseller")?.checked;
-    const featured = document.getElementById("builder-featured")?.checked;
-    const preOrder = document.getElementById("builder-preorder")?.checked;
-
-    this.currentBuilderProduct.name = name;
-    this.currentBuilderProduct.name_ar = nameAr;
-    this.currentBuilderProduct.basePrice = price;
-    this.currentBuilderProduct.category = cat;
-    this.currentBuilderProduct.image = img || "assets/images/zinger_burger.png";
-    this.currentBuilderProduct.description = desc;
-    this.currentBuilderProduct.description_ar = descAr;
-    this.currentBuilderProduct.available = available;
-    this.currentBuilderProduct.isBestSeller = bestSeller;
-    this.currentBuilderProduct.isFeatured = featured;
-    this.currentBuilderProduct.isPreOrder24h = preOrder;
 
     const res = await MoeStore.saveProduct(this.currentBuilderProduct);
     this.closeProductBuilder();
