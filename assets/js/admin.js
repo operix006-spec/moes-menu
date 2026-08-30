@@ -506,7 +506,6 @@ const AdminApp = {
         isBestSeller: false,
         isFeatured: false,
         isPreOrder24h: false,
-        tags: ["100% Gluten-Free"],
         ingredients: [
           { id: "gf-base", name: "Gluten-Free Base", desc: "GF bread/wrap", icon: "assets/images/ing_bun.png", removable: false }
         ],
