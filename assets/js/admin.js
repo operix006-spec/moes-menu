@@ -502,7 +502,6 @@ const AdminApp = {
         basePrice: 3.50,
         description: "",
         image: "assets/images/zinger_burger.png",
-        heroImage: "",
         available: true,
         isBestSeller: false,
         isFeatured: false,
