@@ -662,7 +662,7 @@ const CustomerApp = {
 
       <div class="modal-scroll-body" style="padding-top: 0; padding-inline: 0; gap: 0;">
         <!-- Edge-to-Edge Hero Image -->
-        <div class="modal-product-hero-img-wrap" style="height: 300px; border-radius: 0;">
+        <div class="modal-product-hero-img-wrap" style="height: 300px; border-radius: 0; flex-shrink: 0;">
           <img src="${p.image}" alt="${CustomerApp.T(p, "name")}" class="modal-product-hero-img" />
         </div>
 
