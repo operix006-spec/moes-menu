@@ -58,6 +58,10 @@ const Translations = {
     "cart_total": "Total",
     "your_order": "Your Order",
     "items": "items",
+    
+    // Product Tags
+    "preorder_req": "Pre-order",
+    "preorder_warn": "⚠️ Pre-order required: Must be ordered 24 hours in advance.",
     "preorder_warn_cart": "⚠️ Notice: Your order contains main dishes that require 24-hour advance pre-order.",
     "cart_notes_label": "Special Instructions / Delivery Notes (Optional):",
     "cart_notes_ph": "Any special requests? (e.g., allergies, extra napkins)",
@@ -162,6 +166,10 @@ const Translations = {
     "cart_total": "المجموع",
     "your_order": "طلبك",
     "items": "عناصر",
+    
+    // Product Tags
+    "preorder_req": "طلب مسبق",
+    "preorder_warn": "⚠️ طلب مسبق: يجب طلب هذا الصنف قبل 24 ساعة على الأقل.",
     "preorder_warn_cart": "⚠️ ملاحظة: طلبك يحتوي على أطباق رئيسية تتطلب الطلب المسبق قبل 24 ساعة.",
     "cart_notes_label": "تعليمات خاصة / ملاحظات التوصيل (اختياري):",
     "cart_notes_ph": "أي طلبات خاصة؟ (مثال: حساسية، مناديل إضافية)",

@@ -500,7 +500,6 @@ const CustomerApp = {
             <p class="product-card-desc">${CustomerApp.T(p, "description")}</p>
             <div class="product-card-badges">
               ${(p.tags || []).map(tag => `<span class="badge badge-gf">${tag}</span>`).join("")}
-              ${p.isPreOrder24h ? `<span class="badge badge-preorder">${i18n("preorder_req")}</span>` : ""}
             </div>
             ${p.isPreOrder24h ? `
               <div class="preorder-warning-banner">
@@ -676,11 +675,10 @@ const CustomerApp = {
           </div>
           <div class="product-card-badges">
             ${(p.tags || []).map(t => `<span class="badge badge-gf">${t}</span>`).join("")}
-            ${p.isPreOrder24h ? `<span class="badge badge-preorder">${i18n("preorder_req")}</span>` : ""}
           </div>
           <p class="modal-product-desc">${CustomerApp.T(p, "description")}</p>
           ${p.isPreOrder24h ? `
-            <div class="preorder-warning-banner" style="font-size: 0.85rem; padding: 10px 14px;">
+            <div class="preorder-warning-banner modal-preorder-banner">
               <span>${i18n("preorder_warn")}</span>
             </div>
           ` : ""}

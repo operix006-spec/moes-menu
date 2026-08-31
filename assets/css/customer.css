@@ -1396,17 +1396,18 @@
 
 /* Pre-order banner on card */
 .preorder-warning-banner {
-  background-color: #FFF8E1;
-  border: 1px solid #FFE082;
-  color: #B78103;
-  padding: 8px 12px;
+  background-color: rgba(233, 154, 22, 0.15); /* Light orange tint */
+  border: 1px solid var(--c-orange);
+  color: #B47100; /* Darker orange text for contrast */
+  padding: 10px 12px;
   border-radius: var(--radius-md);
-  font-size: 0.76rem;
-  font-weight: 700;
+  font-size: 0.82rem;
+  font-weight: 800;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 6px;
-  margin-top: 4px;
+  margin-top: 8px;
+  line-height: 1.4;
 }
 
 /* ==========================================================================
