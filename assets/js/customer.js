@@ -1149,11 +1149,6 @@ const CustomerApp = {
           </div>
         </section>
 
-        <!-- 4. Our Purpose Header -->
-        <div class="about-purpose-header">
-          <h2>${i18n("about_purpose")}</h2>
-          <div class="purpose-accent"></div>
-        </div>
 
         <!-- 5. Mission & Vision -->
         <section class="about-mission-vision">
