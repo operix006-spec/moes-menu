@@ -651,38 +651,38 @@ const CustomerApp = {
     const savedScroll = scrollBody ? scrollBody.scrollTop : 0;
 
     container.innerHTML = `
-      <div class="modal-header-bar">
-        <button class="btn-modal-close" onclick="CustomerApp.closeProductModal()" aria-label="Close product details">
+      <div style="position: absolute; top: 16px; left: 16px; right: 16px; display: flex; justify-content: space-between; z-index: 100; pointer-events: none;">
+        <button class="btn-modal-close" onclick="CustomerApp.closeProductModal()" aria-label="Close product details" style="pointer-events: auto; box-shadow: 0 2px 10px rgba(0,0,0,0.2);">
           ✕
         </button>
-        <span class="header-page-title" style="font-size: 1rem;">Moe's PureBite</span>
-        <button onclick="CustomerApp.directWhatsAppContact()" class="btn-modal-close" title="Chat on WhatsApp" style="color: #25D366;">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12C2 13.85 2.5 15.58 3.38 17.07L2 22L7.07 20.65C8.54 21.5 10.22 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z"/></svg>
+        <button onclick="CustomerApp.directWhatsAppContact()" class="btn-modal-close" title="Chat on WhatsApp" style="pointer-events: auto; color: #25D366; box-shadow: 0 2px 10px rgba(0,0,0,0.2);">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12C2 13.85 2.5 15.58 3.38 17.07L2 22L7.07 20.65C8.54 21.5 10.22 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z"/></svg>
         </button>
       </div>
 
-      <div class="modal-scroll-body">
-        <!-- Hero Product Image -->
-        <div class="modal-product-hero-img-wrap">
-          <img src="${p.heroImage || p.image}" alt="${CustomerApp.T(p, "name")}" class="modal-product-hero-img" />
+      <div class="modal-scroll-body" style="padding-top: 0; padding-inline: 0; gap: 0;">
+        <!-- Edge-to-Edge Hero Image -->
+        <div class="modal-product-hero-img-wrap" style="height: 300px; border-radius: 0;">
+          <img src="${p.image}" alt="${CustomerApp.T(p, "name")}" class="modal-product-hero-img" />
         </div>
 
-        <!-- Product Head -->
-        <div class="modal-product-info-head">
-          <div class="modal-product-title-row">
-            <h2 class="modal-product-title">${CustomerApp.T(p, "name")}</h2>
-            <div class="modal-product-live-price" id="modal-live-unit-price">${pricing.unitPrice.toFixed(2)} ${settings.currency}</div>
-          </div>
-          <div class="product-card-badges">
-            ${(p.tags || []).map(t => `<span class="badge badge-gf">${t}</span>`).join("")}
-          </div>
-          <p class="modal-product-desc">${CustomerApp.T(p, "description")}</p>
-          ${p.isPreOrder24h ? `
-            <div class="preorder-warning-banner modal-preorder-banner">
-              <span>${i18n("preorder_warn")}</span>
+        <div style="padding: 24px 18px; display: flex; flex-direction: column; gap: 20px;">
+          <!-- Product Head -->
+          <div class="modal-product-info-head">
+            <div class="modal-product-title-row">
+              <h2 class="modal-product-title">${CustomerApp.T(p, "name")}</h2>
+              <div class="modal-product-live-price" id="modal-live-unit-price">${pricing.unitPrice.toFixed(2)} ${settings.currency}</div>
             </div>
-          ` : ""}
-        </div>
+            <div class="product-card-badges">
+              ${(p.tags || []).map(t => `<span class="badge badge-gf">${t}</span>`).join("")}
+            </div>
+            <p class="modal-product-desc">${CustomerApp.T(p, "description")}</p>
+            ${p.isPreOrder24h ? `
+              <div class="preorder-warning-banner modal-preorder-banner">
+                <span>${i18n("preorder_warn")}</span>
+              </div>
+            ` : ""}
+          </div>
 
         <!-- Ingredients Section (Removable Customization) -->
         ${(p.ingredients && p.ingredients.length > 0) ? `
@@ -769,6 +769,7 @@ const CustomerApp = {
             <button class="btn-stepper" onclick="CustomerApp.updateModalQuantity(1)" aria-label="Increase quantity">+</button>
           </div>
         </div>
+        </div> <!-- Close content wrapper -->
       </div>
 
       <!-- Modal Bottom Actions Bar -->
