@@ -58,10 +58,6 @@ const AdminApp = {
                 <span>Categories</span>
               </button>
 
-              <button class="admin-nav-btn ${this.activeTab === "orders" ? "active" : ""}" onclick="AdminApp.setTab('orders')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-                <span>Order Handoffs</span>
-              </button>
 
               <button class="admin-nav-btn ${this.activeTab === "home-cms" ? "active" : ""}" onclick="AdminApp.setTab('home-cms')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -1694,8 +1690,6 @@ const AdminApp = {
           <h3 style="font-size: 1rem; font-weight: 800; color: var(--c-forest);">Database Tools & Backups</h3>
           <div style="display: flex; gap: 12px; flex-wrap: wrap;">
             <button class="btn btn-outline btn-pill-sm" onclick="AdminApp.exportData()">Export Database Backup (JSON)</button>
-            <button class="btn btn-outline btn-pill-sm" onclick="AdminApp.importDataPrompt()">Import Database Backup</button>
-            <button class="btn btn-outline btn-pill-sm" style="color: var(--c-danger); border-color: var(--c-danger);" onclick="AdminApp.resetDefaultsPrompt()">Reset Database to Defaults</button>
           </div>
         </div>
       </div>
