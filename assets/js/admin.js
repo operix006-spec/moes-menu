@@ -233,22 +233,6 @@ const AdminApp = {
             <div class="admin-stat-lbl">Menu Categories</div>
           </div>
         </div>
-
-        <div class="admin-stat-card">
-          <div class="admin-stat-icon orange">💬</div>
-          <div class="admin-stat-info">
-            <div class="admin-stat-val">${handoffs.length}</div>
-            <div class="admin-stat-lbl">WhatsApp Orders</div>
-          </div>
-        </div>
-
-        <div class="admin-stat-card">
-          <div class="admin-stat-icon">💰</div>
-          <div class="admin-stat-info">
-            <div class="admin-stat-val">${estRevenue.toFixed(2)} ${settings.currency}</div>
-            <div class="admin-stat-lbl">Order Value Tracked</div>
-          </div>
-        </div>
       </div>
 
       <!-- Quick Actions & Status -->
