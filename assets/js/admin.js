@@ -1278,7 +1278,57 @@ const AdminApp = {
             </div>
           </div>
 
+          <hr style="border: none; border-top: 1px solid #E2E8E2; margin: 10px 0;" />
+          <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--c-forest); margin-bottom: 8px;">Brand Promise Section</h3>
+          
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label">Brand Promise Logo Image</label>
+              <div style="display: flex; gap: 8px;">
+                <input type="text" id="home-img-snippet" class="admin-form-input" value="${home.snippetLogo || ''}" style="flex: 1;" placeholder="assets/images/logo_transparent.png" />
+                <label class="btn btn-outline" style="cursor: pointer; padding: 8px 12px;">
+                  Upload
+                  <input type="file" accept="image/*" style="display: none;" onchange="AdminApp.handleImageUpload(event, 'home-img-snippet')">
+                </label>
+              </div>
+            </div>
+            <div class="admin-form-group">
+              <!-- Empty spacer -->
+            </div>
+          </div>
 
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label">Brand Promise Eyebrow (EN)</label>
+              <input type="text" id="home-promise-sub" class="admin-form-input" value="${home.promiseSubtitle}" />
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Brand Promise Eyebrow (AR)</label>
+              <input type="text" id="home-promise-sub-ar" class="admin-form-input" value="${home.promiseSubtitle_ar || ''}" dir="rtl" />
+            </div>
+          </div>
+
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label">Brand Promise Title (EN)</label>
+              <input type="text" id="home-promise-title" class="admin-form-input" value="${home.promiseTitle}" />
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Brand Promise Title (AR)</label>
+              <input type="text" id="home-promise-title-ar" class="admin-form-input" value="${home.promiseTitle_ar || ''}" dir="rtl" />
+            </div>
+          </div>
+
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label">Brand Promise Text (EN)</label>
+              <textarea id="home-promise-text" class="admin-form-textarea" rows="3">${home.promiseText}</textarea>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Brand Promise Text (AR)</label>
+              <textarea id="home-promise-text-ar" class="admin-form-textarea" rows="3" dir="rtl">${home.promiseText_ar || ''}</textarea>
+            </div>
+          </div>
         </div>
       </div>
     `;
@@ -1298,7 +1348,14 @@ const AdminApp = {
       heroCtaSecondary: document.getElementById("home-sec-cta")?.value,
       heroCtaSecondary_ar: document.getElementById("home-sec-cta-ar")?.value,
       cravingTitle: document.getElementById("home-craving-title")?.value,
-      cravingTitle_ar: document.getElementById("home-craving-title-ar")?.value
+      cravingTitle_ar: document.getElementById("home-craving-title-ar")?.value,
+      snippetLogo: document.getElementById("home-img-snippet")?.value,
+      promiseSubtitle: document.getElementById("home-promise-sub")?.value,
+      promiseSubtitle_ar: document.getElementById("home-promise-sub-ar")?.value,
+      promiseTitle: document.getElementById("home-promise-title")?.value,
+      promiseTitle_ar: document.getElementById("home-promise-title-ar")?.value,
+      promiseText: document.getElementById("home-promise-text")?.value,
+      promiseText_ar: document.getElementById("home-promise-text-ar")?.value
     };
     App.showToast("Saving Home content...", "info");
     const res = await MoeStore.updateHomeContent(updated);
