@@ -1380,27 +1380,7 @@ const AdminApp = {
             </div>
           </div>
 
-          <div class="admin-form-row">
-            <div class="admin-form-group">
-              <label class="admin-form-label">Closing Card Title (EN)</label>
-              <input type="text" id="about-closing-title" class="admin-form-input" value="${about.closingCardTitle}" />
-            </div>
-            <div class="admin-form-group">
-              <label class="admin-form-label">Closing Card Title (AR)</label>
-              <input type="text" id="about-closing-title-ar" class="admin-form-input" value="${about.closingCardTitle_ar || ''}" dir="rtl" />
-            </div>
-          </div>
-          
-          <div class="admin-form-row">
-            <div class="admin-form-group">
-              <label class="admin-form-label">Closing Card Subtitle (EN)</label>
-              <input type="text" id="about-closing-desc" class="admin-form-input" value="${about.closingCardText}" />
-            </div>
-            <div class="admin-form-group">
-              <label class="admin-form-label">Closing Card Subtitle (AR)</label>
-              <input type="text" id="about-closing-desc-ar" class="admin-form-input" value="${about.closingCardText_ar || ''}" dir="rtl" />
-            </div>
-          </div>
+
           <div class="admin-form-row">
             <div class="admin-form-group">
               <label class="admin-form-label">Mission Title (EN)</label>
@@ -1514,10 +1494,7 @@ const AdminApp = {
       storyTitle_ar: document.getElementById("about-story-title-ar")?.value,
       storyText: document.getElementById("about-story-text")?.value,
       storyText_ar: document.getElementById("about-story-text-ar")?.value,
-      closingCardTitle: document.getElementById("about-closing-title")?.value,
-      closingCardTitle_ar: document.getElementById("about-closing-title-ar")?.value,
-      closingCardText: document.getElementById("about-closing-desc")?.value,
-      closingCardText_ar: document.getElementById("about-closing-desc-ar")?.value,
+
       missionTitle: document.getElementById("about-mission-title")?.value,
       missionTitle_ar: document.getElementById("about-mission-title-ar")?.value,
       missionDesc: document.getElementById("about-mission-text")?.value,

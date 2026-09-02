@@ -1162,13 +1162,6 @@ const CustomerApp = {
           </div>
         </section>
 
-        <!-- 6. Closing Brand Section -->
-        <section class="about-closing-refined">
-          <div class="closing-content">
-            <h2>${CustomerApp.T(aboutContent, 'closingCardTitle') || i18n("about_closing_title")}</h2>
-            <p>${CustomerApp.T(aboutContent, 'closingCardText') || i18n("about_closing_desc")}</p>
-          </div>
-        </section>
 
         <!-- 7. Contact / Social -->
         <section class="about-contact-clean">
