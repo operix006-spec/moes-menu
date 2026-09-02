@@ -288,20 +288,20 @@ const CustomerApp = {
         <div class="trust-strip-compact">
           <div class="trust-strip-track">
             <div class="trust-strip-inner">
-              <span class="trust-strip-item"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(45 12 12)"><path d="M12 21V2" /><path d="M12 7 C 10.5 7, 11 2, 12 2 C 13 2, 13.5 7, 12 7" fill="currentColor"/><path d="M12 10 C 9 10, 9 5, 9 5 C 9 5, 12 5, 12 10" fill="currentColor"/><path d="M12 10 C 15 10, 15 5, 15 5 C 15 5, 12 5, 12 10" fill="currentColor"/><path d="M12 14 C 8.5 14, 8.5 9, 8.5 9 C 8.5 9, 12 9, 12 14" fill="currentColor"/><path d="M12 14 C 15.5 14, 15.5 9, 15.5 9 C 15.5 9, 12 9, 12 14" fill="currentColor"/><path d="M12 18 C 8 18, 8 13, 8 13 C 8 13, 12 13, 12 18" fill="currentColor"/><path d="M12 18 C 16 18, 16 13, 16 13 C 16 13, 12 13, 12 18" fill="currentColor"/></g><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg> ${i18n("100_gf")}</span>
+              <span class="trust-strip-item"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(45 12 12)"><path d="M12 21V5" /><path d="M12 5 C 9 5, 9 1, 12 1 C 15 1, 15 5, 12 5" /><path d="M12 16 C 7 16, 7 10, 12 10" /><path d="M12 16 C 17 16, 17 10, 12 10" /><path d="M12 11 C 7 11, 7 5, 12 5" /><path d="M12 11 C 17 11, 17 5, 12 5" /></g><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg> ${i18n("100_gf")}</span>
               <span class="trust-strip-dot">•</span>
               <span class="trust-strip-item"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg> ${i18n("safe_celiac")}</span>
               <span class="trust-strip-dot">•</span>
-              <span class="trust-strip-item"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg> ${i18n("no_contamination")}</span>
+              <span class="trust-strip-item"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg> ${i18n("no_contamination")}</span>
               <span class="trust-strip-dot">•</span>
               <span class="trust-strip-item"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.6.4-4.3-.2-.5-.5-.4-1.5.1-2.4s1.1-1.3 1.9-1.1z"/><path d="M12 4.3c1.5-.7 3-.8 4.2-.3 1 1.2 1 2.8-.2 4-1.5 1.2-3 1.1-4.2.3-.9-1.1-1-2.7.2-4z"/></svg> ${i18n("fresh_ingredients")}</span>
             </div>
             <div class="trust-strip-inner" aria-hidden="true">
-              <span class="trust-strip-item"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(45 12 12)"><path d="M12 21V2" /><path d="M12 7 C 10.5 7, 11 2, 12 2 C 13 2, 13.5 7, 12 7" fill="currentColor"/><path d="M12 10 C 9 10, 9 5, 9 5 C 9 5, 12 5, 12 10" fill="currentColor"/><path d="M12 10 C 15 10, 15 5, 15 5 C 15 5, 12 5, 12 10" fill="currentColor"/><path d="M12 14 C 8.5 14, 8.5 9, 8.5 9 C 8.5 9, 12 9, 12 14" fill="currentColor"/><path d="M12 14 C 15.5 14, 15.5 9, 15.5 9 C 15.5 9, 12 9, 12 14" fill="currentColor"/><path d="M12 18 C 8 18, 8 13, 8 13 C 8 13, 12 13, 12 18" fill="currentColor"/><path d="M12 18 C 16 18, 16 13, 16 13 C 16 13, 12 13, 12 18" fill="currentColor"/></g><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg> ${i18n("100_gf")}</span>
+              <span class="trust-strip-item"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(45 12 12)"><path d="M12 21V5" /><path d="M12 5 C 9 5, 9 1, 12 1 C 15 1, 15 5, 12 5" /><path d="M12 16 C 7 16, 7 10, 12 10" /><path d="M12 16 C 17 16, 17 10, 12 10" /><path d="M12 11 C 7 11, 7 5, 12 5" /><path d="M12 11 C 17 11, 17 5, 12 5" /></g><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg> ${i18n("100_gf")}</span>
               <span class="trust-strip-dot">•</span>
               <span class="trust-strip-item"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg> ${i18n("safe_celiac")}</span>
               <span class="trust-strip-dot">•</span>
-              <span class="trust-strip-item"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg> ${i18n("no_contamination")}</span>
+              <span class="trust-strip-item"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg> ${i18n("no_contamination")}</span>
               <span class="trust-strip-dot">•</span>
               <span class="trust-strip-item"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.6.4-4.3-.2-.5-.5-.4-1.5.1-2.4s1.1-1.3 1.9-1.1z"/><path d="M12 4.3c1.5-.7 3-.8 4.2-.3 1 1.2 1 2.8-.2 4-1.5 1.2-3 1.1-4.2.3-.9-1.1-1-2.7.2-4z"/></svg> ${i18n("fresh_ingredients")}</span>
             </div>
@@ -424,7 +424,7 @@ const CustomerApp = {
         <div class="menu-trust-strip">
           <div class="menu-trust-item">
             <div class="menu-trust-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(45 12 12)"><path d="M12 21V2" /><path d="M12 7 C 10.5 7, 11 2, 12 2 C 13 2, 13.5 7, 12 7" fill="currentColor"/><path d="M12 10 C 9 10, 9 5, 9 5 C 9 5, 12 5, 12 10" fill="currentColor"/><path d="M12 10 C 15 10, 15 5, 15 5 C 15 5, 12 5, 12 10" fill="currentColor"/><path d="M12 14 C 8.5 14, 8.5 9, 8.5 9 C 8.5 9, 12 9, 12 14" fill="currentColor"/><path d="M12 14 C 15.5 14, 15.5 9, 15.5 9 C 15.5 9, 12 9, 12 14" fill="currentColor"/><path d="M12 18 C 8 18, 8 13, 8 13 C 8 13, 12 13, 12 18" fill="currentColor"/><path d="M12 18 C 16 18, 16 13, 16 13 C 16 13, 12 13, 12 18" fill="currentColor"/></g><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(45 12 12)"><path d="M12 21V5" /><path d="M12 5 C 9 5, 9 1, 12 1 C 15 1, 15 5, 12 5" /><path d="M12 16 C 7 16, 7 10, 12 10" /><path d="M12 16 C 17 16, 17 10, 12 10" /><path d="M12 11 C 7 11, 7 5, 12 5" /><path d="M12 11 C 17 11, 17 5, 12 5" /></g><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
             </div>
             <span class="menu-trust-text">${i18n("100_gf")}</span>
           </div>
@@ -436,7 +436,7 @@ const CustomerApp = {
           </div>
           <div class="menu-trust-item">
             <div class="menu-trust-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
             </div>
             <span class="menu-trust-text">${i18n("no_contamination")}</span>
           </div>
@@ -1118,7 +1118,7 @@ const CustomerApp = {
           <div class="trust-grid-2x2">
             
             <div class="trust-compact-card">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(45 12 12)"><path d="M12 21V2" /><path d="M12 7 C 10.5 7, 11 2, 12 2 C 13 2, 13.5 7, 12 7" fill="currentColor"/><path d="M12 10 C 9 10, 9 5, 9 5 C 9 5, 12 5, 12 10" fill="currentColor"/><path d="M12 10 C 15 10, 15 5, 15 5 C 15 5, 12 5, 12 10" fill="currentColor"/><path d="M12 14 C 8.5 14, 8.5 9, 8.5 9 C 8.5 9, 12 9, 12 14" fill="currentColor"/><path d="M12 14 C 15.5 14, 15.5 9, 15.5 9 C 15.5 9, 12 9, 12 14" fill="currentColor"/><path d="M12 18 C 8 18, 8 13, 8 13 C 8 13, 12 13, 12 18" fill="currentColor"/><path d="M12 18 C 16 18, 16 13, 16 13 C 16 13, 12 13, 12 18" fill="currentColor"/></g><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(45 12 12)"><path d="M12 21V5" /><path d="M12 5 C 9 5, 9 1, 12 1 C 15 1, 15 5, 12 5" /><path d="M12 16 C 7 16, 7 10, 12 10" /><path d="M12 16 C 17 16, 17 10, 12 10" /><path d="M12 11 C 7 11, 7 5, 12 5" /><path d="M12 11 C 17 11, 17 5, 12 5" /></g><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
               <h4>${CustomerApp.T(aboutContent, 'trust1Title') || i18n("about_trust_1_title")}</h4>
               <p>${CustomerApp.T(aboutContent, 'trust1Desc') || i18n("about_trust_1_desc")}</p>
             </div>
@@ -1130,7 +1130,7 @@ const CustomerApp = {
             </div>
             
             <div class="trust-compact-card">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
               <h4>${CustomerApp.T(aboutContent, 'trust3Title') || i18n("about_trust_3_title")}</h4>
               <p>${CustomerApp.T(aboutContent, 'trust3Desc') || i18n("about_trust_3_desc")}</p>
             </div>
