@@ -1242,16 +1242,6 @@ const AdminApp = {
             </div>
           </div>
           
-          <div class="admin-form-row">
-            <div class="admin-form-group">
-              <label class="admin-form-label">Hero Description (EN)</label>
-              <input type="text" id="home-desc" class="admin-form-input" value="${home.heroDescription}" />
-            </div>
-            <div class="admin-form-group">
-              <label class="admin-form-label">Hero Description (AR)</label>
-              <input type="text" id="home-desc-ar" class="admin-form-input" value="${home.heroDescription_ar || ''}" dir="rtl" />
-            </div>
-          </div>
 
           <div class="admin-form-row">
             <div class="admin-form-group">
@@ -1353,8 +1343,6 @@ const AdminApp = {
       heroBadge_ar: document.getElementById("home-badge-ar")?.value,
       heroTitle: document.getElementById("home-title")?.value,
       heroTitle_ar: document.getElementById("home-title-ar")?.value,
-      heroDescription: document.getElementById("home-desc")?.value,
-      heroDescription_ar: document.getElementById("home-desc-ar")?.value,
       heroCtaText: document.getElementById("home-cta")?.value,
       heroCtaText_ar: document.getElementById("home-cta-ar")?.value,
       heroCtaSecondary: document.getElementById("home-sec-cta")?.value,

@@ -262,9 +262,8 @@ const CustomerApp = {
             </div>
 
             <h1 class="hero-intro-text">${CustomerApp.T(homeContent, 'heroTitle') || i18n("hero_title")}</h1>
-            <p style="color: var(--c-text-on-dark); opacity: 0.9; font-size: 1.1rem; margin-bottom: 24px; text-shadow: 0 1px 3px rgba(0,0,0,0.4);">${CustomerApp.T(homeContent, 'heroDescription') || i18n("good_food_worry")}</p>
             
-            <div class="hero-actions">
+            <div class="hero-actions" style="margin-top: 12px;">
               <a href="#menu" class="btn btn-primary-compact">
                 ${CustomerApp.T(homeContent, 'heroCtaText') || i18n("explore_menu")}
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
