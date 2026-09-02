@@ -357,17 +357,6 @@ const CustomerApp = {
         </section>
 
         <!-- About Snippet Card -->
-        <section class="home-about-snippet-card">
-          <div class="snippet-logo-wrapper">
-            <img src="${CustomerApp.T(homeContent, 'snippetLogo') || 'assets/images/logo_transparent.png'}" alt="Moe's PureBite Logo" class="snippet-logo" loading="lazy" />
-          </div>
-          <div class="home-about-content">
-            <span style="font-size: 0.8rem; font-weight: 800; color: var(--c-orange); letter-spacing: 0.1em; text-transform: uppercase;">${CustomerApp.T(homeContent, 'promiseSubtitle') || i18n("who_we_are")}</span>
-            <h3 style="margin-top: 4px;">${CustomerApp.T(homeContent, 'promiseTitle') || i18n("who_we_are")}</h3>
-            <p>${CustomerApp.T(homeContent, 'promiseText') || i18n("home_about_text")}</p>
-            <a href="#about" class="btn-outline-compact">${i18n("read_our_story")}</a>
-          </div>
-        </section>
 
         <!-- Contact & Social Card -->
         <section class="home-contact-card">
