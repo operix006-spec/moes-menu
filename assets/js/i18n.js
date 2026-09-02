@@ -125,7 +125,9 @@ const Translations = {
     "fresh_ingredients": "Fresh Ingredients",
     
     "footer_rights": "All rights reserved. 100% Dedicated Gluten-Free.",
-    "powered_by": "Powered by"
+    "powered_by": "Powered by",
+    
+    "delivery_only_msg": "We are a delivery-only cloud kitchen, bringing fresh food straight to your door!"
   },
   
   ar: {
@@ -243,7 +245,9 @@ const Translations = {
     "call_us": "اتصل بنا",
     "whatsapp": "واتساب",
     "instagram": "إنستغرام",
-    "facebook": "فيسبوك"
+    "facebook": "فيسبوك",
+    
+    "delivery_only_msg": "نحن مطبخ سحابي لخدمة التوصيل فقط، نوصل الأكل الطازج لباب بيتك!"
   }
 };
 
