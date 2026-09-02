@@ -458,8 +458,7 @@ const CustomerApp = {
         </div>
         
         <!-- Delivery Only Banner -->
-        <div style="background-color: var(--c-forest); color: #fff; margin-top: 12px; border-radius: var(--radius-md); padding: 8px 12px; text-align: center; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(6, 59, 41, 0.15);">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <div style="background: linear-gradient(135deg, var(--c-forest) 0%, #17543d 50%, var(--c-forest) 100%); color: #fff; margin-top: 12px; border-radius: var(--radius-md); padding: 10px 12px; text-align: center; font-size: 0.95rem; font-weight: 800; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(6, 59, 41, 0.15); letter-spacing: 0.5px;">
           ${i18n("delivery_only_msg")}
         </div>
 
