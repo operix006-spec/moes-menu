@@ -292,7 +292,7 @@ const CustomerApp = {
               <span class="trust-strip-dot">•</span>
               <span class="trust-strip-item"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg> ${i18n("safe_celiac")}</span>
               <span class="trust-strip-dot">•</span>
-              <span class="trust-strip-item"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/><path d="M4 2v7c0 1.1.9 2 2 2h2a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/></svg> ${i18n("no_contamination")}</span>
+              <span class="trust-strip-item"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3v5c0 1.5 1.3 2.5 2.5 2.5s2.5-1 2.5-2.5V3"/><path d="M6.5 3v5"/><path d="M6.5 10.5V21"/><path d="M19 2.5v10.5h-4c0-4.5 1.4-8 4-10.5z"/><path d="M19 13v8"/><line x1="2" y1="2" x2="22" y2="22"/></svg> ${i18n("no_contamination")}</span>
               <span class="trust-strip-dot">•</span>
               <span class="trust-strip-item"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg> ${i18n("fresh_ingredients")}</span>
             </div>
@@ -301,7 +301,7 @@ const CustomerApp = {
               <span class="trust-strip-dot">•</span>
               <span class="trust-strip-item"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg> ${i18n("safe_celiac")}</span>
               <span class="trust-strip-dot">•</span>
-              <span class="trust-strip-item"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/><path d="M4 2v7c0 1.1.9 2 2 2h2a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/></svg> ${i18n("no_contamination")}</span>
+              <span class="trust-strip-item"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3v5c0 1.5 1.3 2.5 2.5 2.5s2.5-1 2.5-2.5V3"/><path d="M6.5 3v5"/><path d="M6.5 10.5V21"/><path d="M19 2.5v10.5h-4c0-4.5 1.4-8 4-10.5z"/><path d="M19 13v8"/><line x1="2" y1="2" x2="22" y2="22"/></svg> ${i18n("no_contamination")}</span>
               <span class="trust-strip-dot">•</span>
               <span class="trust-strip-item"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg> ${i18n("fresh_ingredients")}</span>
             </div>
@@ -436,7 +436,7 @@ const CustomerApp = {
           </div>
           <div class="menu-trust-item">
             <div class="menu-trust-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/><path d="M4 2v7c0 1.1.9 2 2 2h2a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3v5c0 1.5 1.3 2.5 2.5 2.5s2.5-1 2.5-2.5V3"/><path d="M6.5 3v5"/><path d="M6.5 10.5V21"/><path d="M19 2.5v10.5h-4c0-4.5 1.4-8 4-10.5z"/><path d="M19 13v8"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
             </div>
             <span class="menu-trust-text">${i18n("no_contamination")}</span>
           </div>
@@ -1130,7 +1130,7 @@ const CustomerApp = {
             </div>
             
             <div class="trust-compact-card">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/><path d="M4 2v7c0 1.1.9 2 2 2h2a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3v5c0 1.5 1.3 2.5 2.5 2.5s2.5-1 2.5-2.5V3"/><path d="M6.5 3v5"/><path d="M6.5 10.5V21"/><path d="M19 2.5v10.5h-4c0-4.5 1.4-8 4-10.5z"/><path d="M19 13v8"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
               <h4>${CustomerApp.T(aboutContent, 'trust3Title') || i18n("about_trust_3_title")}</h4>
               <p>${CustomerApp.T(aboutContent, 'trust3Desc') || i18n("about_trust_3_desc")}</p>
             </div>
