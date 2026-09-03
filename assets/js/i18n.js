@@ -127,7 +127,7 @@ const Translations = {
     "footer_rights": "All rights reserved. 100% Dedicated Gluten-Free.",
     "powered_by": "Powered by",
     
-    "delivery_only_msg": "Delivery-Only Cloud Kitchen."
+    "delivery_only_msg": "Gluten Free Kitchen (Delivery and Pickup Only)"
   },
   
   ar: {
@@ -247,7 +247,7 @@ const Translations = {
     "instagram": "إنستغرام",
     "facebook": "فيسبوك",
     
-    "delivery_only_msg": "مطبخ سحابي لخدمة التوصيل فقط."
+    "delivery_only_msg": "مطبخ خالٍ من الغلوتين (توصيل واستلام فقط)"
   }
 };
 
