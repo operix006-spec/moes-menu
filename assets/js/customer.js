@@ -456,7 +456,7 @@ const CustomerApp = {
         <!-- Categories Horizontal Scroll Bar -->
         <nav class="category-nav-bar" aria-label="Menu categories">
           ${categories.map(c => `
-            <button class="category-pill ${this.activeCategory === c.id ? "active" : ""}" onclick="CustomerApp.selectCategory('${c.id}')">
+            <button class="category-pill ${this.activeCategory === c.id ? "active" : ""}" data-category="${c.id}" onclick="CustomerApp.selectCategory('${c.id}', this)">
               <span class="cat-icon">${c.icon || "🍽️"}</span>
               <span>${CustomerApp.T(c, "name")}</span>
             </button>
@@ -472,10 +472,38 @@ const CustomerApp = {
         ${this.getFooterHtml()}
       </div>
     `;
+
+    setTimeout(() => {
+      const activePill = container.querySelector(".category-pill.active");
+      if (activePill) {
+        activePill.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+      }
+    }, 20);
   },
 
-  selectCategory(categoryId) {
+  selectCategory(categoryId, clickedBtn) {
     this.activeCategory = categoryId;
+
+    const navBar = document.querySelector(".category-nav-bar");
+    const productList = document.querySelector(".product-list");
+
+    // In-place update: prevents the category bar from resetting scroll position to 0
+    if (navBar && productList) {
+      navBar.querySelectorAll(".category-pill").forEach(btn => {
+        btn.classList.toggle("active", btn.getAttribute("data-category") === categoryId);
+      });
+
+      const targetBtn = clickedBtn || navBar.querySelector(`[data-category="${categoryId}"]`);
+      if (targetBtn) {
+        targetBtn.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+      }
+
+      const settings = MoeStore.getSettings();
+      const products = MoeStore.getProducts(this.activeCategory);
+      productList.innerHTML = products.map(p => this.renderProductCard(p, settings)).join("");
+      return;
+    }
+
     this.renderMenu();
   },
 
