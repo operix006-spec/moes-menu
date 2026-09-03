@@ -449,7 +449,7 @@ const CustomerApp = {
         </div>
         
         <!-- Delivery Only Banner -->
-        <div style="background: linear-gradient(135deg, var(--c-forest) 0%, #17543d 50%, var(--c-forest) 100%); color: #fff; margin-top: 12px; border-radius: var(--radius-md); padding: 10px 12px; text-align: center; font-size: 0.95rem; font-weight: 800; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(6, 59, 41, 0.15); letter-spacing: 0.5px;">
+        <div style="background: linear-gradient(135deg, var(--c-forest) 0%, #17543d 50%, var(--c-forest) 100%); color: #fff; margin-top: 12px; border-radius: var(--radius-md); padding: 9px 10px; text-align: center; font-size: clamp(0.72rem, 3.1vw, 0.8rem); font-weight: 700; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(6, 59, 41, 0.15); white-space: nowrap;">
           ${i18n("delivery_only_msg")}
         </div>
 
