@@ -478,7 +478,7 @@ const AdminApp = {
       this.currentBuilderProduct = {
         id: "",
         name: "",
-        category: categories[0]?.id || "burgers-sandwiches",
+        category: categories[0]?.id || "burgers",
         basePrice: 3.50,
         description: "",
         image: "assets/images/zinger_burger.png",
