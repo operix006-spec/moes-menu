@@ -719,16 +719,11 @@ const CustomerApp = {
       const isRemoved = this.currentModalState.removedIngredients.includes(ing.id);
       return `
                   <div class="ingredient-item-card ${isRemoved ? "removed" : ""}" onclick="CustomerApp.toggleIngredientRemoval('${ing.id}', ${ing.removable})">
-                    <div class="ingredient-item-left">
-                      <img src="${ing.icon}" alt="${ing.name}" class="ingredient-icon-img" />
-                      <div>
-                        <div class="ingredient-name">${CustomerApp.T(ing, "name")}</div>
-                      </div>
-                    </div>
+                    <div class="ingredient-name">${CustomerApp.T(ing, "name")}</div>
                     ${ing.removable ? `
                       <span class="btn-ingredient-toggle">${isRemoved ? i18n("removed") : i18n("remove_btn")}</span>
                     ` : `
-                      <span style="font-size: 0.65rem; color: #888;">${i18n("base")}</span>
+                      <span class="ingredient-badge-base">${i18n("base")}</span>
                     `}
                   </div>
                 `;

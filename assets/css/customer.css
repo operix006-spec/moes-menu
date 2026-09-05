@@ -1549,47 +1549,35 @@
   background-color: #FFFFFF;
   border: 1.5px solid var(--c-cream-border);
   border-radius: var(--radius-md);
-  padding: 8px 6px;
-  /* Reduced padding for mobile */
+  padding: 9px 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 4px;
+  gap: 8px;
   transition: all var(--t-fast);
   min-width: 0;
-  /* Prevent flex overflow */
+  cursor: pointer;
+  user-select: none;
 }
 
-.ingredient-item-left {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  min-width: 0;
-  /* Prevent flex overflow */
-  flex: 1;
-}
-
-.ingredient-icon-img {
-  width: 24px;
-  /* Reduced from 32px */
-  height: 24px;
-  object-fit: contain;
-  flex-shrink: 0;
+.ingredient-item-card:hover {
+  border-color: var(--c-sand);
 }
 
 .ingredient-name {
-  font-size: 0.72rem;
-  /* Reduced for better fit */
+  font-size: 0.82rem;
   font-weight: 700;
   color: var(--c-forest);
-  line-height: 1.1;
-  word-break: break-word;
+  line-height: 1.25;
+  flex: 1;
+  min-width: 0;
+  word-break: normal;
 }
 
 .ingredient-item-card.removed {
   background-color: var(--c-danger-light);
   border-color: rgba(200, 50, 32, 0.3);
-  opacity: 0.7;
+  opacity: 0.75;
 }
 
 .ingredient-item-card.removed .ingredient-name {
@@ -1598,15 +1586,24 @@
 }
 
 .btn-ingredient-toggle {
-  font-size: 0.65rem;
-  /* Reduced */
-  font-weight: 800;
-  padding: 4px 6px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 4px 9px;
   border-radius: var(--radius-full);
   background-color: var(--c-cream-soft);
   color: var(--c-text-muted);
   flex-shrink: 0;
-  /* Keep button from squishing */
+  transition: all var(--t-fast);
+}
+
+.ingredient-badge-base {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #888;
+  background-color: var(--c-cream-soft);
+  padding: 4px 8px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
 }
 
 .ingredient-item-card.removed .btn-ingredient-toggle {
