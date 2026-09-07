@@ -453,15 +453,13 @@ const CustomerApp = {
           ${i18n("delivery_only_msg")}
         </div>
 
-        <!-- Order Methods Boxes -->
-        <div style="display: flex; gap: 10px; margin-top: 12px; padding: 0 4px;">
-          <a href="#" onclick="CustomerApp.directWhatsAppContact()" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #fff; border: 1px solid #ddd; border-radius: var(--radius-md); padding: 10px; text-decoration: none; color: var(--c-text); box-shadow: 0 2px 6px rgba(0,0,0,0.05); transition: background 0.2s;">
-            <svg viewBox="0 0 24 24" width="24" height="24" fill="#25D366" style="margin-bottom: 6px;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-            <span style="font-size: 0.8rem; font-weight: 700; text-align: center;">${i18n("order_wa")}</span>
+        <!-- Compact Order Methods Bar -->
+        <div class="menu-order-methods-bar">
+          <a href="#" onclick="CustomerApp.directWhatsAppContact()" class="menu-order-pill">
+            <span>${i18n("menu_order_wa")}</span>
           </a>
-          <a href="#" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #fff; border: 1px solid #ddd; border-radius: var(--radius-md); padding: 10px; text-decoration: none; color: var(--c-text); box-shadow: 0 2px 6px rgba(0,0,0,0.05); transition: background 0.2s;">
-            <img src="assets/images/eshya_logo.png" alt="My Things" style="width: 24px; height: 24px; margin-bottom: 6px;" />
-            <span style="font-size: 0.8rem; font-weight: 700; text-align: center;">${i18n("order_my_things")}</span>
+          <a href="#" class="menu-order-pill">
+            <span>${i18n("menu_order_eshya")}</span>
           </a>
         </div>
 
@@ -1013,14 +1011,28 @@ const CustomerApp = {
             <span>${total.toFixed(2)} ${settings.currency}</span>
           </div>
 
+          <!-- WhatsApp Checkout Button (Pickup) -->
           <button class="btn-checkout-whatsapp" onclick="CustomerApp.processWhatsAppHandoff()">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm.01 1.67c4.55 0 8.25 3.7 8.25 8.24 0 2.2-.86 4.28-2.42 5.84-1.56 1.56-3.64 2.42-5.84 2.42-1.42 0-2.82-.37-4.06-1.08l-.29-.17-3.12.82.83-3.04-.19-.3a8.163 8.163 0 0 1-1.26-4.48c0-4.54 3.7-8.24 8.25-8.24zm4.52 11.66c-.25-.13-1.48-.73-1.71-.81-.23-.09-.4-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.02-1.25-.75-.67-1.26-1.5-1.4-1.76-.15-.25-.02-.39.11-.51.11-.11.25-.29.38-.44.13-.15.17-.25.25-.42.08-.17.04-.32-.02-.45s-.56-1.35-.77-1.85c-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.77 2.7 4.29 3.79.6.26 1.07.41 1.44.53.6.19 1.15.16 1.58.1.48-.07 1.48-.61 1.69-1.2.21-.58.21-1.08.15-1.2-.06-.11-.23-.18-.48-.3z"/></svg>
-            <span>${i18n("order_wa")}</span>
+            <div class="btn-wa-labels">
+              <span class="btn-wa-title">${i18n("cart_checkout_wa")}</span>
+              <span class="btn-wa-sub">${i18n("cart_pickup_only")}</span>
+            </div>
           </button>
-          <button class="btn-checkout-eshya" onclick="window.location.href='#'">
-            <img src="assets/images/eshya_logo.png" alt="My Things" style="width: 22px; height: 22px;" />
-            <span>${i18n("order_my_things")}</span>
-          </button>
+
+          <!-- Delivery via My Things Alternative Card -->
+          <div class="cart-delivery-card">
+            <div class="cart-delivery-card-header">
+              <span class="delivery-pill-tag">${CustomerApp.lang === 'ar' ? 'توصيل' : 'Delivery'}</span>
+              <span class="delivery-card-title">${i18n("cart_delivery_prompt")}</span>
+            </div>
+            <p class="cart-delivery-card-desc">${i18n("cart_delivery_sub")}</p>
+            <a href="#" class="btn-cart-delivery-link">
+              <img src="assets/images/eshya_logo.png" alt="My Things" />
+              <span>${i18n("cart_delivery_btn")}</span>
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5"><path d="${CustomerApp.lang === 'ar' ? 'M15 19l-7-7 7-7' : 'M9 5l7 7-7 7'}"/></svg>
+            </a>
+          </div>
         </div>
 
         ${this.getFooterHtml()}

@@ -58,6 +58,13 @@ const Translations = {
     "cart_total": "Total",
     "your_order": "Your Order",
     "items": "items",
+    "cart_checkout_wa": "Checkout via WhatsApp",
+    "cart_pickup_only": "Pickup from kitchen only",
+    "cart_delivery_prompt": "Need Home Delivery?",
+    "cart_delivery_sub": "Delivery is available directly via My Things app",
+    "cart_delivery_btn": "Order on My Things",
+    "menu_order_wa": "WhatsApp (Pickup Only)",
+    "menu_order_eshya": "My Things (Delivery)",
     
     // Product Tags
     "preorder_req": "Pre-order",
@@ -168,6 +175,13 @@ const Translations = {
     "cart_total": "المجموع",
     "your_order": "طلبك",
     "items": "عناصر",
+    "cart_checkout_wa": "إتمام الطلب عبر واتساب",
+    "cart_pickup_only": "استلام من المطعم فقط",
+    "cart_delivery_prompt": "ترغب بخدمة التوصيل؟",
+    "cart_delivery_sub": "خدمة التوصيل متوفرة مباشرة عبر تطبيق أشيائي",
+    "cart_delivery_btn": "الطلب عبر My Things",
+    "menu_order_wa": "واتساب (استلام فقط)",
+    "menu_order_eshya": "My Things (توصيل)",
     
     // Product Tags
     "preorder_req": "طلب مسبق",
