@@ -16,7 +16,7 @@ const Translations = {
     "hero_title": "Freshly prepared food made with care, with a strong focus on safe gluten-free preparation.",
     "explore_menu": "Explore Menu",
     "order_wa": "Order via WhatsApp (Pickup Only)",
-    "order_my_things": "Order via Ashya'i (Delivery)",
+    "order_my_things": "Order on My Things (Delivery)",
     "what_craving": "What Are You Craving?",
     "explore_full_menu": "Explore Full Menu",
     "featured_favorites": "Featured Favorites",
