@@ -598,7 +598,11 @@ const CustomerApp = {
     // Initialize default modal options state
     const defaultOptions = {};
     (product.optionGroups || []).forEach(g => {
-      const defOpt = g.options.find(o => o.default) || g.options[0];
+      let defOpt = g.options.find(o => o.default);
+      if (!defOpt && g.options && g.options.length > 0) {
+        // Fallback to the option with the lowest price to prevent unexpected price jumps
+        defOpt = g.options.reduce((prev, curr) => (prev.price || 0) < (curr.price || 0) ? prev : curr);
+      }
       if (defOpt) {
         defaultOptions[g.id] = defOpt.id;
       }
