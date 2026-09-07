@@ -501,6 +501,10 @@ const AdminApp = {
     const mount = document.getElementById("admin-product-builder-modal-mount");
     if (!mount) return;
 
+    // Preserve scroll position to prevent jumping to top when adding options/ingredients
+    const modalBody = mount.querySelector(".admin-modal-body");
+    const scrollPos = modalBody ? modalBody.scrollTop : 0;
+
     const p = this.currentBuilderProduct;
     const categories = MoeStore.getCategories().filter(c => c.id !== "all");
     const isNew = !p.id;
@@ -665,6 +669,12 @@ const AdminApp = {
         </div>
       </div>
     `;
+
+    // Restore scroll position
+    const newModalBody = mount.querySelector(".admin-modal-body");
+    if (newModalBody) {
+      newModalBody.scrollTop = scrollPos;
+    }
   },
 
   closeProductBuilder() {
