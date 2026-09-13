@@ -67,6 +67,9 @@ const Translations = {
     "menu_order_eshya": "My Things (Delivery)",
     
     // Product Tags
+    "unavailable": "Sold Out",
+    "currently_unavailable": "Currently Unavailable",
+    "unavailable_modal_msg": "Sorry, this item is currently unavailable to order.",
     "preorder_req": "Pre-order",
     "preorder_warn": "⚠️ Pre-order required: Must be ordered 24 hours in advance.",
     "preorder_warn_cart": "⚠️ Notice: Your order contains main dishes that require 24-hour advance pre-order.",
@@ -184,6 +187,9 @@ const Translations = {
     "menu_order_eshya": "My Things (توصيل)",
     
     // Product Tags
+    "unavailable": "غير متوفر",
+    "currently_unavailable": "غير متوفر حالياً",
+    "unavailable_modal_msg": "عذراً، هذا الصنف غير متوفر للطلب في الوقت الحالي.",
     "preorder_req": "طلب مسبق",
     "preorder_warn": "⚠️ طلب مسبق: يجب طلب هذا الصنف قبل 24 ساعة على الأقل.",
     "preorder_warn_cart": "⚠️ ملاحظة: طلبك يحتوي على أطباق رئيسية تتطلب الطلب المسبق قبل 24 ساعة.",

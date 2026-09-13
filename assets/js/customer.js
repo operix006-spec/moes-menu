@@ -563,8 +563,6 @@ const CustomerApp = {
   handleCardClick(productId, event) {
     // If click was on quick add button, handled by handleQuickAdd
     if (event.target.closest(".btn-card-add")) return;
-    const product = MoeStore.getProductById(productId);
-    if (!product || !product.available) return;
     this.openProductModal(productId);
   },
 
@@ -603,7 +601,7 @@ const CustomerApp = {
   // ==========================================================================
   openProductModal(productId) {
     const product = MoeStore.getProductById(productId);
-    if (!product || !product.available) return;
+    if (!product) return;
 
     this.currentModalProduct = product;
 
@@ -679,6 +677,7 @@ const CustomerApp = {
     const p = this.currentModalProduct;
     if (!p) return;
 
+    const isUnavailable = p.available === false;
     const settings = MoeStore.getSettings();
     const pricing = this.calculateCurrentModalPrice();
 
@@ -794,25 +793,39 @@ const CustomerApp = {
           </div>
         ` : ""}
 
-        <!-- Quantity Stepper Control -->
-        <div class="quantity-control-row">
-          <span style="font-weight: 800; color: var(--c-forest); font-size: 0.95rem;">${i18n("quantity")}</span>
-          <div class="quantity-stepper">
-            <button class="btn-stepper" onclick="CustomerApp.updateModalQuantity(-1)" aria-label="Decrease quantity">−</button>
-            <span class="stepper-val" id="modal-qty-val">${this.currentModalState.quantity}</span>
-            <button class="btn-stepper" onclick="CustomerApp.updateModalQuantity(1)" aria-label="Increase quantity">+</button>
+        ${!isUnavailable ? `
+          <!-- Quantity Stepper Control -->
+          <div class="quantity-control-row">
+            <span style="font-weight: 800; color: var(--c-forest); font-size: 0.95rem;">${i18n("quantity")}</span>
+            <div class="quantity-stepper">
+              <button class="btn-stepper" onclick="CustomerApp.updateModalQuantity(-1)" aria-label="Decrease quantity">−</button>
+              <span class="stepper-val" id="modal-qty-val">${this.currentModalState.quantity}</span>
+              <button class="btn-stepper" onclick="CustomerApp.updateModalQuantity(1)" aria-label="Increase quantity">+</button>
+            </div>
           </div>
-        </div>
+        ` : `
+          <div style="background: #FEF2F2; border: 1px solid #FECACA; color: #991B1B; padding: 12px 14px; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 14px;">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>${i18n("unavailable_modal_msg")}</span>
+          </div>
+        `}
         </div> <!-- Close content wrapper -->
       </div>
 
       <!-- Modal Bottom Actions Bar -->
       <div class="modal-bottom-bar">
-        <button class="btn-modal-add" onclick="CustomerApp.submitAddToCart()">
-          <span>${i18n("add_to_cart")}</span>
-          <span>•</span>
-          <span id="modal-btn-total-price">${pricing.totalPrice.toFixed(2)} ${settings.currency}</span>
-        </button>
+        ${isUnavailable ? `
+          <button class="btn-modal-unavailable" disabled>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+            <span>${i18n("currently_unavailable")}</span>
+          </button>
+        ` : `
+          <button class="btn-modal-add" onclick="CustomerApp.submitAddToCart()">
+            <span>${i18n("add_to_cart")}</span>
+            <span>•</span>
+            <span id="modal-btn-total-price">${pricing.totalPrice.toFixed(2)} ${settings.currency}</span>
+          </button>
+        `}
       </div>
     `;
 
@@ -863,7 +876,7 @@ const CustomerApp = {
 
   submitAddToCart() {
     const p = this.currentModalProduct;
-    if (!p) return;
+    if (!p || p.available === false) return;
 
     // Validate required options
     const requiredGroups = (p.optionGroups || []).filter(g => g.required);

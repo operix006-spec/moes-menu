@@ -1785,6 +1785,25 @@
   background-color: var(--c-forest-light);
 }
 
+.btn-modal-unavailable {
+  flex: 1;
+  height: 52px;
+  border-radius: var(--radius-full);
+  background-color: #F1F5F9;
+  color: #64748B;
+  font-size: 0.98rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1.5px solid #CBD5E1;
+  box-shadow: none;
+  cursor: not-allowed;
+  user-select: none;
+}
+
+
 /* ==========================================================================
    Sticky Bottom Cart Bar (Appears when items in cart > 0)
    ========================================================================== */
