@@ -289,7 +289,7 @@ const AdminApp = {
                   <td><strong>${p.basePrice.toFixed(2)} ${settings.currency}</strong></td>
                   <td>
                     <label class="toggle-switch">
-                      <input type="checkbox" ${p.available ? "checked" : ""} onchange="AdminApp.toggleAvailability('${p.id}')">
+                      <input type="checkbox" ${p.available ? "checked" : ""} onchange="AdminApp.toggleAvailability('${p.id}', this)">
                       <span class="toggle-slider"></span>
                     </label>
                   </td>
@@ -376,7 +376,7 @@ const AdminApp = {
                   </td>
                   <td>
                     <label class="toggle-switch">
-                      <input type="checkbox" ${p.available ? "checked" : ""} onchange="AdminApp.toggleAvailability('${p.id}')">
+                      <input type="checkbox" ${p.available ? "checked" : ""} onchange="AdminApp.toggleAvailability('${p.id}', this)">
                       <span class="toggle-slider"></span>
                     </label>
                   </td>
@@ -413,9 +413,17 @@ const AdminApp = {
     });
   },
 
-  toggleAvailability(productId) {
-    const newVal = MoeStore.toggleProductAvailability(productId);
-    App.showToast(`Product availability updated to ${newVal ? "Available" : "Unavailable"}`);
+  async toggleAvailability(productId, checkboxEl) {
+    try {
+      const newVal = await MoeStore.toggleProductAvailability(productId);
+      App.showToast(`Product availability updated to ${newVal ? "Available" : "Unavailable"}`);
+    } catch (err) {
+      console.error("Failed to toggle availability:", err);
+      App.showToast("Failed to update availability in database", "error");
+      if (checkboxEl) {
+        checkboxEl.checked = !checkboxEl.checked;
+      }
+    }
   },
 
   deleteProductPrompt(productId) {
@@ -570,10 +578,6 @@ const AdminApp = {
             <!-- Badges & Flags -->
             <div style="display: flex; gap: 20px; flex-wrap: wrap;">
               <label class="admin-form-checkbox-row">
-                <input type="checkbox" id="builder-available" ${p.available ? "checked" : ""} />
-                <span>Available to Order</span>
-              </label>
-              <label class="admin-form-checkbox-row">
                 <input type="checkbox" id="builder-bestseller" ${p.isBestSeller ? "checked" : ""} />
                 <span>Mark as Best Seller</span>
               </label>
@@ -707,8 +711,9 @@ const AdminApp = {
     const descAr = document.getElementById("builder-desc-ar")?.value;
     if (descAr !== undefined) this.currentBuilderProduct.description_ar = descAr;
     
-    const available = document.getElementById("builder-available")?.checked;
-    if (available !== undefined) this.currentBuilderProduct.available = available;
+    if (this.currentBuilderProduct.available === undefined) {
+      this.currentBuilderProduct.available = true;
+    }
     
     const bestSeller = document.getElementById("builder-bestseller")?.checked;
     if (bestSeller !== undefined) this.currentBuilderProduct.isBestSeller = bestSeller;

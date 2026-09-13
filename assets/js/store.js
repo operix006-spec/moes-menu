@@ -207,12 +207,24 @@ class PureBiteStore {
     return { success: true };
   }
 
-  toggleProductAvailability(id) {
+  async toggleProductAvailability(id) {
     const p = this.getProductById(id);
     if (p) {
-      p.available = !p.available;
+      p.available = p.available === false ? true : false;
       this.saveDatabase();
-      // Assume sync happens asynchronously or via a separate save call
+      
+      if (window.supabaseClient) {
+        const { error } = await window.supabaseClient
+          .from('products')
+          .update({ available: p.available })
+          .eq('id', id);
+        if (error) {
+          console.error("Supabase toggle availability error:", error);
+          p.available = !p.available;
+          this.saveDatabase();
+          throw error;
+        }
+      }
       return p.available;
     }
     return false;

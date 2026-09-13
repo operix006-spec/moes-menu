@@ -563,6 +563,8 @@ const CustomerApp = {
   handleCardClick(productId, event) {
     // If click was on quick add button, handled by handleQuickAdd
     if (event.target.closest(".btn-card-add")) return;
+    const product = MoeStore.getProductById(productId);
+    if (!product || !product.available) return;
     this.openProductModal(productId);
   },
 
@@ -601,7 +603,7 @@ const CustomerApp = {
   // ==========================================================================
   openProductModal(productId) {
     const product = MoeStore.getProductById(productId);
-    if (!product) return;
+    if (!product || !product.available) return;
 
     this.currentModalProduct = product;
 
