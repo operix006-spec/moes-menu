@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#063B29" />
+  <meta name="description" content="Moe's PureBite — 100% Dedicated Gluten-Free Meal Plans & Subscriptions." />
+  
+  <title>الاشتراكات | Moe's PureBite</title>
+  <link rel="icon" type="image/png" href="assets/images/logo_circle.png" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,700&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Scoped CSS -->
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <link rel="stylesheet" href="assets/css/subscriptions.css" />
+</head>
+<body class="sub-body">
+  <!-- Ambient Dynamic Luxury Canvas (Hardware-Accelerated Floating Aurora & Warm Culinary Embers) -->
+  <div class="sub-ambient-canvas" aria-hidden="true">
+    <div class="ambient-orb ambient-orb-amber"></div>
+    <div class="ambient-orb ambient-orb-forest"></div>
+    <div class="ambient-orb ambient-orb-warm"></div>
+    <div class="ambient-mesh-texture"></div>
+    <div class="ambient-particle-drift p1"></div>
+    <div class="ambient-particle-drift p2"></div>
+    <div class="ambient-particle-drift p3"></div>
+    <div class="ambient-particle-drift p4"></div>
+  </div>
+
+
+  <!-- Top Navigation Bar (Matching Main Website Header) -->
+  <header class="site-header" role="banner">
+    <div class="header-left">
+      <button class="btn-hamburger" onclick="SubscriptionApp.toggleSidebar()" aria-label="Open navigation menu">
+        ☰
+      </button>
+    </div>
+
+    <div class="header-center" id="header-center-content">
+      <span class="header-page-title" data-i18n="nav_subscriptions">الاشتراكات</span>
+    </div>
+
+    <div class="header-right">
+      <button id="btn-lang-switcher" class="btn-lang-toggle" aria-label="Switch Language" onclick="SubscriptionApp.toggleLanguage()">EN</button>
+      <a href="index.html#cart" class="btn-cart-icon" aria-label="View Cart">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span class="cart-count-badge" style="display: none;">0</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Sliding Sidebar Drawer (Deep Forest Green) -->
+  <nav class="sidebar-drawer" id="sidebar-drawer" aria-label="Main sidebar navigation">
+    <div class="sidebar-top">
+      <div class="sidebar-brand-emblem">
+        <img src="assets/images/logo_new.jpg" alt="Moe's PureBite Emblem" />
+      </div>
+      <div class="sidebar-brand-name">Moe's <span>PureBite</span></div>
+      <div class="sidebar-brand-tagline" data-i18n="tagline">PURE FOOD. PURE LIFE.</div>
+
+      <!-- Sidebar Navigation Items -->
+      <div class="sidebar-nav">
+        <a href="index.html#home" class="sidebar-nav-item" onclick="SubscriptionApp.closeSidebar()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span data-i18n="nav_home">Home</span>
+        </a>
+        <a href="index.html#menu" class="sidebar-nav-item" onclick="SubscriptionApp.closeSidebar()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          <span data-i18n="nav_menu">Menu</span>
+        </a>
+        <a href="/subscriptions" class="sidebar-nav-item active" onclick="SubscriptionApp.closeSidebar()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span data-i18n="nav_subscriptions">Subscriptions</span>
+        </a>
+        <a href="index.html#about" class="sidebar-nav-item" onclick="SubscriptionApp.closeSidebar()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span data-i18n="nav_about">About Us</span>
+        </a>
+        <a href="index.html#cart" class="sidebar-nav-item" onclick="SubscriptionApp.closeSidebar()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          <span data-i18n="nav_cart">Cart</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="sidebar-bottom">
+      <button class="btn-sidebar-wa" onclick="SubscriptionApp.contactWhatsApp(event)">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm.01 1.67c4.55 0 8.25 3.7 8.25 8.24 0 2.2-.86 4.28-2.42 5.84-1.56 1.56-3.64 2.42-5.84 2.42-1.42 0-2.82-.37-4.06-1.08l-.29-.17-3.12.82.83-3.04-.19-.3a8.163 8.163 0 0 1-1.26-4.48c0-4.54 3.7-8.24 8.25-8.24zm4.52 11.66c-.25-.13-1.48-.73-1.71-.81-.23-.09-.4-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.02-1.25-.75-.67-1.26-1.5-1.4-1.76-.15-.25-.02-.39.11-.51.11-.11.25-.29.38-.44.13-.15.17-.25.25-.42.08-.17.04-.32-.02-.45s-.56-1.35-.77-1.85c-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.77 2.7 4.29 3.79.6.26 1.07.41 1.44.53.6.19 1.15.16 1.58.1.48-.07 1.48-.61 1.69-1.2.21-.58.21-1.08.15-1.2-.06-.11-.23-.18-.48-.3z"/></svg>
+        <span data-i18n="order_wa">Order via WhatsApp</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Sidebar Overlay -->
+  <div class="modal-overlay" id="sidebar-overlay" onclick="SubscriptionApp.closeSidebar()"></div>
+
+  <!-- Main Container (Upper Section) -->
+  <main class="sub-main sub-main-top">
+
+    <!-- CHAPTER 1: Hero / Introduction (Warm Gourmet Showcase) -->
+    <header class="sub-hero-editorial" aria-label="Subscription Introduction">
+      <div class="sub-hero-content">
+        <h1 class="sub-hero-title">
+          طعام نقي، <span class="sub-hero-title-highlight" data-i18n="hero_title_highlight">محضّر خصيصاً لك</span>
+        </h1>
+        <p class="sub-hero-subtitle" data-i18n="hero_subtitle">
+          جداول وجبات خالية من الغلوتين ١٠٠٪ ومحضّرة أسبوعياً في مطبخنا المخصص والآمن لمرضى السيلياك.
+        </p>
+        
+        <div class="sub-hero-trust-row">
+          <div class="sub-hero-trust-pill">
+            <span class="trust-icon-circle">✓</span>
+            <span data-i18n="hero_trust_celiac">آمن للسيلياك ١٠٠٪</span>
+          </div>
+          <div class="sub-hero-trust-pill">
+            <span class="trust-icon-circle">✓</span>
+            <span data-i18n="hero_trust_kitchen">مطبخ مخصص وآمن</span>
+          </div>
+          <div class="sub-hero-trust-pill">
+            <span class="trust-icon-circle">✓</span>
+            <span data-i18n="hero_trust_fresh">جداول متجددة أسبوعياً</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-hero-visual">
+        <div class="sub-hero-photo-frame">
+          <img src="assets/images/subscription_hero.jpg" alt="Moe's PureBite Authentic Meal" class="sub-hero-food-img" loading="eager" />
+        </div>
+      </div>
+    </header>
+
+    <!-- Integrated Delivery Area Chapter (Horizontal Editorial Block with Embedded Radar) -->
+    <section class="sub-delivery-section" aria-label="Delivery Area">
+      <div class="sub-delivery-horizontal-block">
+        
+        <!-- Background Concentric Radar Rings (Integrated into Card Canvas) -->
+        <div class="sub-delivery-radar-backdrop" aria-hidden="true">
+          <div class="radar-backdrop-ring r1"></div>
+          <div class="radar-backdrop-ring r2"></div>
+          <div class="radar-backdrop-ring r3"></div>
+        </div>
+
+        <!-- Header & Statement -->
+        <div class="sub-delivery-content">
+          <div class="sub-delivery-header-integrated">
+            <!-- Living Radar Pulse Beacon -->
+            <div class="sub-delivery-radar-beacon" aria-hidden="true">
+              <div class="beacon-wave w1"></div>
+              <div class="beacon-wave w2"></div>
+              <div class="beacon-core-badge">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Integrated Title & Tagline Group -->
+            <div class="sub-delivery-title-group">
+              <div class="sub-delivery-kicker-row">
+                <span class="sub-delivery-eyebrow" data-i18n="delivery_section_eyebrow">منطقة التوصيل</span>
+              </div>
+              <h2 class="sub-delivery-title" data-i18n="delivery_main_statement">
+                نوصل ضمن نطاق 10 كم من موقع Moe’s PureBite
+              </h2>
+            </div>
+          </div>
+
+          <p class="sub-delivery-subtext" data-i18n="delivery_subtext">
+            تشمل التغطية مناطق قريبة من المطبخ، وقد تختلف حسب الموقع الدقيق.
+          </p>
+
+          <!-- Nearby Areas List as Clean Typographic Text -->
+          <div class="sub-delivery-areas-row">
+            <span class="sub-delivery-areas-label" data-i18n="delivery_areas_label">من المناطق القريبة:</span>
+            <div class="sub-delivery-areas-list" id="delivery-areas-container">
+              <span class="sub-area-text" data-i18n="area_marj">مرج الحمام</span>
+              <span class="sub-area-sep" aria-hidden="true">·</span>
+              <span class="sub-area-text" data-i18n="area_seventh">السابع</span>
+              <span class="sub-area-sep" aria-hidden="true">·</span>
+              <span class="sub-area-text" data-i18n="area_bunayyat">البنيات</span>
+              <span class="sub-area-sep" aria-hidden="true">·</span>
+              <span class="sub-area-text" data-i18n="area_sweifieh">الصويفية</span>
+              <span class="sub-area-sep" aria-hidden="true">·</span>
+              <span class="sub-area-text" data-i18n="area_deirghbar">دير غبار</span>
+              <span class="sub-area-sep" aria-hidden="true">·</span>
+              <span class="sub-area-text" data-i18n="area_abdoun">عبدون</span>
+            </div>
+          </div>
+
+          <!-- Concise Clarifications -->
+          <div class="sub-delivery-notes-row">
+            <div class="sub-delivery-note inside">
+              <span class="note-dot" aria-hidden="true"></span>
+              <span data-i18n="delivery_note_inside"><strong>ضمن النطاق:</strong> التغطية تعتمد على موقعك الدقيق، يرجى التواصل لتأكيد عنوانك.</span>
+            </div>
+            <div class="sub-delivery-note outside">
+              <span class="note-dot" aria-hidden="true"></span>
+              <span data-i18n="delivery_note_outside"><strong>خارج النطاق المباشر:</strong> تتوفر إمكانية التنسيق والتوصيل، يرجى التواصل معنا للتأكيد والترتيب المسبق.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Direct Contact Actions Stack (Two Buttons Stacked) -->
+        <div class="sub-delivery-actions-stack" aria-label="Delivery Inquiry Actions">
+          <!-- Button 1: WhatsApp Inquiry -->
+          <button type="button" class="sub-delivery-btn sub-delivery-btn-wa" onclick="SubscriptionApp.checkDeliveryArea(event)">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+              <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm.01 1.67c4.55 0 8.25 3.7 8.25 8.24 0 2.2-.86 4.28-2.42 5.84-1.56 1.56-3.64 2.42-5.84 2.42-1.42 0-2.82-.37-4.06-1.08l-.29-.17-3.12.82.83-3.04-.19-.3a8.163 8.163 0 0 1-1.26-4.48c0-4.54 3.7-8.24 8.25-8.24zm4.52 11.66c-.25-.13-1.48-.73-1.71-.81-.23-.09-.4-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.02-1.25-.75-.67-1.26-1.5-1.4-1.76-.15-.25-.02-.39.11-.51.11-.11.25-.29.38-.44.13-.15.17-.25.25-.42.08-.17.04-.32-.02-.45s-.56-1.35-.77-1.85c-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.77 2.7 4.29 3.79.6.26 1.07.41 1.44.53.6.19 1.15.16 1.58.1.48-.07 1.48-.61 1.69-1.2.21-.58.21-1.08.15-1.2-.06-.11-.23-.18-.48-.3z"/>
+            </svg>
+            <span data-i18n="delivery_btn_wa">تأكيد إمكانية التوصيل عبر واتساب</span>
+          </button>
+          
+          <!-- Button 2: Direct Phone Call -->
+          <a href="tel:+962792512221" class="sub-delivery-btn sub-delivery-btn-phone" onclick="SubscriptionApp.callMoe(event)">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+            <span data-i18n="delivery_btn_call">اتصال: 079-251-2221</span>
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================================
+       VISUAL BROCHURE & SLIDESHOW SHOWCASE (Full-Width Edge-to-Edge Divider Section)
+       ========================================================================= -->
+  <section class="sub-brochures-section" aria-label="Official Subscription Posters and Menus">
+      <!-- Concise Header (No Clutter) -->
+      <div class="sub-brochures-header" style="text-align: center; margin-bottom: 20px;">
+        <span class="sub-delivery-eyebrow" data-i18n="brochures_badge" style="display: inline-block; margin-bottom: 6px;">النشرات وقوائم الأسعار الرسمية</span>
+        <h2 class="sub-brochures-title" data-i18n="brochures_title">نشرات وباقات الوجبات</h2>
+        <p class="sub-delivery-subtext" data-i18n="brochures_subtitle" style="margin-top: 6px; font-size: 0.92rem; color: #666;">تصفح النشرات الرسمية للوجبات، الأسعار، وتفاصيل المطبخ المعتمد (اسحب أو اضغط للتكبير)</p>
+      </div>
+
+      <!-- Carousel Viewer Wrap (Expanded Size) -->
+      <div class="sub-slider-container" id="sub-brochures-slider">
+        
+        <!-- Main Slide Viewport -->
+        <div class="sub-slider-viewport" id="slider-viewport" ontouchstart="SubscriptionApp.handleTouchStart(event)" ontouchend="SubscriptionApp.handleTouchEnd(event)">
+          <div class="sub-slider-track" id="slider-track">
+            
+            <!-- Slide 1 -->
+            <div class="sub-slide-item active" data-index="0">
+              <div class="sub-slide-card">
+                <div class="sub-slide-img-box">
+                  <img src="assets/images/slides/slide_1.jpg" alt="باقة الاشتراكات والأسعار" loading="lazy" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="sub-slide-item" data-index="1">
+              <div class="sub-slide-card">
+                <div class="sub-slide-img-box">
+                  <img src="assets/images/slides/slide_2.jpg" alt="جدول الأسبوع الأول" loading="lazy" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Slide 3 (Week 2 Menu) -->
+            <div class="sub-slide-item" data-index="2">
+              <div class="sub-slide-card">
+                <div class="sub-slide-img-box">
+                  <img src="assets/images/slides/slide_6.jpg" alt="جدول الأسبوع الثاني" loading="lazy" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Slide 4 -->
+            <div class="sub-slide-item" data-index="3">
+              <div class="sub-slide-card">
+                <div class="sub-slide-img-box">
+                  <img src="assets/images/slides/slide_3.jpg" alt="مطبخ خالٍ من الغلوتين ١٠٠٪" loading="lazy" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Slide 5 -->
+            <div class="sub-slide-item" data-index="4">
+              <div class="sub-slide-card">
+                <div class="sub-slide-img-box">
+                  <img src="assets/images/slides/slide_4.jpg" alt="جدول الأسبوع الثالث" loading="lazy" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Slide 6 -->
+            <div class="sub-slide-item" data-index="5">
+              <div class="sub-slide-card">
+                <div class="sub-slide-img-box">
+                  <img src="assets/images/slides/slide_5.jpg" alt="جدول الأسبوع الرابع" loading="lazy" />
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Slider Navigation Controls -->
+        <div class="sub-slider-controls">
+          <button type="button" class="slider-btn prev-btn" onclick="SubscriptionApp.prevSlide()" aria-label="Previous Slide">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+          
+          <div class="slider-dots" id="slider-dots" role="tablist">
+            <button type="button" class="slider-dot active" onclick="SubscriptionApp.goToSlide(0)" aria-label="Slide 1"></button>
+            <button type="button" class="slider-dot" onclick="SubscriptionApp.goToSlide(1)" aria-label="Slide 2"></button>
+            <button type="button" class="slider-dot" onclick="SubscriptionApp.goToSlide(2)" aria-label="Slide 3"></button>
+            <button type="button" class="slider-dot" onclick="SubscriptionApp.goToSlide(3)" aria-label="Slide 4"></button>
+            <button type="button" class="slider-dot" onclick="SubscriptionApp.goToSlide(4)" aria-label="Slide 5"></button>
+            <button type="button" class="slider-dot" onclick="SubscriptionApp.goToSlide(5)" aria-label="Slide 6"></button>
+          </div>
+
+          <button type="button" class="slider-btn next-btn" onclick="SubscriptionApp.nextSlide()" aria-label="Next Slide">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        </div>
+
+        <div class="slider-counter" id="slider-counter" dir="rtl">١ من ٦</div>
+
+      </div>
+    </section>
+
+  <!-- Main Container (Lower Section) -->
+  <div class="sub-main sub-main-lower">
+
+    <!-- =========================================================================
+         CONNECTED SEAMLESS ACCORDION (Clickable header physically fused to the expanding box)
+         ========================================================================= -->
+    <section class="sub-schedule-accordion-card collapsed" id="sub-schedule-accordion" aria-label="Meal Plan Accordion">
+      
+      <!-- Interactive Toggle Trigger Header (Clickable & Attached) -->
+      <button 
+        type="button" 
+        id="sub-schedule-toggle-btn" 
+        class="sub-schedule-accordion-trigger collapsed" 
+        onclick="SubscriptionApp.toggleScheduleSection()"
+        aria-expanded="false"
+        aria-controls="sub-schedule-collapse-body"
+      >
+        <div class="schedule-toggle-icon">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+        </div>
+        <div class="schedule-toggle-info">
+          <span class="schedule-toggle-badge" data-i18n="schedule_toggle_eyebrow">الجدول الأسبوعي الكامل</span>
+          <span class="schedule-toggle-title" id="schedule-toggle-title-text" data-i18n="schedule_toggle_btn_show">عرض خطة وجبات الأسابيع التفصيلية</span>
+          <span class="schedule-toggle-desc" data-i18n="schedule_toggle_hint">اضغط هنا لاستعراض وجبات الأيام وخيارات اللحم والدجاج بالتفصيل</span>
+        </div>
+        <div class="schedule-toggle-chevron" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </div>
+      </button>
+
+      <!-- Attached Expandable Content (Directly Connected, Zero Gap) -->
+      <div id="sub-schedule-collapse-body" class="sub-schedule-accordion-body collapsed" aria-hidden="true">
+        <div class="sub-accordion-content-inner">
+          
+          <!-- Unified Subheader -->
+          <div class="sub-box-header">
+            <div class="sub-box-title-row">
+              <h3 class="sub-box-title" data-i18n="schedule_title">خطة وجبات الشهر</h3>
+              <span id="schedule-active-tag" class="sub-box-status-tag" data-i18n="schedule_active_tag">٤ أسابيع · ٢٤ وجبة</span>
+            </div>
+            <p class="sub-box-hint" data-i18n="schedule_hint">اضغط على أي وجبة لمعرفة التفاصيل والمكونات</p>
+          </div>
+
+          <!-- Dynamic Multi-Week Grid: 2x2 layout, every two weeks side-by-side! -->
+          <div id="sub-all-weeks-grid" class="sub-all-weeks-grid weeks-4" role="region" aria-label="All Weeks Schedule Grid">
+            <!-- Injected dynamically via SubscriptionApp.renderAllWeeks() -->
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+    <!-- CHAPTER 3: Subscription Builder (Warm Sand / Beige Chapter) -->
+    <section class="sub-builder-chapter" aria-label="Subscription Builder and Order Summary">
+      
+      <!-- Builder Header -->
+      <div class="sub-builder-header">
+        <h2 class="sub-builder-title" data-i18n="options_title">خيارات الاشتراك</h2>
+        <p class="sub-builder-desc" data-i18n="options_subtitle">اختر المدة وعدد الوجبات الأسبوعية المناسبة لك</p>
+      </div>
+
+      <!-- Segmented Controls Container -->
+      <div class="sub-controls-container">
+        <!-- Control 1: Duration -->
+        <div class="sub-control-row">
+          <span class="sub-control-label" data-i18n="control_duration_label">المدة</span>
+          <div class="sub-segmented-control" role="radiogroup" aria-label="Duration">
+            <button 
+              type="button" 
+              id="seg-duration-14" 
+              class="sub-segmented-btn" 
+              role="radio" 
+              aria-checked="false"
+              onclick="SubscriptionApp.setDuration('14_days')"
+            >
+              <span class="sub-seg-text" data-i18n="duration_14_title">١٤ يوم</span>
+            </button>
+            <button 
+              type="button" 
+              id="seg-duration-monthly" 
+              class="sub-segmented-btn active" 
+              role="radio" 
+              aria-checked="true"
+              onclick="SubscriptionApp.setDuration('monthly')"
+            >
+              <span class="sub-seg-text" data-i18n="duration_monthly_title">شهري</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Control 2: Meals per Week -->
+        <div class="sub-control-row">
+          <span class="sub-control-label" data-i18n="control_meals_label">الوجبات الأسبوعية</span>
+          <div class="sub-segmented-control" role="radiogroup" aria-label="Weekly Meals Count">
+            <button 
+              type="button" 
+              id="seg-meals-5" 
+              class="sub-segmented-btn" 
+              role="radio" 
+              aria-checked="false"
+              onclick="SubscriptionApp.setWeeklyMeals('5_meals')"
+            >
+              <span class="sub-seg-text" data-i18n="meals_5_title">٥ وجبات</span>
+              <span class="sub-seg-subtext" data-i18n="meals_5_sub">الأحد–الخميس</span>
+            </button>
+            <button 
+              type="button" 
+              id="seg-meals-6" 
+              class="sub-segmented-btn active" 
+              role="radio" 
+              aria-checked="true"
+              onclick="SubscriptionApp.setWeeklyMeals('6_meals')"
+            >
+              <span class="sub-seg-text" data-i18n="meals_6_title">٦ وجبات</span>
+              <span class="sub-seg-subtext" data-i18n="meals_6_sub">السبت–الخميس</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subtle Hairline Separator -->
+      <div class="sub-builder-divider" aria-hidden="true"></div>
+
+      <!-- Live Selection & Price Summary -->
+      <div class="sub-summary-container" aria-label="Selection and Price Summary">
+        <div class="sub-summary-info">
+          <span class="sub-summary-badge" data-i18n="summary_badge">ملخص اختيارك</span>
+          <div id="summary-selection-text" class="sub-summary-details">
+            شهري · ٦ وجبات / أسبوع
+          </div>
+          <p class="sub-summary-guarantee" data-i18n="summary_note">
+            لا يتطلب دفع إلكتروني • يتم التأكيد والتنسيق مباشرة عبر واتساب
+          </p>
+        </div>
+
+        <div class="sub-summary-price-container">
+          <span class="sub-summary-price-label" data-i18n="summary_price_label">السعر الإجمالي</span>
+          <div class="sub-summary-price-val">
+            <span id="summary-price-number" class="price-val">185</span>
+            <span id="summary-price-currency" class="price-cur">دينار</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Primary WhatsApp Action CTA -->
+      <div class="sub-cta-primary-section" aria-label="Conversion CTA">
+        <a href="#" class="sub-btn-whatsapp-primary" onclick="SubscriptionApp.contactWhatsApp(event)">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">
+            <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm.01 1.67c4.55 0 8.25 3.7 8.25 8.24 0 2.2-.86 4.28-2.42 5.84-1.56 1.56-3.64 2.42-5.84 2.42-1.42 0-2.82-.37-4.06-1.08l-.29-.17-3.12.82.83-3.04-.19-.3a8.163 8.163 0 0 1-1.26-4.48c0-4.54 3.7-8.24 8.25-8.24zm4.52 11.66c-.25-.13-1.48-.73-1.71-.81-.23-.09-.4-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.02-1.25-.75-.67-1.26-1.5-1.4-1.76-.15-.25-.02-.39.11-.51.11-.11.25-.29.38-.44.13-.15.17-.25.25-.42.08-.17.04-.32-.02-.45s-.56-1.35-.77-1.85c-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.77 2.7 4.29 3.79.6.26 1.07.41 1.44.53.6.19 1.15.16 1.58.1.48-.07 1.48-.61 1.69-1.2.21-.58.21-1.08.15-1.2-.06-.11-.23-.18-.48-.3z"/>
+          </svg>
+          <span data-i18n="cta_whatsapp_btn">تواصل عبر واتساب</span>
+        </a>
+        <p class="sub-cta-subtext" data-i18n="cta_note">للتأكيد والتنسيق مباشرة مع المطبخ</p>
+
+        <!-- Secondary Call Option -->
+        <a href="tel:+962792512221" class="sub-call-link" onclick="SubscriptionApp.callMoe(event)">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+          </svg>
+          <span class="sub-call-text-wrap">
+            <span data-i18n="cta_call_label">أو اتصل بمويز مباشرة:</span>
+            <span class="sub-call-phone" dir="ltr" id="sub-display-phone">07 9251 2221</span>
+          </span>
+        </a>
+      </div>
+
+    </section>
+
+    <!-- Chapter 4: Site Footer & Contact (Matching Main Website Storefront) -->
+    <section class="about-contact-clean" aria-label="Social & Direct Contact">
+      <div class="contact-links-row">
+        <a href="https://instagram.com/moespurebite" target="_blank" rel="noopener noreferrer" class="clean-social-link">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          <span data-i18n="instagram">إنستغرام</span>
+        </a>
+        <a href="https://facebook.com/moespurebite" target="_blank" rel="noopener noreferrer" class="clean-social-link">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          <span data-i18n="facebook">فيسبوك</span>
+        </a>
+        <a href="#" onclick="SubscriptionApp.contactWhatsApp(event)" class="clean-social-link">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <span data-i18n="whatsapp">واتساب</span>
+        </a>
+      </div>
+      
+      <a href="tel:+962792512221" class="contact-phone-block-clean">
+        <span class="contact-phone-label" data-i18n="call_us">اتصل بنا</span>
+        <span class="contact-phone-number" dir="ltr">079-251-2221</span>
+      </a>
+    </section>
+
+    <!-- 8. Minimal Footer (Matching Main Website Storefront) -->
+    <footer class="about-minimal-footer" role="contentinfo">
+      <p><span dir="ltr">© 2026 Moe's PureBite</span> - <span data-i18n="footer_rights">جميع الحقوق محفوظة. مطبخ خالٍ من الغلوتين 100%.</span></p>
+      <div style="margin-top: 12px; font-size: 0.85rem; color: var(--sub-text-muted); display: flex; align-items: center; justify-content: center; gap: 6px;">
+        <span data-i18n="powered_by">بدعم من</span>
+        <a href="https://www.operixsys.online/" target="_blank" class="btn-operix" rel="noopener noreferrer">Operix</a>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Meal Detail Modal / Bottom Sheet Mount -->
+  <div id="sub-meal-modal-container" class="sub-meal-modal-wrapper" aria-hidden="true">
+    <div class="sub-modal-backdrop" onclick="SubscriptionApp.closeMealModal()"></div>
+    <div class="sub-meal-sheet" role="dialog" aria-modal="true" aria-labelledby="modal-meal-name">
+      <div class="sub-sheet-drag-handle" aria-hidden="true"></div>
+      <button class="sub-modal-close-btn" onclick="SubscriptionApp.closeMealModal()" aria-label="Close details">✕</button>
+      <div class="sub-meal-sheet-content" id="sub-meal-sheet-body"></div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="assets/js/supabaseClient.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/subscriptions.js"></script>
+
+  <!-- Flyer Lightbox Modal -->
+  <div id="sub-flyer-lightbox" class="sub-flyer-lightbox" aria-hidden="true" onclick="SubscriptionApp.closeFlyerLightbox()">
+    <div class="sub-lightbox-backdrop"></div>
+    <div class="sub-lightbox-content" onclick="event.stopPropagation()">
+      <button class="sub-lightbox-close-btn" onclick="SubscriptionApp.closeFlyerLightbox()" aria-label="Close Preview">✕</button>
+      <img id="sub-lightbox-image" src="" alt="عرض النشرة" />
+      <div class="sub-lightbox-info">
+        <h4 id="sub-lightbox-title"></h4>
+        <p id="sub-lightbox-desc"></p>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -601,6 +601,35 @@
   transform: translateY(-2px);
 }
 
+.btn-subscription-compact {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: rgba(247, 243, 234, 0.12);
+  color: var(--c-cream);
+  font-weight: 800;
+  font-size: 0.95rem;
+  padding: 12px 24px;
+  border-radius: var(--radius-full);
+  border: 1.5px solid rgba(247, 243, 234, 0.45);
+  text-decoration: none;
+  transition: all var(--t-fast);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.btn-subscription-compact:hover {
+  background-color: var(--c-cream);
+  color: var(--c-forest);
+  border-color: var(--c-cream);
+  transform: translateY(-2px);
+}
+
+[dir="rtl"] .btn-subscription-compact svg {
+  transform: scaleX(-1);
+}
+
 .btn-wa-compact {
   display: flex;
   align-items: center;

@@ -22,13 +22,15 @@ class PureBiteStore {
         { data: products },
         { data: settingsData },
         { data: homeData },
-        { data: aboutData }
+        { data: aboutData },
+        { data: subConfigData }
       ] = await Promise.all([
         window.supabaseClient.from('categories').select('*').order('order', { ascending: true }),
         window.supabaseClient.from('products').select('*'),
         window.supabaseClient.from('settings').select('*').eq('id', 'global').single(),
         window.supabaseClient.from('home_content').select('*').eq('id', 'global').single(),
-        window.supabaseClient.from('about_content').select('*').eq('id', 'global').single()
+        window.supabaseClient.from('about_content').select('*').eq('id', 'global').single(),
+        window.supabaseClient.from('subscription_config').select('*').eq('id', 'global').single()
       ]);
 
       if (categories) this.state.categories = categories;
@@ -36,6 +38,7 @@ class PureBiteStore {
       if (settingsData) this.state.settings = { ...this.state.settings, ...settingsData };
       if (homeData) this.state.homeContent = { ...this.state.homeContent, ...homeData };
       if (aboutData) this.state.aboutContent = { ...this.state.aboutContent, ...aboutData };
+      if (subConfigData) this.state.subscriptionConfig = subConfigData;
 
       this.saveDatabase(); // Persist and trigger UI update
     } catch (e) {
@@ -50,6 +53,7 @@ class PureBiteStore {
       products: [],
       homeContent: {},
       aboutContent: {},
+      subscriptionConfig: {},
       orderHandoffs: [],
       trustIndicators: [
         { icon: "🛡️", title: "100% Celiac Safe", desc: "No cross-contamination" },
@@ -156,6 +160,7 @@ class PureBiteStore {
   }
   getHomeContent() { return this.state.homeContent; }
   getAboutContent() { return this.state.aboutContent; }
+  getSubscriptionConfig() { return this.state.subscriptionConfig; }
   getTrustIndicators() { return this.state.trustIndicators; }
   getBrandPillars() { return this.state.brandPillars; }
   getOrderHandoffs() { return this.state.orderHandoffs || []; }
@@ -343,6 +348,31 @@ class PureBiteStore {
       if (error) {
         console.error("Supabase about_content update error:", error);
         this.state.aboutContent = oldAbout;
+        this.saveDatabase();
+        return { success: false, error };
+      }
+    }
+    return { success: true };
+  }
+
+  async updateSubscriptionConfig(newConfig) {
+    const oldConfig = { ...this.state.subscriptionConfig };
+    this.state.subscriptionConfig = { ...this.state.subscriptionConfig, ...newConfig };
+    this.saveDatabase();
+    
+    if (window.supabaseClient) {
+      const payload = {
+        id: 'global',
+        content: this.state.subscriptionConfig.content || {},
+        slider: this.state.subscriptionConfig.slider || [],
+        pricing: this.state.subscriptionConfig.pricing || {},
+        meal_library: this.state.subscriptionConfig.meal_library || {},
+        schedules: this.state.subscriptionConfig.schedules || {}
+      };
+      const { error } = await window.supabaseClient.from('subscription_config').upsert(payload);
+      if (error) {
+        console.error("Supabase subscription_config update error:", error);
+        this.state.subscriptionConfig = oldConfig;
         this.saveDatabase();
         return { success: false, error };
       }

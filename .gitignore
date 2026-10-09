@@ -1,0 +1,5 @@
+scratch/
+*.log
+.DS_Store
+Thumbs.db
+SESSION_SUMMARY.md

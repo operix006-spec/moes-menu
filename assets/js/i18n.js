@@ -7,6 +7,7 @@ const Translations = {
     // Header & Nav
     "nav_home": "Home",
     "nav_menu": "Menu",
+    "nav_subscriptions": "Subscriptions",
     "nav_about": "About Us",
     "nav_cart": "Cart",
     "tagline": "PURE FOOD. PURE LIFE.",
@@ -15,6 +16,7 @@ const Translations = {
     "hero_badge": "100% GLUTEN-FREE KITCHEN",
     "hero_title": "Freshly prepared food made with care, with a strong focus on safe gluten-free preparation.",
     "explore_menu": "Explore Menu",
+    "explore_subscriptions": "Explore Subscriptions",
     "order_wa": "Order via WhatsApp (Pickup Only)",
     "order_my_things": "Order on My Things (Delivery)",
     "what_craving": "What Are You Craving?",
@@ -144,6 +146,7 @@ const Translations = {
     // Header & Nav
     "nav_home": "الرئيسية",
     "nav_menu": "المنيو",
+    "nav_subscriptions": "الاشتراكات",
     "nav_about": "من نحن",
     "nav_cart": "السلة",
     "tagline": "غذاء نقي. حياة نقية.",
@@ -152,6 +155,7 @@ const Translations = {
     "hero_badge": "مطبخ خالٍ 100% من الغلوتين",
     "hero_title": "أكل محضر بعناية، مع تركيز كامل على التحضير الآمن والخالي من الغلوتين.",
     "explore_menu": "تصفح المنيو",
+    "explore_subscriptions": "استكشف الاشتراكات",
     "order_wa": "اطلب عبر واتساب (استلام فقط)",
     "order_my_things": "اطلب عبر أشيائي (توصيل)",
     "what_craving": "ماذا تشتهي اليوم؟",

@@ -184,9 +184,11 @@ const CustomerApp = {
 
   updateSidebarActiveLink() {
     const hash = window.location.hash || "#home";
+    const isSub = window.location.pathname.includes("subscriptions");
     const links = document.querySelectorAll(".sidebar-nav-item");
     links.forEach(l => {
-      if (l.getAttribute("href") === hash) {
+      const href = l.getAttribute("href");
+      if ((isSub && href.includes("subscriptions")) || (!isSub && href === hash)) {
         l.classList.add("active");
       } else {
         l.classList.remove("active");
@@ -266,6 +268,10 @@ const CustomerApp = {
             <div class="hero-actions" style="margin-top: 12px;">
               <a href="#menu" class="btn btn-primary-compact">
                 ${CustomerApp.T(homeContent, 'heroCtaText') || i18n("explore_menu")}
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </a>
+              <a href="/subscriptions" class="btn btn-subscription-compact">
+                ${i18n("explore_subscriptions")}
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
               </a>
               <button onclick="CustomerApp.directWhatsAppContact()" class="btn btn-wa-compact">
@@ -1307,5 +1313,17 @@ const CustomerApp = {
     `;
   }
 };
+
+// Ensure /subscriptions navigation gracefully resolves across local and production environments
+document.addEventListener("click", (e) => {
+  const link = e.target.closest('a[href="/subscriptions"]');
+  if (link) {
+    if (window.location.protocol === "file:" || (window.location.pathname && window.location.pathname.endsWith(".html") && !window.location.hostname.includes("."))) {
+      e.preventDefault();
+      window.location.href = "subscriptions.html";
+    }
+  }
+});
+
 
 window.CustomerApp = CustomerApp;

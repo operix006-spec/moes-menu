@@ -58,6 +58,10 @@ const AdminApp = {
                 <span>Categories</span>
               </button>
 
+              <button class="admin-nav-btn ${this.activeTab === "subscriptions" ? "active" : ""}" onclick="AdminApp.setTab('subscriptions')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                <span>Subscriptions</span>
+              </button>
 
               <button class="admin-nav-btn ${this.activeTab === "home-cms" ? "active" : ""}" onclick="AdminApp.setTab('home-cms')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -175,6 +179,7 @@ const AdminApp = {
       case "dashboard": return "Dashboard & Performance";
       case "menu": return "Menu Items & Products";
       case "categories": return "Category Management";
+      case "subscriptions": return "Meal Subscriptions Management";
       case "orders": return "WhatsApp Order Handoffs Log";
       case "home-cms": return "Home Page CMS Content";
       case "about-cms": return "About Us Story & Values CMS";
@@ -188,6 +193,7 @@ const AdminApp = {
       case "dashboard": return this.renderDashboardTab();
       case "menu": return this.renderMenuTab();
       case "categories": return this.renderCategoriesTab();
+      case "subscriptions": return this.renderSubscriptionsTab();
       case "orders": return this.renderOrdersTab();
       case "home-cms": return this.renderHomeCmsTab();
       case "about-cms": return this.renderAboutCmsTab();
@@ -1658,6 +1664,1282 @@ const AdminApp = {
         </div>
       </div>
     `;
+  },
+
+  // ==========================================================================
+  // 8. SUBSCRIPTIONS MANAGEMENT TAB (MIX Active Model — Complete Bilingual CMS)
+  // ==========================================================================
+  renderSubscriptionsTab() {
+    setTimeout(() => AdminApp.buildSubscriptionsTabUI(), 50);
+    return `
+      <div id="sub-admin-tab-container">
+        <div style="padding: 60px 20px; text-align: center; color: var(--c-forest); font-weight: 700;">
+          <div style="font-size: 2rem; margin-bottom: 12px;">🍲</div>
+          <div>جاري تحميل لوحة تحكم الاشتراكات...</div>
+        </div>
+      </div>
+    `;
+  },
+
+  handleSubImageUpload(event, targetInputId) {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+
+    App.showToast("جاري معالجة وضغط الصورة... ⏳", "info");
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const MAX_WIDTH = 1200;
+        const MAX_HEIGHT = 1200;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height = Math.round(height * (MAX_WIDTH / width));
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width = Math.round(width * (MAX_HEIGHT / height));
+            height = MAX_HEIGHT;
+          }
+        }
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const compressedDataUrl = canvas.toDataURL("image/webp", 0.82);
+
+        const input = document.getElementById(targetInputId);
+        if (input) {
+          input.value = compressedDataUrl;
+          input.dispatchEvent(new Event("input", { bubbles: true }));
+          input.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+
+        const preview = document.getElementById(`${targetInputId}-preview`);
+        if (preview) {
+          preview.src = compressedDataUrl;
+          preview.style.display = "block";
+          const noImg = document.getElementById(`${targetInputId}-no-img`);
+          if (noImg) noImg.style.display = "none";
+        }
+
+        const kbSize = Math.round((compressedDataUrl.length * 3 / 4) / 1024);
+        App.showToast(`تم تحميل وضغط الصورة بنجاح (~${kbSize}KB) 📸`, "success");
+        this.markSubDirty();
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  },
+
+  clearSubImage(targetInputId) {
+    const input = document.getElementById(targetInputId);
+    if (input) {
+      input.value = "";
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+    const preview = document.getElementById(`${targetInputId}-preview`);
+    if (preview) {
+      preview.src = "";
+      preview.style.display = "none";
+    }
+    const noImg = document.getElementById(`${targetInputId}-no-img`);
+    if (noImg) noImg.style.display = "block";
+    this.markSubDirty();
+  },
+
+  updateSubImagePreview(url, previewId) {
+    const preview = document.getElementById(previewId);
+    const noImg = document.getElementById(previewId.replace("-preview", "-no-img"));
+    if (preview) {
+      if (url && url.trim()) {
+        preview.src = url.trim();
+        preview.style.display = "block";
+        if (noImg) noImg.style.display = "none";
+      } else {
+        preview.src = "";
+        preview.style.display = "none";
+        if (noImg) noImg.style.display = "block";
+      }
+    }
+    this.markSubDirty();
+  },
+
+  markSubDirty() {
+    const btn = document.getElementById("sub-save-btn");
+    if (btn) {
+      btn.style.backgroundColor = "var(--c-orange)";
+      btn.textContent = "💾 حفظ كافة التعديلات * (Save Changes)";
+    }
+    const indicator = document.getElementById("sub-status-indicator");
+    if (indicator) {
+      indicator.innerHTML = '🟡 لديك تعديلات غير محفوظة (Unsaved changes)';
+      indicator.style.color = "var(--c-orange)";
+    }
+  },
+
+  subscriptionMealCatalog: {
+    // Week 1 Chicken
+    kabsa_chicken: { id: "kabsa_chicken", type: "chicken", name: { ar: "كبسة خليجية بالدجاج", en: "Khaleeji Chicken Kabsa" } },
+    creamy_mushroom_chicken: { id: "creamy_mushroom_chicken", type: "chicken", name: { ar: "دجاج بالكريمة والفطر", en: "Creamy Mushroom Chicken" } },
+    biryani_chicken: { id: "biryani_chicken", type: "chicken", name: { ar: "برياني هندي بالدجاج", en: "Indian Chicken Biryani" } },
+    penne_pesto: { id: "penne_pesto", type: "chicken", name: { ar: "بيني بيستو بالدجاج", en: "Chicken Penne Pesto" } },
+    zarb_chicken: { id: "zarb_chicken", type: "chicken", name: { ar: "زرب الدجاج", en: "Chicken Zarb" } },
+    bbq_chicken: { id: "bbq_chicken", type: "chicken", name: { ar: "صدر دجاج باربيكيو", en: "BBQ Chicken Breast" } },
+    // Week 1 Meat & Fish
+    kabsa_meat: { id: "kabsa_meat", type: "meat", name: { ar: "كبسة خليجية باللحم", en: "Khaleeji Meat Kabsa" } },
+    meatballs_creamy_mushroom: { id: "meatballs_creamy_mushroom", type: "meat", name: { ar: "كرات اللحم بالكريمة والفطر", en: "Creamy Mushroom Meatballs" } },
+    biryani_meat: { id: "biryani_meat", type: "meat", name: { ar: "برياني هندي باللحم", en: "Indian Meat Biryani" } },
+    fusilli_meat: { id: "fusilli_meat", type: "meat", name: { ar: "فوسيلي باللحم", en: "Meat Fusilli" } },
+    zarb_meat: { id: "zarb_meat", type: "meat", name: { ar: "زرب اللحم", en: "Meat Zarb" } },
+    fish_cream_lemon: { id: "fish_cream_lemon", type: "fish", name: { ar: "سمك بالكريمة والليمون", en: "Fish with Cream & Lemon" } },
+    // Week 2 Chicken
+    mandi_chicken: { id: "mandi_chicken", type: "chicken", name: { ar: "مندي بالدجاج", en: "Chicken Mandi" } },
+    fajita_chicken: { id: "fajita_chicken", type: "chicken", name: { ar: "فاهيتا الدجاج", en: "Chicken Fajita" } },
+    teriyaki_chicken: { id: "teriyaki_chicken", type: "chicken", name: { ar: "دجاج ترياكي", en: "Teriyaki Chicken" } },
+    fettuccine_chicken: { id: "fettuccine_chicken", type: "chicken", name: { ar: "فيتوتشيني بالدجاج", en: "Chicken Fettuccine" } },
+    ouzi_chicken: { id: "ouzi_chicken", type: "chicken", name: { ar: "أوزي الدجاج", en: "Chicken Ouzi" } },
+    strips_chicken: { id: "strips_chicken", type: "chicken", name: { ar: "ستريبس الدجاج", en: "Chicken Strips" } },
+    // Week 2 Meat & Fish
+    mandi_meat: { id: "mandi_meat", type: "meat", name: { ar: "مندي باللحم", en: "Meat Mandi" } },
+    fajita_meat: { id: "fajita_meat", type: "meat", name: { ar: "فاهيتا اللحم", en: "Meat Fajita" } },
+    mongolian_beef: { id: "mongolian_beef", type: "meat", name: { ar: "بيف مانغوليان", en: "Mongolian Beef" } },
+    dawood_basha: { id: "dawood_basha", type: "meat", name: { ar: "داوود باشا - لحم", en: "Dawood Basha (Meat)" } },
+    ouzi_meat: { id: "ouzi_meat", type: "meat", name: { ar: "أوزي اللحم", en: "Meat Ouzi" } },
+    fish_lemon_herbs: { id: "fish_lemon_herbs", type: "fish", name: { ar: "سمك بالليمون والأعشاب", en: "Fish with Lemon & Herbs" } },
+    // Week 3 Chicken
+    zurbian_chicken: { id: "zurbian_chicken", type: "chicken", name: { ar: "زربيان دجاج", en: "Chicken Zurbian" } },
+    lemon_garlic_chicken: { id: "lemon_garlic_chicken", type: "chicken", name: { ar: "دجاج بالليمون والثوم", en: "Lemon Garlic Chicken" } },
+    curry_chicken: { id: "curry_chicken", type: "chicken", name: { ar: "كاري دجاج هندي", en: "Indian Chicken Curry" } },
+    spaghetti_marinara: { id: "spaghetti_marinara", type: "chicken", name: { ar: "سباغيتي مارينارا بالدجاج", en: "Chicken Spaghetti Marinara" } },
+    qidreh_chicken: { id: "qidreh_chicken", type: "chicken", name: { ar: "قدرة خليلية بالدجاج", en: "Qidreh Khaliliya (Chicken)" } },
+    chicken_mushroom_sauce: { id: "chicken_mushroom_sauce", type: "chicken", name: { ar: "صدر دجاج بصوص الفطر", en: "Chicken in Mushroom Sauce" } },
+    // Week 3 Meat & Fish
+    zurbian_meat: { id: "zurbian_meat", type: "meat", name: { ar: "زربيان لحم", en: "Meat Zurbian" } },
+    meat_potato_tajin: { id: "meat_potato_tajin", type: "meat", name: { ar: "طاجن بطاطا باللحم", en: "Meat & Potato Tajin" } },
+    curry_fish: { id: "curry_fish", type: "fish", name: { ar: "كاري السمك الهندي", en: "Indian Fish Curry" } },
+    spaghetti_bolognese: { id: "spaghetti_bolognese", type: "meat", name: { ar: "سباغيتي بولونيز باللحم", en: "Meat Spaghetti Bolognese" } },
+    qidreh_meat: { id: "qidreh_meat", type: "meat", name: { ar: "قدرة خليلية باللحم", en: "Qidreh Khaliliya Meat" } },
+    armenian_kofta: { id: "armenian_kofta", type: "meat", name: { ar: "كفتة أرمنية بالبطاطا - لحم", en: "Armenian Kofta with Potatoes (Meat)" } },
+    // Week 4 Chicken
+    madghoot_chicken: { id: "madghoot_chicken", type: "chicken", name: { ar: "دجاج مضغوط", en: "Madghoot Chicken" } },
+    mexican_chicken: { id: "mexican_chicken", type: "chicken", name: { ar: "دجاج مكسيكي", en: "Mexican Chicken" } },
+    sweet_sour_chicken: { id: "sweet_sour_chicken", type: "chicken", name: { ar: "سويت ساور دجاج", en: "Sweet & Sour Chicken" } },
+    shell_pasta_tomato_cream: { id: "shell_pasta_tomato_cream", type: "chicken", name: { ar: "شيل باستا بكريمة الطماطم (دجاج)", en: "Shell Pasta with Tomato Cream (Chicken)" } },
+    uzbekian_chicken: { id: "uzbekian_chicken", type: "chicken", name: { ar: "أوزباكيان الدجاج", en: "Uzbekian Chicken" } },
+    shawarma_chicken_cuts: { id: "shawarma_chicken_cuts", type: "chicken", name: { ar: "شرحات شاورما الدجاج", en: "Chicken Shawarma Cuts" } },
+    // Week 4 Meat & Fish
+    stuffed_zucchini: { id: "stuffed_zucchini", type: "meat", name: { ar: "كوسا مخشي باللحم", en: "Stuffed Zucchini with Meat" } },
+    mexican_meat: { id: "mexican_meat", type: "meat", name: { ar: "لحم مكسيكي", en: "Mexican Meat" } },
+    kofta_tahini: { id: "kofta_tahini", type: "meat", name: { ar: "كفتة بالطحينية - لحم", en: "Kofta with Tahini (Meat)" } },
+    indian_kebab: { id: "indian_kebab", type: "meat", name: { ar: "كباب هندي - لحم", en: "Indian Kebab (Meat)" } },
+    uzbekian_meat: { id: "uzbekian_meat", type: "meat", name: { ar: "أوزباكيان اللحم", en: "Uzbekian Meat" } },
+    sayadieh_fish: { id: "sayadieh_fish", type: "fish", name: { ar: "صيادية سمك", en: "Fish Sayadieh" } }
+  },
+
+  onMealQuickPick(mealId, wk, day, optIdx) {
+    if (!mealId) return;
+    const meal = this.subscriptionMealCatalog[mealId];
+    if (!meal) return;
+
+    const arInput = document.getElementById(`sched-${wk}-${day}-${optIdx}-ar`);
+    const enInput = document.getElementById(`sched-${wk}-${day}-${optIdx}-en`);
+    const typeSelect = document.getElementById(`sched-${wk}-${day}-${optIdx}-type`);
+    const idInput = document.getElementById(`sched-${wk}-${day}-${optIdx}-id`);
+
+    if (arInput) arInput.value = meal.name.ar;
+    if (enInput) enInput.value = meal.name.en;
+    if (typeSelect) typeSelect.value = meal.type;
+    if (idInput) idInput.value = meal.id;
+
+    this.markSubDirty();
+  },
+
+  defaultSubContent: {
+    hero_badge: "اشتراك الوجبات الشهرية والأسبوعية",
+    hero_badge_en: "Monthly & Weekly Meal Subscriptions",
+    hero_title: "طعام نقي، محضّر خصيصاً لك",
+    hero_title_en: "Pure Food, Planned for You",
+    hero_title_highlight: "محضّر خصيصاً لك",
+    hero_title_highlight_en: "Planned for You",
+    hero_subtitle: "جداول وجبات خالية من الغلوتين ١٠٠٪ ومحضّرة أسبوعياً في مطبخنا المخصص والآمن لمرضى السيلياك.",
+    hero_subtitle_en: "100% gluten-free, chef-crafted weekly meal schedules prepared fresh in our dedicated celiac-safe kitchen.",
+    hero_trust_celiac: "آمن للسيلياك ١٠٠٪",
+    hero_trust_celiac_en: "100% Celiac Safe",
+    hero_trust_kitchen: "مطبخ مخصص وآمن",
+    hero_trust_kitchen_en: "Dedicated Safe Kitchen",
+    hero_trust_fresh: "جداول متجددة أسبوعياً",
+    hero_trust_fresh_en: "Fresh Weekly Schedules",
+    hero_image: "assets/images/subscription_hero.jpg",
+    delivery_section_eyebrow: "منطقة التوصيل",
+    delivery_section_eyebrow_en: "Delivery Area",
+    delivery_main_statement: "نوصل ضمن نطاق 10 كم من موقع Moe’s PureBite",
+    delivery_main_statement_en: "Delivery is available within a 10 KM radius of Moe’s PureBite.",
+    delivery_subtext: "تشمل التغطية مناطق قريبة من المطبخ، وقد تختلف حسب الموقع الدقيق.",
+    delivery_subtext_en: "Coverage includes areas near our kitchen and may vary based on your exact location.",
+    delivery_areas_ar: "مرج الحمام، السابع، البنيات، الصويفية، دير غبار، عبدون",
+    delivery_areas_en: "Marj Al Hamam, Seventh Circle, Al Bunayyat, Sweifieh, Deir Ghbar, Abdoun",
+    delivery_note_inside: "ضمن النطاق: التغطية تعتمد على موقعك الدقيق، يرجى التواصل لتأكيد عنوانك.",
+    delivery_note_inside_en: "Within standard zone: Coverage depends on your exact location. Please reach out to confirm your address.",
+    delivery_note_outside: "خارج النطاق المباشر: تتوفر إمكانية التنسيق والتوصيل، يرجى التواصل معنا للتأكيد والترتيب المسبق.",
+    delivery_note_outside_en: "Outside direct zone: Delivery coordination may be arranged upon request. Please contact us to confirm and arrange.",
+    brochures_badge: "النشرات وقوائم الأسعار الرسمية",
+    brochures_badge_en: "OFFICIAL FLYERS & MENUS",
+    brochures_title: "نشرات وباقات الوجبات",
+    brochures_title_en: "Official Menu & Plan Posters",
+    brochures_subtitle: "تصفح النشرات الرسمية للوجبات، الأسعار، وتفاصيل المطبخ المعتمد (اسحب أو اضغط للتكبير)",
+    brochures_subtitle_en: "Browse our official flyers for weekly menus, pricing, and dedicated kitchen details",
+    schedule_toggle_eyebrow: "الجدول الأسبوعي الكامل",
+    schedule_toggle_eyebrow_en: "COMPLETE WEEKLY SCHEDULE",
+    schedule_toggle_btn_show: "عرض خطة وجبات الأسابيع التفصيلية",
+    schedule_toggle_btn_show_en: "Show Detailed Weekly Meal Plans",
+    schedule_toggle_btn_hide: "إخفاء خطة وجبات الأسابيع التفصيلية",
+    schedule_toggle_btn_hide_en: "Hide Detailed Weekly Meal Plans",
+    schedule_toggle_hint: "اضغط هنا لاستعراض وجبات الأيام وخياراتها المتنوعة بالتفصيل",
+    schedule_toggle_hint_en: "Click here to view daily dishes and diverse meal options in detail",
+    schedule_title: "خطة وجبات الشهر",
+    schedule_title_en: "Meal Plan",
+    schedule_hint: "اضغط على أي وجبة لمعرفة التفاصيل والمكونات",
+    schedule_hint_en: "Tap any meal to view details",
+    options_title: "خيارات الاشتراك",
+    options_title_en: "Customize Your Subscription",
+    options_subtitle: "اختر المدة وعدد الوجبات الأسبوعية المناسبة لك",
+    options_subtitle_en: "Select your duration and weekly meal schedule",
+    summary_note: "لا يتطلب دفع إلكتروني • يتم التأكيد والتنسيق مباشرة عبر واتساب",
+    summary_note_en: "No online payment • Confirmed directly on WhatsApp"
+  },
+
+  buildSubscriptionsTabUI() {
+    const container = document.getElementById("sub-admin-tab-container");
+    if (!container) return;
+
+    const config = window.MoeStore.getSubscriptionConfig() || {};
+    this.editingSubConfig = {
+      pricing: JSON.parse(JSON.stringify(config.pricing || {})),
+      content: JSON.parse(JSON.stringify(config.content || {})),
+      slider: JSON.parse(JSON.stringify(config.slider || [])),
+      schedules: JSON.parse(JSON.stringify(config.schedules || {})),
+      meal_library: JSON.parse(JSON.stringify(config.meal_library || {}))
+    };
+
+    // Ensure content is pre-filled with official default bilingual texts
+    if (!this.editingSubConfig.content) {
+      this.editingSubConfig.content = {};
+    }
+    for (const [k, v] of Object.entries(this.defaultSubContent)) {
+      if (!this.editingSubConfig.content[k] || !this.editingSubConfig.content[k].toString().trim()) {
+        this.editingSubConfig.content[k] = v;
+      }
+    }
+
+    // Ensure pricing structure
+    if (!this.editingSubConfig.pricing.mix) {
+      this.editingSubConfig.pricing.mix = {
+        "14_days": { "5_meals": "85", "6_meals": "98" },
+        "monthly": { "5_meals": "160", "6_meals": "185" }
+      };
+    }
+
+    // Default daily options if not present
+    if (!this.editingSubConfig.schedules.dailyOptionsSchedule) {
+      this.editingSubConfig.schedules.dailyOptionsSchedule = {
+        week1: {
+          sat: ["kabsa_chicken", "kabsa_meat"],
+          sun: ["creamy_mushroom_chicken", "meatballs_creamy_mushroom"],
+          mon: ["biryani_chicken", "biryani_meat"],
+          tue: ["penne_pesto", "fusilli_meat"],
+          wed: ["zarb_chicken", "zarb_meat"],
+          thu: ["bbq_chicken", "fish_cream_lemon"]
+        },
+        week2: {
+          sat: ["mandi_chicken", "mandi_meat"],
+          sun: ["fajita_chicken", "fajita_meat"],
+          mon: ["teriyaki_chicken", "mongolian_beef"],
+          tue: ["fettuccine_chicken", "dawood_basha"],
+          wed: ["ouzi_chicken", "ouzi_meat"],
+          thu: ["strips_chicken", "fish_lemon_herbs"]
+        },
+        week3: {
+          sat: ["zurbian_chicken", "zurbian_meat"],
+          sun: ["lemon_garlic_chicken", "meat_potato_tajin"],
+          mon: ["curry_chicken", "curry_fish"],
+          tue: ["spaghetti_marinara", "spaghetti_bolognese"],
+          wed: ["qidreh_chicken", "qidreh_meat"],
+          thu: ["chicken_mushroom_sauce", "armenian_kofta"]
+        },
+        week4: {
+          sat: ["madghoot_chicken", "stuffed_zucchini"],
+          sun: ["mexican_chicken", "mexican_meat"],
+          mon: ["sweet_sour_chicken", "kofta_tahini"],
+          tue: ["shell_pasta_tomato_cream", "indian_kebab"],
+          wed: ["uzbekian_chicken", "uzbekian_meat"],
+          thu: ["shawarma_chicken_cuts", "sayadieh_fish"]
+        }
+      };
+    }
+
+    const p = this.editingSubConfig.pricing.mix;
+    const c = this.editingSubConfig.content;
+    const s = this.editingSubConfig.schedules.dailyOptionsSchedule;
+    const slider = this.editingSubConfig.slider || [];
+
+    // Quick Pick Select Options Generator
+    const getQuickPickOptions = (selectedId) => {
+      let optHtml = `<option value="">⚡ اختر وجبة من القائمة (Quick Pick)...</option>`;
+      const groups = [
+        { label: "الأسبوع 1 · Week 1", keys: ["kabsa_chicken", "creamy_mushroom_chicken", "biryani_chicken", "penne_pesto", "zarb_chicken", "bbq_chicken", "kabsa_meat", "meatballs_creamy_mushroom", "biryani_meat", "fusilli_meat", "zarb_meat", "fish_cream_lemon"] },
+        { label: "الأسبوع 2 · Week 2", keys: ["mandi_chicken", "fajita_chicken", "teriyaki_chicken", "fettuccine_chicken", "ouzi_chicken", "strips_chicken", "mandi_meat", "fajita_meat", "mongolian_beef", "dawood_basha", "ouzi_meat", "fish_lemon_herbs"] },
+        { label: "الأسبوع 3 · Week 3", keys: ["zurbian_chicken", "lemon_garlic_chicken", "curry_chicken", "spaghetti_marinara", "qidreh_chicken", "chicken_mushroom_sauce", "zurbian_meat", "meat_potato_tajin", "curry_fish", "spaghetti_bolognese", "qidreh_meat", "armenian_kofta"] },
+        { label: "الأسبوع 4 · Week 4", keys: ["madghoot_chicken", "mexican_chicken", "sweet_sour_chicken", "shell_pasta_tomato_cream", "uzbekian_chicken", "shawarma_chicken_cuts", "stuffed_zucchini", "mexican_meat", "kofta_tahini", "indian_kebab", "uzbekian_meat", "sayadieh_fish"] }
+      ];
+
+      groups.forEach(g => {
+        optHtml += `<optgroup label="${g.label}">`;
+        g.keys.forEach(k => {
+          const m = AdminApp.subscriptionMealCatalog[k];
+          if (m) {
+            const isSel = k === selectedId ? " selected" : "";
+            optHtml += `<option value="${m.id}"${isSel}>${m.name.ar} (${m.name.en})</option>`;
+          }
+        });
+        optHtml += `</optgroup>`;
+      });
+      return optHtml;
+    };
+
+    // Build the Weeks Grid
+    let weeksHtml = "";
+    const weeks = ["week1", "week2", "week3", "week4"];
+    const days = ["sat", "sun", "mon", "tue", "wed", "thu"];
+    const dayLabels = {
+      sat: { ar: "السبت", en: "Saturday" },
+      sun: { ar: "الأحد", en: "Sunday" },
+      mon: { ar: "الاثنين", en: "Monday" },
+      tue: { ar: "الثلاثاء", en: "Tuesday" },
+      wed: { ar: "الأربعاء", en: "Wednesday" },
+      thu: { ar: "الخميس", en: "Thursday" }
+    };
+    const lib = this.editingSubConfig.meal_library || {};
+
+    weeks.forEach((wk, i) => {
+      weeksHtml += `
+        <div class="sub-week-board-card">
+          <div class="sub-week-board-header">
+            <span style="font-weight: 800; font-size: 1rem;">الأسبوع ${i + 1} · Week ${i + 1}</span>
+            <span class="sub-week-num-badge">0${i + 1}</span>
+          </div>
+          <div class="sub-week-days-container">
+      `;
+
+      days.forEach(day => {
+        const opt0Id = s[wk]?.[day]?.[0] || "";
+        const opt1Id = s[wk]?.[day]?.[1] || "";
+
+        const getMealDisplay = (mealId, defaultType) => {
+          const m = lib[mealId] || AdminApp.subscriptionMealCatalog[mealId] || null;
+          let ar = m?.name?.ar || (typeof m?.name === "string" ? m.name : "");
+          let en = m?.name?.en || "";
+          let type = m?.type || defaultType;
+          return { id: mealId || "", type, ar, en };
+        };
+
+        const opt0 = getMealDisplay(opt0Id, "chicken");
+        const opt1 = getMealDisplay(opt1Id, "meat");
+
+        weeksHtml += `
+          <div class="sub-day-item-box">
+            <div class="sub-day-item-title">
+              <span class="sub-day-title-ar">${dayLabels[day].ar}</span>
+              <span class="sub-day-title-en">${dayLabels[day].en}</span>
+            </div>
+
+            <!-- OPTION 1 -->
+            <div class="sub-day-option-card opt-1">
+              <div class="sub-opt-topbar">
+                <span class="sub-opt-pill-badge">خيار ١ · Option 1</span>
+                <div class="sub-opt-quick-wrap">
+                  <select class="admin-form-input sub-opt-quick-select" onchange="AdminApp.onMealQuickPick(this.value, '${wk}', '${day}', 0)" title="اختيار سريع لوجبة جاهزة">
+                    ${getQuickPickOptions(opt0.id)}
+                  </select>
+                </div>
+              </div>
+
+              <div class="sub-opt-fields-grid">
+                <div class="sub-opt-field-type">
+                  <label class="sub-field-label">الصنف · Type</label>
+                  <select class="admin-form-input sub-opt-type-select" id="sched-${wk}-${day}-0-type" onchange="AdminApp.markSubDirty()">
+                    <option value="chicken" ${opt0.type === "chicken" ? "selected" : ""}>دجاج (Chicken)</option>
+                    <option value="meat" ${opt0.type === "meat" ? "selected" : ""}>لحم (Meat)</option>
+                    <option value="fish" ${opt0.type === "fish" ? "selected" : ""}>سمك (Fish)</option>
+                    <option value="pasta" ${opt0.type === "pasta" ? "selected" : ""}>باستا (Pasta)</option>
+                    <option value="special" ${opt0.type === "special" ? "selected" : ""}>طبق مميز (Specialty)</option>
+                    <option value="veg" ${opt0.type === "veg" ? "selected" : ""}>نباتي (Vegetarian)</option>
+                  </select>
+                </div>
+
+                <div class="sub-opt-field-ar">
+                  <label class="sub-field-label">اسم الوجبة (عربي)</label>
+                  <input type="text" class="admin-form-input sub-input-ar" id="sched-${wk}-${day}-0-ar" value="${opt0.ar || ''}" placeholder="اسم الوجبة بالعربي" oninput="AdminApp.markSubDirty()">
+                </div>
+
+                <div class="sub-opt-field-en">
+                  <label class="sub-field-label">Meal Name (EN)</label>
+                  <input type="text" class="admin-form-input sub-input-en" id="sched-${wk}-${day}-0-en" value="${opt0.en || ''}" placeholder="Meal Name in English" oninput="AdminApp.markSubDirty()">
+                </div>
+              </div>
+
+              <input type="hidden" id="sched-${wk}-${day}-0-id" value="${opt0.id}">
+            </div>
+
+            <!-- OPTION 2 -->
+            <div class="sub-day-option-card opt-2">
+              <div class="sub-opt-topbar">
+                <span class="sub-opt-pill-badge">خيار ٢ · Option 2</span>
+                <div class="sub-opt-quick-wrap">
+                  <select class="admin-form-input sub-opt-quick-select" onchange="AdminApp.onMealQuickPick(this.value, '${wk}', '${day}', 1)" title="اختيار سريع لوجبة جاهزة">
+                    ${getQuickPickOptions(opt1.id)}
+                  </select>
+                </div>
+              </div>
+
+              <div class="sub-opt-fields-grid">
+                <div class="sub-opt-field-type">
+                  <label class="sub-field-label">الصنف · Type</label>
+                  <select class="admin-form-input sub-opt-type-select" id="sched-${wk}-${day}-1-type" onchange="AdminApp.markSubDirty()">
+                    <option value="meat" ${opt1.type === "meat" ? "selected" : ""}>لحم (Meat)</option>
+                    <option value="chicken" ${opt1.type === "chicken" ? "selected" : ""}>دجاج (Chicken)</option>
+                    <option value="fish" ${opt1.type === "fish" ? "selected" : ""}>سمك (Fish)</option>
+                    <option value="pasta" ${opt1.type === "pasta" ? "selected" : ""}>باستا (Pasta)</option>
+                    <option value="special" ${opt1.type === "special" ? "selected" : ""}>طبق مميز (Specialty)</option>
+                    <option value="veg" ${opt1.type === "veg" ? "selected" : ""}>نباتي (Vegetarian)</option>
+                  </select>
+                </div>
+
+                <div class="sub-opt-field-ar">
+                  <label class="sub-field-label">اسم الوجبة (عربي)</label>
+                  <input type="text" class="admin-form-input sub-input-ar" id="sched-${wk}-${day}-1-ar" value="${opt1.ar || ''}" placeholder="اسم الوجبة بالعربي" oninput="AdminApp.markSubDirty()">
+                </div>
+
+                <div class="sub-opt-field-en">
+                  <label class="sub-field-label">Meal Name (EN)</label>
+                  <input type="text" class="admin-form-input sub-input-en" id="sched-${wk}-${day}-1-en" value="${opt1.en || ''}" placeholder="Meal Name in English" oninput="AdminApp.markSubDirty()">
+                </div>
+              </div>
+
+              <input type="hidden" id="sched-${wk}-${day}-1-id" value="${opt1.id}">
+            </div>
+
+          </div>
+        `;
+      });
+
+      weeksHtml += `</div></div>`;
+    });
+
+    // Build 5 Flyer Slides Cards
+    let sliderCardsHtml = "";
+    for (let sl = 1; sl <= 5; sl++) {
+      const slideUrl = slider[sl - 1]?.url || "";
+      sliderCardsHtml += `
+        <div class="sub-image-upload-card">
+          <div style="font-weight: 800; font-size: 0.88rem; color: var(--c-forest); display: flex; justify-content: space-between;">
+            <span>شريحة ${sl} · Slide ${sl}</span>
+            <span style="font-size: 0.72rem; color: #888;">#0${sl}</span>
+          </div>
+          
+          <div class="sub-img-preview-box">
+            <img src="${slideUrl}" id="sub-img-${sl}-preview" style="${slideUrl ? '' : 'display: none;'}" alt="Slide ${sl}" />
+            <span class="no-img-text" id="sub-img-${sl}-no-img" style="${slideUrl ? 'display: none;' : ''}">لا توجد صورة</span>
+          </div>
+
+          <div class="sub-img-actions-row">
+            <label class="btn-sub-upload-pc">
+              📁 رفع من الجهاز
+              <input type="file" accept="image/*" style="display: none;" onchange="AdminApp.handleSubImageUpload(event, 'sub-img-${sl}')">
+            </label>
+            <button type="button" class="btn-sub-clear-img" onclick="AdminApp.clearSubImage('sub-img-${sl}')">🗑️ مسح</button>
+          </div>
+
+          <div>
+            <label style="font-size: 0.75rem; color: #777; display: block; margin-bottom: 3px;">رابط الصورة (URL / Path):</label>
+            <input type="text" class="admin-form-input" id="sub-img-${sl}" value="${slideUrl}" placeholder="assets/images/slides/..." style="padding: 6px 10px; font-size: 0.82rem;" oninput="AdminApp.updateSubImagePreview(this.value, 'sub-img-${sl}-preview')">
+          </div>
+        </div>
+      `;
+    }
+
+    container.innerHTML = `
+      <div class="sub-admin-container">
+        <!-- Top Banner Matching Luxury Website Theme -->
+        <div class="sub-admin-banner">
+          <div>
+            <div class="sub-admin-banner-title">
+              <span>🍲 إدارة الاشتراكات والمحتوى · Subscription CMS</span>
+              <span class="sub-admin-badge-live">متزامن ومباشر · Live</span>
+            </div>
+            <p class="sub-admin-banner-desc">
+              تحكم كامل ومباشر بصفحة الاشتراكات على الموقع: تعديل باقات الأسعار، الواجهة الترويجية، منطقة التوصيل، الصور والنشرات، وجدول الوجبات الدوري مع دعم كامل للغتين العربية والإنجليزية.
+            </p>
+          </div>
+          <div>
+            <a href="/subscriptions" target="_blank" class="sub-nav-pill-btn" style="text-decoration: none; padding: 10px 18px; font-size: 0.9rem;">
+              🔗 معاينة صفحة الاشتراكات الحية
+            </a>
+          </div>
+        </div>
+
+        <!-- Sticky Status & Save Action Bar -->
+        <div class="sub-admin-sticky-bar">
+          <div class="sub-save-status" id="sub-status-indicator">
+            🟢 كافة التعديلات محفوظة (All changes saved)
+          </div>
+          <button class="sub-save-btn-primary" onclick="AdminApp.saveSubscriptionsDirectly()" id="sub-save-btn">
+            💾 حفظ كافة التعديلات (Save All Changes)
+          </button>
+        </div>
+
+        <!-- SECTION 1: PRICING MATRIX -->
+        <div class="sub-admin-card" id="sub-sec-pricing">
+          <div class="sub-admin-card-header">
+            <div class="sub-admin-card-header-left">
+              <h3 class="sub-admin-card-title">🏷️ باقات الأسعار الرسمية (Pricing in JOD)</h3>
+              <p class="sub-admin-card-subtitle">الأسعار تظهر فورياً في حاسبة الاشتراك والملخص على الموقع.</p>
+            </div>
+          </div>
+          <div class="sub-admin-card-body">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px;">
+              <div style="background: #FAFCFA; padding: 16px; border-radius: 12px; border: 1.5px solid #E2E8E2;">
+                <label class="admin-form-label" style="display: block; margin-bottom: 6px;">١٤ يوم · ٥ وجبات (14 Days / 5 Meals)</label>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <input type="number" class="admin-form-input" id="sub-p145" value="${p['14_days']['5_meals']}" oninput="AdminApp.markSubDirty()">
+                  <span style="font-weight: 700; color: var(--c-forest);">JOD</span>
+                </div>
+              </div>
+
+              <div style="background: #FAFCFA; padding: 16px; border-radius: 12px; border: 1.5px solid #E2E8E2;">
+                <label class="admin-form-label" style="display: block; margin-bottom: 6px;">١٤ يوم · ٦ وجبات (14 Days / 6 Meals)</label>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <input type="number" class="admin-form-input" id="sub-p146" value="${p['14_days']['6_meals']}" oninput="AdminApp.markSubDirty()">
+                  <span style="font-weight: 700; color: var(--c-forest);">JOD</span>
+                </div>
+              </div>
+
+              <div style="background: #FAFCFA; padding: 16px; border-radius: 12px; border: 1.5px solid #E2E8E2;">
+                <label class="admin-form-label" style="display: block; margin-bottom: 6px;">شهري · ٥ وجبات (Monthly / 5 Meals)</label>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <input type="number" class="admin-form-input" id="sub-pm5" value="${p['monthly']['5_meals']}" oninput="AdminApp.markSubDirty()">
+                  <span style="font-weight: 700; color: var(--c-forest);">JOD</span>
+                </div>
+              </div>
+
+              <div style="background: #FAFCFA; padding: 16px; border-radius: 12px; border: 1.5px solid #E2E8E2;">
+                <label class="admin-form-label" style="display: block; margin-bottom: 6px;">شهري · ٦ وجبات (Monthly / 6 Meals)</label>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <input type="number" class="admin-form-input" id="sub-pm6" value="${p['monthly']['6_meals']}" oninput="AdminApp.markSubDirty()">
+                  <span style="font-weight: 700; color: var(--c-forest);">JOD</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 2: HERO & TRUST SHOWCASE -->
+        <div class="sub-admin-card" id="sub-sec-hero">
+          <div class="sub-admin-card-header">
+            <div class="sub-admin-card-header-left">
+              <h3 class="sub-admin-card-title">🌟 الواجهة الرئيسية والبانر (Hero & Trust Badges)</h3>
+              <p class="sub-admin-card-subtitle">القسم الترحيبي أعلى صفحة الاشتراكات مع إمكانية رفع صورة البانر من الجهاز أو رابط.</p>
+            </div>
+          </div>
+          <div class="sub-admin-card-body">
+            
+            <!-- Hero Photo Uploader -->
+            <div style="margin-bottom: 24px; background: #FAF8F5; padding: 18px; border-radius: 12px; border: 1.5px solid #E2E8E2;">
+              <h4 style="margin: 0 0 12px 0; font-size: 0.95rem; color: var(--c-forest);">صورة البانر الرئيسي (Hero Food Photo)</h4>
+              <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
+                <div class="sub-img-preview-box" style="width: 220px; height: 140px; flex-shrink: 0;">
+                  <img src="${c.hero_image || 'assets/images/subscription_hero.jpg'}" id="sub-img-hero-preview" alt="Hero Preview" />
+                  <span class="no-img-text" id="sub-img-hero-no-img" style="display: none;">لا توجد صورة</span>
+                </div>
+                <div style="flex: 1; min-width: 260px; display: flex; flex-direction: column; gap: 10px;">
+                  <div class="sub-img-actions-row">
+                    <label class="btn-sub-upload-pc">
+                      📁 رفع صورة من الكمبيوتر (Upload from PC)
+                      <input type="file" accept="image/*" style="display: none;" onchange="AdminApp.handleSubImageUpload(event, 'sub-img-hero')">
+                    </label>
+                    <button type="button" class="btn-sub-clear-img" onclick="AdminApp.clearSubImage('sub-img-hero')">🗑️ مسح الصورة</button>
+                  </div>
+                  <div>
+                    <label style="font-size: 0.78rem; color: #777; display: block; margin-bottom: 4px;">أو أدخل مسار / رابط الصورة مباشرة:</label>
+                    <input type="text" class="admin-form-input" id="sub-img-hero" value="${c.hero_image || 'assets/images/subscription_hero.jpg'}" oninput="AdminApp.updateSubImagePreview(this.value, 'sub-img-hero-preview')">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Hero Texts (Bilingual Grid) -->
+            <!-- 1. Hero Badge -->
+            <div class="sub-bilingual-row">
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">الشارة العلوية للبانر</span>
+                  <span class="sub-lang-pill ar">عربي AR</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-ar" id="sub-txt-h-badge" value="${c.hero_badge || ''}" placeholder="اشتراك الوجبات الشهرية والأسبوعية" oninput="AdminApp.markSubDirty()">
+              </div>
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">Hero Top Badge</span>
+                  <span class="sub-lang-pill en">English EN</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-en" id="sub-txt-h-badge-en" value="${c.hero_badge_en || ''}" placeholder="Monthly & Weekly Meal Subscriptions" oninput="AdminApp.markSubDirty()">
+              </div>
+            </div>
+
+            <!-- 2. Hero Title -->
+            <div class="sub-bilingual-row">
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">العنوان الرئيسي الكامل</span>
+                  <span class="sub-lang-pill ar">عربي AR</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-ar" id="sub-txt-h-title" value="${c.hero_title || ''}" placeholder="طعام نقي، محضّر خصيصاً لك" oninput="AdminApp.markSubDirty()">
+              </div>
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">Hero Main Title</span>
+                  <span class="sub-lang-pill en">English EN</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-en" id="sub-txt-h-title-en" value="${c.hero_title_en || ''}" placeholder="Pure Food, Planned for You" oninput="AdminApp.markSubDirty()">
+              </div>
+            </div>
+
+            <!-- 3. Hero Highlight Text -->
+            <div class="sub-bilingual-row">
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">الجملة المميزة باللون الأخضر</span>
+                  <span class="sub-lang-pill ar">عربي AR</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-ar" id="sub-txt-h-high" value="${c.hero_title_highlight || ''}" placeholder="محضّر خصيصاً لك" oninput="AdminApp.markSubDirty()">
+              </div>
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">Highlighted Green Text</span>
+                  <span class="sub-lang-pill en">English EN</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-en" id="sub-txt-h-high-en" value="${c.hero_title_highlight_en || ''}" placeholder="Planned for You" oninput="AdminApp.markSubDirty()">
+              </div>
+            </div>
+
+            <!-- 4. Hero Subtitle -->
+            <div class="sub-bilingual-row">
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">الوصف التوضيحي للبانر</span>
+                  <span class="sub-lang-pill ar">عربي AR</span>
+                </div>
+                <textarea class="admin-form-textarea sub-input-ar" id="sub-txt-h-sub" rows="2" placeholder="جداول وجبات خالية من الغلوتين ١٠٠٪..." oninput="AdminApp.markSubDirty()">${c.hero_subtitle || ''}</textarea>
+              </div>
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">Hero Subtitle</span>
+                  <span class="sub-lang-pill en">English EN</span>
+                </div>
+                <textarea class="admin-form-textarea sub-input-en" id="sub-txt-h-sub-en" rows="2" placeholder="100% gluten-free, chef-crafted weekly meal schedules..." oninput="AdminApp.markSubDirty()">${c.hero_subtitle_en || ''}</textarea>
+              </div>
+            </div>
+
+            <!-- 5. Trust Badges (3 items) -->
+            <h4 style="margin: 20px 0 12px 0; font-size: 0.95rem; color: var(--c-forest);">شارات الثقة الثلاث (Trust Badges)</h4>
+            
+            <div class="sub-bilingual-row">
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">شارة 1: أمان السيلياك</span>
+                  <span class="sub-lang-pill ar">عربي AR</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-ar" id="sub-txt-t1" value="${c.hero_trust_celiac || ''}" placeholder="آمن للسيلياك ١٠٠٪" oninput="AdminApp.markSubDirty()">
+              </div>
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">Trust Badge 1</span>
+                  <span class="sub-lang-pill en">English EN</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-en" id="sub-txt-t1-en" value="${c.hero_trust_celiac_en || ''}" placeholder="100% Celiac Safe" oninput="AdminApp.markSubDirty()">
+              </div>
+            </div>
+
+            <div class="sub-bilingual-row">
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">شارة 2: المطبخ المخصص</span>
+                  <span class="sub-lang-pill ar">عربي AR</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-ar" id="sub-txt-t2" value="${c.hero_trust_kitchen || ''}" placeholder="مطبخ مخصص وآمن" oninput="AdminApp.markSubDirty()">
+              </div>
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">Trust Badge 2</span>
+                  <span class="sub-lang-pill en">English EN</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-en" id="sub-txt-t2-en" value="${c.hero_trust_kitchen_en || ''}" placeholder="Dedicated Safe Kitchen" oninput="AdminApp.markSubDirty()">
+              </div>
+            </div>
+
+            <div class="sub-bilingual-row">
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">شارة 3: الجداول الأسبوعية</span>
+                  <span class="sub-lang-pill ar">عربي AR</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-ar" id="sub-txt-t3" value="${c.hero_trust_fresh || ''}" placeholder="جداول متجددة أسبوعياً" oninput="AdminApp.markSubDirty()">
+              </div>
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">Trust Badge 3</span>
+                  <span class="sub-lang-pill en">English EN</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-en" id="sub-txt-t3-en" value="${c.hero_trust_fresh_en || ''}" placeholder="Fresh Weekly Schedules" oninput="AdminApp.markSubDirty()">
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- SECTION 3: DELIVERY AREA & COVERAGE -->
+        <div class="sub-admin-card" id="sub-sec-delivery">
+          <div class="sub-admin-card-header">
+            <div class="sub-admin-card-header-left">
+              <h3 class="sub-admin-card-title">🚚 منطقة ونطاق التوصيل (Delivery Area & Radius)</h3>
+              <p class="sub-admin-card-subtitle">الرادار التفاعلي، نطاق الـ 10 كم، قائمة المناطق القريبة، وملاحظات التوصيل.</p>
+            </div>
+          </div>
+          <div class="sub-admin-card-body">
+            
+            <div class="sub-bilingual-row">
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">شارة قسم التوصيل</span>
+                  <span class="sub-lang-pill ar">عربي AR</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-ar" id="sub-txt-d-eye" value="${c.delivery_section_eyebrow || ''}" placeholder="منطقة التوصيل" oninput="AdminApp.markSubDirty()">
+              </div>
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">Delivery Eyebrow</span>
+                  <span class="sub-lang-pill en">English EN</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-en" id="sub-txt-d-eye-en" value="${c.delivery_section_eyebrow_en || ''}" placeholder="Delivery Area" oninput="AdminApp.markSubDirty()">
+              </div>
+            </div>
+
+            <div class="sub-bilingual-row">
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">بيان التغطية الرئيسي</span>
+                  <span class="sub-lang-pill ar">عربي AR</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-ar" id="sub-txt-d-main" value="${c.delivery_main_statement || ''}" placeholder="نوصل ضمن نطاق 10 كم من موقع Moe’s PureBite" oninput="AdminApp.markSubDirty()">
+              </div>
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">Main Delivery Statement</span>
+                  <span class="sub-lang-pill en">English EN</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-en" id="sub-txt-d-main-en" value="${c.delivery_main_statement_en || ''}" placeholder="Delivery is available within a 10 KM radius of Moe’s PureBite." oninput="AdminApp.markSubDirty()">
+              </div>
+            </div>
+
+            <div class="sub-bilingual-row">
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">النص التوضيحي</span>
+                  <span class="sub-lang-pill ar">عربي AR</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-ar" id="sub-txt-d-sub" value="${c.delivery_subtext || ''}" placeholder="تشمل التغطية مناطق قريبة من المطبخ..." oninput="AdminApp.markSubDirty()">
+              </div>
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">Delivery Subtext</span>
+                  <span class="sub-lang-pill en">English EN</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-en" id="sub-txt-d-sub-en" value="${c.delivery_subtext_en || ''}" placeholder="Coverage includes areas near our kitchen..." oninput="AdminApp.markSubDirty()">
+              </div>
+            </div>
+
+            <div class="sub-bilingual-row">
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">المناطق القريبة (مفصولة بفواصل)</span>
+                  <span class="sub-lang-pill ar">عربي AR</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-ar" id="sub-txt-d-areas-ar" value="${Array.isArray(c.delivery_areas_ar || c.delivery_areas) ? (c.delivery_areas_ar || c.delivery_areas).join('، ') : (c.delivery_areas_ar || c.delivery_areas || 'مرج الحمام، السابع، البنيات، الصويفية، دير غبار، عبدون')}" placeholder="مرج الحمام، السابع، البنيات..." oninput="AdminApp.markSubDirty()">
+              </div>
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">Nearby Areas (comma-separated)</span>
+                  <span class="sub-lang-pill en">English EN</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-en" id="sub-txt-d-areas-en" value="${Array.isArray(c.delivery_areas_en) ? c.delivery_areas_en.join(', ') : (c.delivery_areas_en || 'Marj Al Hamam, Seventh Circle, Al Bunayyat, Sweifieh, Deir Ghbar, Abdoun')}" placeholder="Marj Al Hamam, Seventh Circle..." oninput="AdminApp.markSubDirty()">
+              </div>
+            </div>
+
+            <div class="sub-bilingual-row">
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">ملاحظة داخل النطاق</span>
+                  <span class="sub-lang-pill ar">عربي AR</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-ar" id="sub-txt-d-note-in" value="${c.delivery_note_inside || ''}" placeholder="التغطية تعتمد على موقعك الدقيق..." oninput="AdminApp.markSubDirty()">
+              </div>
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">Inside Zone Note</span>
+                  <span class="sub-lang-pill en">English EN</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-en" id="sub-txt-d-note-in-en" value="${c.delivery_note_inside_en || ''}" placeholder="Coverage depends on your exact location..." oninput="AdminApp.markSubDirty()">
+              </div>
+            </div>
+
+            <div class="sub-bilingual-row">
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">ملاحظة خارج النطاق</span>
+                  <span class="sub-lang-pill ar">عربي AR</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-ar" id="sub-txt-d-note-out" value="${c.delivery_note_outside || ''}" placeholder="تتوفر إمكانية التنسيق والتوصيل..." oninput="AdminApp.markSubDirty()">
+              </div>
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">Outside Zone Note</span>
+                  <span class="sub-lang-pill en">English EN</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-en" id="sub-txt-d-note-out-en" value="${c.delivery_note_outside_en || ''}" placeholder="Delivery coordination may be arranged upon request..." oninput="AdminApp.markSubDirty()">
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- SECTION 4: BROCHURES & SLIDER (5 SLIDES) -->
+        <div class="sub-admin-card" id="sub-sec-brochures">
+          <div class="sub-admin-card-header">
+            <div class="sub-admin-card-header-left">
+              <h3 class="sub-admin-card-title">📸 النشرات وسلايدر الصور - 5 صور (Brochures & Slider)</h3>
+              <p class="sub-admin-card-subtitle">رفع صور النشرات الترويجية مباشرة من جهازك أو وضع روابط، مع تعديل النصوص الثنائية للقسم.</p>
+            </div>
+          </div>
+          <div class="sub-admin-card-body">
+            
+            <!-- Section Header Texts -->
+            <div class="sub-bilingual-row">
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">شارة القسم</span>
+                  <span class="sub-lang-pill ar">عربي AR</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-ar" id="sub-txt-b-badge" value="${c.brochures_badge || ''}" placeholder="النشرات وقوائم الأسعار الرسمية" oninput="AdminApp.markSubDirty()">
+              </div>
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">Section Eyebrow</span>
+                  <span class="sub-lang-pill en">English EN</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-en" id="sub-txt-b-badge-en" value="${c.brochures_badge_en || ''}" placeholder="OFFICIAL FLYERS & MENUS" oninput="AdminApp.markSubDirty()">
+              </div>
+            </div>
+
+            <div class="sub-bilingual-row">
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">عنوان النشرات</span>
+                  <span class="sub-lang-pill ar">عربي AR</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-ar" id="sub-txt-b-title" value="${c.brochures_title || ''}" placeholder="نشرات وباقات الوجبات" oninput="AdminApp.markSubDirty()">
+              </div>
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">Brochures Title</span>
+                  <span class="sub-lang-pill en">English EN</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-en" id="sub-txt-b-title-en" value="${c.brochures_title_en || ''}" placeholder="Official Menu & Plan Posters" oninput="AdminApp.markSubDirty()">
+              </div>
+            </div>
+
+            <div class="sub-bilingual-row">
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">الوصف التوضيحي</span>
+                  <span class="sub-lang-pill ar">عربي AR</span>
+                </div>
+                <textarea class="admin-form-textarea sub-input-ar" id="sub-txt-b-sub" rows="2" placeholder="تصفح النشرات الرسمية للوجبات، الأسعار..." oninput="AdminApp.markSubDirty()">${c.brochures_subtitle || ''}</textarea>
+              </div>
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">Brochures Subtitle</span>
+                  <span class="sub-lang-pill en">English EN</span>
+                </div>
+                <textarea class="admin-form-textarea sub-input-en" id="sub-txt-b-sub-en" rows="2" placeholder="Browse our official flyers for weekly menus..." oninput="AdminApp.markSubDirty()">${c.brochures_subtitle_en || ''}</textarea>
+              </div>
+            </div>
+
+            <!-- 5 Slider Cards -->
+            <h4 style="margin: 24px 0 14px 0; font-size: 0.95rem; color: var(--c-forest);">صور السلايدر الخمسة (Upload up to 5 Slides):</h4>
+            <div class="sub-slider-cards-grid">
+              ${sliderCardsHtml}
+            </div>
+
+          </div>
+        </div>
+
+        <!-- SECTION 5: 4-WEEK ROTATION SCHEDULE -->
+        <div class="sub-admin-card" id="sub-sec-schedule">
+          <div class="sub-admin-card-header">
+            <div class="sub-admin-card-header-left">
+              <h3 class="sub-admin-card-title">جدول الوجبات الدوري - 4 أسابيع (4-Week Schedule)</h3>
+              <p class="sub-admin-card-subtitle">اختر الوجبات اليومية للأسابيع الأربعة وعدّل مسمياتها بالعربي والإنجليزي وحدد نوع وتصنيف كل وجبة بديناميكية تامة.</p>
+            </div>
+          </div>
+          <div class="sub-admin-card-body">
+            
+            <div class="sub-bilingual-row">
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">شارة زر الأكورديون</span>
+                  <span class="sub-lang-pill ar">عربي AR</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-ar" id="sub-txt-st-eye" value="${c.schedule_toggle_eyebrow || ''}" placeholder="الجدول الأسبوعي الكامل" oninput="AdminApp.markSubDirty()">
+              </div>
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">Schedule Toggle Eyebrow</span>
+                  <span class="sub-lang-pill en">English EN</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-en" id="sub-txt-st-eye-en" value="${c.schedule_toggle_eyebrow_en || ''}" placeholder="COMPLETE WEEKLY SCHEDULE" oninput="AdminApp.markSubDirty()">
+              </div>
+            </div>
+
+            <div class="sub-bilingual-row">
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">عنوان جدول الوجبات</span>
+                  <span class="sub-lang-pill ar">عربي AR</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-ar" id="sub-txt-s-title" value="${c.schedule_title || ''}" placeholder="خطة وجبات الشهر" oninput="AdminApp.markSubDirty()">
+              </div>
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">Schedule Section Title</span>
+                  <span class="sub-lang-pill en">English EN</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-en" id="sub-txt-s-title-en" value="${c.schedule_title_en || ''}" placeholder="Meal Plan" oninput="AdminApp.markSubDirty()">
+              </div>
+            </div>
+
+            <div class="sub-bilingual-row">
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">تلميح اختيار الوجبات</span>
+                  <span class="sub-lang-pill ar">عربي AR</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-ar" id="sub-txt-s-hint" value="${c.schedule_hint || ''}" placeholder="اضغط على أي وجبة لمعرفة التفاصيل والمكونات" oninput="AdminApp.markSubDirty()">
+              </div>
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">Schedule Hint</span>
+                  <span class="sub-lang-pill en">English EN</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-en" id="sub-txt-s-hint-en" value="${c.schedule_hint_en || ''}" placeholder="Tap any meal to view details" oninput="AdminApp.markSubDirty()">
+              </div>
+            </div>
+
+            <div class="sub-bilingual-row">
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">نص زر فتح الجدول</span>
+                  <span class="sub-lang-pill ar">عربي AR</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-ar" id="sub-txt-st-btn-show" value="${c.schedule_toggle_btn_show || ''}" placeholder="عرض خطة وجبات الأسابيع التفصيلية" oninput="AdminApp.markSubDirty()">
+              </div>
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">Show Button Text</span>
+                  <span class="sub-lang-pill en">English EN</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-en" id="sub-txt-st-btn-show-en" value="${c.schedule_toggle_btn_show_en || ''}" placeholder="Show Detailed Weekly Meal Plans" oninput="AdminApp.markSubDirty()">
+              </div>
+            </div>
+
+            <div class="sub-bilingual-row">
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">نص زر إخفاء الجدول</span>
+                  <span class="sub-lang-pill ar">عربي AR</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-ar" id="sub-txt-st-btn-hide" value="${c.schedule_toggle_btn_hide || ''}" placeholder="إخفاء خطة وجبات الأسابيع التفصيلية" oninput="AdminApp.markSubDirty()">
+              </div>
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">Hide Button Text</span>
+                  <span class="sub-lang-pill en">English EN</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-en" id="sub-txt-st-btn-hide-en" value="${c.schedule_toggle_btn_hide_en || ''}" placeholder="Hide Detailed Weekly Meal Plans" oninput="AdminApp.markSubDirty()">
+              </div>
+            </div>
+
+            <!-- 4-Week Schedule Grid -->
+            <div style="margin-top: 24px;">
+              <h4 style="margin: 0 0 16px 0; font-size: 1.05rem; color: var(--c-forest);">جداول الأسابيع الأربعة (الأيام والوجبات):</h4>
+              <div class="sub-schedule-weeks-grid">
+                ${weeksHtml}
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- SECTION 6: BUILDER & SUMMARY -->
+        <div class="sub-admin-card" id="sub-sec-options">
+          <div class="sub-admin-card-header">
+            <div class="sub-admin-card-header-left">
+              <h3 class="sub-admin-card-title">⚙️ خيارات الخطة والملخص (Options & Summary)</h3>
+              <p class="sub-admin-card-subtitle">العناوين وملاحظة الدفع في قسم اختيار الخطة أسفل الصفحة.</p>
+            </div>
+          </div>
+          <div class="sub-admin-card-body">
+            
+            <div class="sub-bilingual-row">
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">عنوان قسم الخيارات</span>
+                  <span class="sub-lang-pill ar">عربي AR</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-ar" id="sub-txt-o-title" value="${c.options_title || ''}" placeholder="خيارات الاشتراك" oninput="AdminApp.markSubDirty()">
+              </div>
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">Options Section Title</span>
+                  <span class="sub-lang-pill en">English EN</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-en" id="sub-txt-o-title-en" value="${c.options_title_en || ''}" placeholder="Customize Your Subscription" oninput="AdminApp.markSubDirty()">
+              </div>
+            </div>
+
+            <div class="sub-bilingual-row">
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">الوصف التوضيحي للخيارات</span>
+                  <span class="sub-lang-pill ar">عربي AR</span>
+                </div>
+                <textarea class="admin-form-textarea sub-input-ar" id="sub-txt-o-sub" rows="2" placeholder="اختر المدة وعدد الوجبات الأسبوعية..." oninput="AdminApp.markSubDirty()">${c.options_subtitle || ''}</textarea>
+              </div>
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">Options Subtitle</span>
+                  <span class="sub-lang-pill en">English EN</span>
+                </div>
+                <textarea class="admin-form-textarea sub-input-en" id="sub-txt-o-sub-en" rows="2" placeholder="Select your duration and weekly meal schedule..." oninput="AdminApp.markSubDirty()">${c.options_subtitle_en || ''}</textarea>
+              </div>
+            </div>
+
+            <div class="sub-bilingual-row">
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">ملاحظة تأكيد الطلب والدفع</span>
+                  <span class="sub-lang-pill ar">عربي AR</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-ar" id="sub-txt-sum-note" value="${c.summary_note || ''}" placeholder="لا يتطلب دفع إلكتروني • يتم التأكيد والتنسيق مباشرة عبر واتساب" oninput="AdminApp.markSubDirty()">
+              </div>
+              <div class="sub-field-column">
+                <div class="sub-field-label-wrap">
+                  <span class="sub-field-label">Order Confirmation Note</span>
+                  <span class="sub-lang-pill en">English EN</span>
+                </div>
+                <input type="text" class="admin-form-input sub-input-en" id="sub-txt-sum-note-en" value="${c.summary_note_en || ''}" placeholder="No online payment • Confirmed directly on WhatsApp" oninput="AdminApp.markSubDirty()">
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Bottom Save Button -->
+        <div style="text-align: center; padding: 20px 0 40px;">
+          <button class="sub-save-btn-primary" onclick="AdminApp.saveSubscriptionsDirectly()" style="padding: 14px 40px; font-size: 1.05rem;">
+            💾 حفظ كافة التعديلات (Save All Changes)
+          </button>
+        </div>
+
+      </div>
+    `;
+  },
+
+  async saveSubscriptionsDirectly() {
+    if (!this.editingSubConfig) return;
+
+    // 1. Read Pricing
+    this.editingSubConfig.pricing.mix = {
+      "14_days": {
+        "5_meals": document.getElementById("sub-p145")?.value || "85",
+        "6_meals": document.getElementById("sub-p146")?.value || "98"
+      },
+      "monthly": {
+        "5_meals": document.getElementById("sub-pm5")?.value || "160",
+        "6_meals": document.getElementById("sub-pm6")?.value || "185"
+      }
+    };
+
+    const getSubFieldVal = (id, fallbackKey) => {
+      const el = document.getElementById(id);
+      const val = el ? el.value.trim() : "";
+      return val || (AdminApp.defaultSubContent && AdminApp.defaultSubContent[fallbackKey]) || "";
+    };
+
+    // 2. Read Hero Bilingual Texts & Image
+    this.editingSubConfig.content.hero_badge = getSubFieldVal("sub-txt-h-badge", "hero_badge");
+    this.editingSubConfig.content.hero_badge_en = getSubFieldVal("sub-txt-h-badge-en", "hero_badge_en");
+    this.editingSubConfig.content.hero_title = getSubFieldVal("sub-txt-h-title", "hero_title");
+    this.editingSubConfig.content.hero_title_en = getSubFieldVal("sub-txt-h-title-en", "hero_title_en");
+    this.editingSubConfig.content.hero_title_highlight = getSubFieldVal("sub-txt-h-high", "hero_title_highlight");
+    this.editingSubConfig.content.hero_title_highlight_en = getSubFieldVal("sub-txt-h-high-en", "hero_title_highlight_en");
+    this.editingSubConfig.content.hero_subtitle = getSubFieldVal("sub-txt-h-sub", "hero_subtitle");
+    this.editingSubConfig.content.hero_subtitle_en = getSubFieldVal("sub-txt-h-sub-en", "hero_subtitle_en");
+    this.editingSubConfig.content.hero_trust_celiac = getSubFieldVal("sub-txt-t1", "hero_trust_celiac");
+    this.editingSubConfig.content.hero_trust_celiac_en = getSubFieldVal("sub-txt-t1-en", "hero_trust_celiac_en");
+    this.editingSubConfig.content.hero_trust_kitchen = getSubFieldVal("sub-txt-t2", "hero_trust_kitchen");
+    this.editingSubConfig.content.hero_trust_kitchen_en = getSubFieldVal("sub-txt-t2-en", "hero_trust_kitchen_en");
+    this.editingSubConfig.content.hero_trust_fresh = getSubFieldVal("sub-txt-t3", "hero_trust_fresh");
+    this.editingSubConfig.content.hero_trust_fresh_en = getSubFieldVal("sub-txt-t3-en", "hero_trust_fresh_en");
+
+    const heroImg = document.getElementById("sub-img-hero")?.value.trim();
+    this.editingSubConfig.content.hero_image = heroImg || AdminApp.defaultSubContent.hero_image;
+
+    // 3. Read Delivery Bilingual Texts
+    this.editingSubConfig.content.delivery_section_eyebrow = getSubFieldVal("sub-txt-d-eye", "delivery_section_eyebrow");
+    this.editingSubConfig.content.delivery_section_eyebrow_en = getSubFieldVal("sub-txt-d-eye-en", "delivery_section_eyebrow_en");
+    this.editingSubConfig.content.delivery_main_statement = getSubFieldVal("sub-txt-d-main", "delivery_main_statement");
+    this.editingSubConfig.content.delivery_main_statement_en = getSubFieldVal("sub-txt-d-main-en", "delivery_main_statement_en");
+    this.editingSubConfig.content.delivery_subtext = getSubFieldVal("sub-txt-d-sub", "delivery_subtext");
+    this.editingSubConfig.content.delivery_subtext_en = getSubFieldVal("sub-txt-d-sub-en", "delivery_subtext_en");
+    this.editingSubConfig.content.delivery_areas_ar = getSubFieldVal("sub-txt-d-areas-ar", "delivery_areas_ar");
+    this.editingSubConfig.content.delivery_areas_en = getSubFieldVal("sub-txt-d-areas-en", "delivery_areas_en");
+    this.editingSubConfig.content.delivery_note_inside = getSubFieldVal("sub-txt-d-note-in", "delivery_note_inside");
+    this.editingSubConfig.content.delivery_note_inside_en = getSubFieldVal("sub-txt-d-note-in-en", "delivery_note_inside_en");
+    this.editingSubConfig.content.delivery_note_outside = getSubFieldVal("sub-txt-d-note-out", "delivery_note_outside");
+    this.editingSubConfig.content.delivery_note_outside_en = getSubFieldVal("sub-txt-d-note-out-en", "delivery_note_outside_en");
+
+    // 4. Read Brochures Bilingual Texts & 5 Slides
+    this.editingSubConfig.content.brochures_badge = getSubFieldVal("sub-txt-b-badge", "brochures_badge");
+    this.editingSubConfig.content.brochures_badge_en = getSubFieldVal("sub-txt-b-badge-en", "brochures_badge_en");
+    this.editingSubConfig.content.brochures_title = getSubFieldVal("sub-txt-b-title", "brochures_title");
+    this.editingSubConfig.content.brochures_title_en = getSubFieldVal("sub-txt-b-title-en", "brochures_title_en");
+    this.editingSubConfig.content.brochures_subtitle = getSubFieldVal("sub-txt-b-sub", "brochures_subtitle");
+    this.editingSubConfig.content.brochures_subtitle_en = getSubFieldVal("sub-txt-b-sub-en", "brochures_subtitle_en");
+
+    this.editingSubConfig.slider = [];
+    for (let sl = 1; sl <= 5; sl++) {
+      const sVal = document.getElementById(`sub-img-${sl}`)?.value.trim();
+      if (sVal) this.editingSubConfig.slider.push({ url: sVal });
+    }
+    if (this.editingSubConfig.slider.length === 0) {
+      this.editingSubConfig.slider = [
+        { url: "assets/images/slides/slide_1.jpg" },
+        { url: "assets/images/slides/slide_2.jpg" },
+        { url: "assets/images/slides/slide_6.jpg" },
+        { url: "assets/images/slides/slide_3.jpg" },
+        { url: "assets/images/slides/slide_4.jpg" }
+      ];
+    }
+
+    // 5. Read Schedule Bilingual Texts & 4-Week Rotations
+    this.editingSubConfig.content.schedule_toggle_eyebrow = getSubFieldVal("sub-txt-st-eye", "schedule_toggle_eyebrow");
+    this.editingSubConfig.content.schedule_toggle_eyebrow_en = getSubFieldVal("sub-txt-st-eye-en", "schedule_toggle_eyebrow_en");
+    this.editingSubConfig.content.schedule_title = getSubFieldVal("sub-txt-s-title", "schedule_title");
+    this.editingSubConfig.content.schedule_title_en = getSubFieldVal("sub-txt-s-title-en", "schedule_title_en");
+    this.editingSubConfig.content.schedule_hint = getSubFieldVal("sub-txt-s-hint", "schedule_hint");
+    this.editingSubConfig.content.schedule_hint_en = getSubFieldVal("sub-txt-s-hint-en", "schedule_hint_en");
+    this.editingSubConfig.content.schedule_toggle_btn_show = getSubFieldVal("sub-txt-st-btn-show", "schedule_toggle_btn_show");
+    this.editingSubConfig.content.schedule_toggle_btn_show_en = getSubFieldVal("sub-txt-st-btn-show-en", "schedule_toggle_btn_show_en");
+    this.editingSubConfig.content.schedule_toggle_btn_hide = getSubFieldVal("sub-txt-st-btn-hide", "schedule_toggle_btn_hide");
+    this.editingSubConfig.content.schedule_toggle_btn_hide_en = getSubFieldVal("sub-txt-st-btn-hide-en", "schedule_toggle_btn_hide_en");
+
+    const weeks = ["week1", "week2", "week3", "week4"];
+    const days = ["sat", "sun", "mon", "tue", "wed", "thu"];
+    if (!this.editingSubConfig.schedules) this.editingSubConfig.schedules = {};
+    if (!this.editingSubConfig.schedules.dailyOptionsSchedule) {
+      this.editingSubConfig.schedules.dailyOptionsSchedule = {};
+    }
+    if (!this.editingSubConfig.meal_library) {
+      this.editingSubConfig.meal_library = {};
+    }
+
+    weeks.forEach(wk => {
+      if (!this.editingSubConfig.schedules.dailyOptionsSchedule[wk]) {
+        this.editingSubConfig.schedules.dailyOptionsSchedule[wk] = {};
+      }
+      days.forEach(day => {
+        const dayOptionIds = [];
+        [0, 1].forEach(optIdx => {
+          const arVal = document.getElementById(`sched-${wk}-${day}-${optIdx}-ar`)?.value.trim() || "";
+          const enVal = document.getElementById(`sched-${wk}-${day}-${optIdx}-en`)?.value.trim() || "";
+          const typeVal = document.getElementById(`sched-${wk}-${day}-${optIdx}-type`)?.value || (optIdx === 0 ? "chicken" : "meat");
+          let idVal = document.getElementById(`sched-${wk}-${day}-${optIdx}-id`)?.value.trim() || "";
+
+          if (arVal || enVal || idVal) {
+            if (!idVal) {
+              idVal = `${wk}_${day}_opt${optIdx + 1}`;
+            }
+            dayOptionIds.push(idVal);
+
+            const existingMeal = this.editingSubConfig.meal_library[idVal] || (AdminApp.subscriptionMealCatalog && AdminApp.subscriptionMealCatalog[idVal]) || {};
+            this.editingSubConfig.meal_library[idVal] = {
+              ...existingMeal,
+              id: idVal,
+              type: typeVal,
+              name: {
+                ar: arVal || (existingMeal.name && existingMeal.name.ar) || idVal,
+                en: enVal || (existingMeal.name && existingMeal.name.en) || idVal
+              }
+            };
+          }
+        });
+        this.editingSubConfig.schedules.dailyOptionsSchedule[wk][day] = dayOptionIds;
+      });
+    });
+
+    // 6. Read Options & Summary Bilingual Texts
+    this.editingSubConfig.content.options_title = getSubFieldVal("sub-txt-o-title", "options_title");
+    this.editingSubConfig.content.options_title_en = getSubFieldVal("sub-txt-o-title-en", "options_title_en");
+    this.editingSubConfig.content.options_subtitle = getSubFieldVal("sub-txt-o-sub", "options_subtitle");
+    this.editingSubConfig.content.options_subtitle_en = getSubFieldVal("sub-txt-o-sub-en", "options_subtitle_en");
+    this.editingSubConfig.content.summary_note = getSubFieldVal("sub-txt-sum-note", "summary_note");
+    this.editingSubConfig.content.summary_note_en = getSubFieldVal("sub-txt-sum-note-en", "summary_note_en");
+
+    App.showToast("جاري حفظ إعدادات الاشتراكات... 💾", "info");
+    const res = await window.MoeStore.updateSubscriptionConfig(this.editingSubConfig);
+    if (res && res.error) {
+      App.showToast(`خطأ في الحفظ: ${res.error.message}`, "danger");
+    } else {
+      App.showToast("تم حفظ كافة إعدادات الاشتراكات بنجاح! 🎉", "success");
+      const btn = document.getElementById("sub-save-btn");
+      if (btn) {
+        btn.style.backgroundColor = "";
+        btn.textContent = "💾 تم الحفظ بنجاح!";
+      }
+      const indicator = document.getElementById("sub-status-indicator");
+      if (indicator) {
+        indicator.innerHTML = "🟢 كافة التعديلات محفوظة (All changes saved)";
+        indicator.style.color = "var(--c-forest)";
+      }
+    }
   },
 
   async saveSettings() {
