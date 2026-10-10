@@ -121,6 +121,9 @@ const AdminApp = {
       
       <!-- Confirmation Modal Mount -->
       <div id="admin-confirmation-modal-mount"></div>
+
+      <!-- Subscription Meal Modal Mount -->
+      <div id="admin-sub-meal-modal-mount"></div>
     `;
   },
 
@@ -1845,9 +1848,118 @@ const AdminApp = {
     sayadieh_fish: { id: "sayadieh_fish", type: "fish", name: { ar: "صيادية سمك", en: "Fish Sayadieh" } }
   },
 
+  getAllSubscriptionMeals() {
+    const baseCatalog = (typeof SubscriptionApp !== "undefined" && SubscriptionApp.mealLibrary)
+      ? SubscriptionApp.mealLibrary
+      : (this.subscriptionMealCatalog || {});
+
+    const combined = {};
+
+    for (const [id, m] of Object.entries(baseCatalog)) {
+      if (!m) continue;
+      combined[id] = {
+        id: id,
+        type: m.type || "chicken",
+        price: m.price !== undefined ? Number(m.price) : 5.50,
+        name: {
+          ar: m.name?.ar || (typeof m.name === "string" ? m.name : id),
+          en: m.name?.en || (typeof m.name === "string" ? m.name : id)
+        },
+        desc: {
+          ar: m.desc?.ar || (typeof m.desc === "string" ? m.desc : ""),
+          en: m.desc?.en || (typeof m.desc === "string" ? m.desc : "")
+        }
+      };
+    }
+
+    if (this.subscriptionMealCatalog) {
+      for (const [id, m] of Object.entries(this.subscriptionMealCatalog)) {
+        if (!m) continue;
+        if (!combined[id]) {
+          combined[id] = {
+            id: id,
+            type: m.type || "chicken",
+            price: m.price !== undefined ? Number(m.price) : 5.50,
+            name: {
+              ar: m.name?.ar || (typeof m.name === "string" ? m.name : id),
+              en: m.name?.en || (typeof m.name === "string" ? m.name : id)
+            },
+            desc: {
+              ar: m.desc?.ar || (typeof m.desc === "string" ? m.desc : ""),
+              en: m.desc?.en || (typeof m.desc === "string" ? m.desc : "")
+            }
+          };
+        } else {
+          if (m.name?.ar) combined[id].name.ar = m.name.ar;
+          if (m.name?.en) combined[id].name.en = m.name.en;
+          if (m.type) combined[id].type = m.type;
+          if (m.price !== undefined) combined[id].price = Number(m.price);
+        }
+      }
+    }
+
+    const customLib = this.editingSubConfig?.meal_library || {};
+    for (const [id, m] of Object.entries(customLib)) {
+      if (!m) continue;
+      combined[id] = {
+        id: id,
+        type: m.type || combined[id]?.type || "chicken",
+        price: m.price !== undefined ? Number(m.price) : (combined[id]?.price || 5.50),
+        name: {
+          ar: m.name?.ar || (typeof m.name === "string" ? m.name : combined[id]?.name?.ar || id),
+          en: m.name?.en || (typeof m.name === "string" ? m.name : combined[id]?.name?.en || id)
+        },
+        desc: {
+          ar: m.desc?.ar || (typeof m.desc === "string" ? m.desc : combined[id]?.desc?.ar || ""),
+          en: m.desc?.en || (typeof m.desc === "string" ? m.desc : combined[id]?.desc?.en || "")
+        }
+      };
+    }
+
+    return combined;
+  },
+
+  getQuickPickOptions(selectedId) {
+    let optHtml = `<option value="">⚡ اختر وجبة من القائمة (Quick Pick)...</option>`;
+    const allMeals = this.getAllSubscriptionMeals();
+    const groups = [
+      { label: "الأسبوع 1 · Week 1", keys: ["kabsa_chicken", "creamy_mushroom_chicken", "biryani_chicken", "penne_pesto", "zarb_chicken", "bbq_chicken", "kabsa_meat", "meatballs_creamy_mushroom", "biryani_meat", "fusilli_meat", "zarb_meat", "fish_cream_lemon"] },
+      { label: "الأسبوع 2 · Week 2", keys: ["mandi_chicken", "fajita_chicken", "teriyaki_chicken", "fettuccine_chicken", "ouzi_chicken", "strips_chicken", "mandi_meat", "fajita_meat", "mongolian_beef", "dawood_basha", "ouzi_meat", "fish_lemon_herbs"] },
+      { label: "الأسبوع 3 · Week 3", keys: ["zurbian_chicken", "lemon_garlic_chicken", "curry_chicken", "spaghetti_marinara", "qidreh_chicken", "chicken_mushroom_sauce", "zurbian_meat", "meat_potato_tajin", "curry_fish", "spaghetti_bolognese", "qidreh_meat", "armenian_kofta"] },
+      { label: "الأسبوع 4 · Week 4", keys: ["madghoot_chicken", "mexican_chicken", "sweet_sour_chicken", "shell_pasta_tomato_cream", "uzbekian_chicken", "shawarma_chicken_cuts", "stuffed_zucchini", "mexican_meat", "kofta_tahini", "indian_kebab", "uzbekian_meat", "sayadieh_fish"] }
+    ];
+
+    const standardSet = new Set(groups.flatMap(g => g.keys));
+    const customKeys = Object.keys(allMeals).filter(k => !standardSet.has(k));
+
+    if (customKeys.length > 0) {
+      groups.unshift({ label: "✨ وجبات مضافة حديثاً بالمكتبة · Custom Meals", keys: customKeys });
+    }
+
+    groups.forEach(g => {
+      let groupOptions = "";
+      g.keys.forEach(k => {
+        const m = allMeals[k];
+        if (m) {
+          const isSel = k === selectedId ? " selected" : "";
+          const arName = m.name?.ar || (typeof m.name === "string" ? m.name : k);
+          const enName = m.name?.en || "";
+          const priceTag = m.price ? ` [${Number(m.price).toFixed(2)} د.أ]` : "";
+          groupOptions += `<option value="${m.id || k}"${isSel}>${arName} (${enName})${priceTag}</option>`;
+        }
+      });
+      if (groupOptions) {
+        optHtml += `<optgroup label="${g.label}">${groupOptions}</optgroup>`;
+      }
+    });
+
+    return optHtml;
+  },
+
   onMealQuickPick(mealId, wk, day, optIdx) {
     if (!mealId) return;
-    const meal = this.subscriptionMealCatalog[mealId];
+    const allMeals = this.getAllSubscriptionMeals();
+    const meal = allMeals[mealId];
     if (!meal) return;
 
     const arInput = document.getElementById(`sched-${wk}-${day}-${optIdx}-ar`);
@@ -1856,13 +1968,317 @@ const AdminApp = {
     const priceInput = document.getElementById(`sched-${wk}-${day}-${optIdx}-price`);
     const idInput = document.getElementById(`sched-${wk}-${day}-${optIdx}-id`);
 
-    if (arInput) arInput.value = meal.name.ar;
-    if (enInput) enInput.value = meal.name.en;
-    if (typeSelect) typeSelect.value = meal.type;
-    if (priceInput) priceInput.value = meal.price !== undefined ? meal.price : "5.50";
-    if (idInput) idInput.value = meal.id;
+    if (arInput) arInput.value = meal.name?.ar || (typeof meal.name === "string" ? meal.name : "");
+    if (enInput) enInput.value = meal.name?.en || "";
+    if (typeSelect) typeSelect.value = meal.type || "chicken";
+    if (priceInput) priceInput.value = meal.price !== undefined ? Number(meal.price).toFixed(2) : "5.50";
+    if (idInput) idInput.value = meal.id || mealId;
 
     this.markSubDirty();
+  },
+
+  getMealLibraryCardsHTML(filterType = "all", searchQuery = "") {
+    const allMeals = this.getAllSubscriptionMeals();
+    let entries = Object.values(allMeals);
+
+    if (filterType && filterType !== "all") {
+      entries = entries.filter(m => {
+        if (filterType === "special") return m.type === "special" || m.type === "specialty";
+        return m.type === filterType;
+      });
+    }
+
+    if (searchQuery && searchQuery.trim()) {
+      const q = searchQuery.trim().toLowerCase();
+      entries = entries.filter(m => {
+        const arName = (m.name?.ar || "").toLowerCase();
+        const enName = (m.name?.en || "").toLowerCase();
+        const arDesc = (m.desc?.ar || "").toLowerCase();
+        const enDesc = (m.desc?.en || "").toLowerCase();
+        return arName.includes(q) || enName.includes(q) || arDesc.includes(q) || enDesc.includes(q);
+      });
+    }
+
+    if (entries.length === 0) {
+      return `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 36px 20px; background: #FAFCFA; border-radius: 12px; border: 1.5px dashed #CBD5E1; color: #64748B;">
+          <div style="font-size: 2rem; margin-bottom: 8px;">🍽️</div>
+          <div style="font-weight: 700; font-size: 1rem; color: var(--c-forest); margin-bottom: 4px;">لم يتم العثور على وجبات مطابقة</div>
+          <div style="font-size: 0.85rem;">جرّب تعديل خيارات البحث أو اضغط على "+ إضافة وجبة جديدة" لإضافة صنف جديد.</div>
+        </div>
+      `;
+    }
+
+    const typeLabels = {
+      chicken: "🍗 دجاج (Chicken)",
+      meat: "🥩 لحم (Meat)",
+      fish: "🐟 سمك (Fish)",
+      pasta: "🍝 باستا (Pasta)",
+      veg: "🥗 نباتي (Veg)",
+      special: "✨ مميز (Specialty)"
+    };
+
+    return entries.map(m => {
+      const typeLabel = typeLabels[m.type] || m.type || "دجاج";
+      const typeClass = m.type || "chicken";
+      const arName = m.name?.ar || m.id;
+      const enName = m.name?.en || m.id;
+      const arDesc = m.desc?.ar || "لا يوجد وصف مدخل بعد";
+      const enDesc = m.desc?.en || "No description provided yet";
+      const priceVal = (m.price !== undefined ? Number(m.price) : 5.50).toFixed(2);
+
+      return `
+        <div class="sub-meal-card">
+          <div class="sub-meal-card-top">
+            <span class="sub-meal-type-badge ${typeClass}">${typeLabel}</span>
+            <span class="sub-meal-price-badge">${priceVal} د.أ</span>
+          </div>
+          <div class="sub-meal-card-names">
+            <h4 class="sub-meal-name-ar">${arName}</h4>
+            <div class="sub-meal-name-en">${enName}</div>
+          </div>
+          <div class="sub-meal-card-descs">
+            <p class="sub-meal-desc-ar" title="${arDesc}"><strong>المكونات:</strong> ${arDesc}</p>
+            <p class="sub-meal-desc-en" title="${enDesc}"><strong>Ingredients:</strong> ${enDesc}</p>
+          </div>
+          <div class="sub-meal-card-actions">
+            <button type="button" class="btn-sub-meal-edit" onclick="AdminApp.openMealLibraryModal('${m.id}')">
+              <span>✏️</span>
+              <span>تعديل التفاصيل</span>
+            </button>
+            <button type="button" class="btn-sub-meal-delete" onclick="AdminApp.deleteMealLibraryItem('${m.id}')" title="حذف الوجبة">
+              <span>🗑️</span>
+              <span>حذف</span>
+            </button>
+          </div>
+        </div>
+      `;
+    }).join("");
+  },
+
+  filterMealLibrary(type, btn) {
+    this._currentMealFilter = type;
+    const chips = document.querySelectorAll("#sub-meal-filter-chips .sub-meal-filter-chip");
+    chips.forEach(c => c.classList.remove("active"));
+    if (btn) btn.classList.add("active");
+    this.refreshMealLibraryGrid();
+  },
+
+  onMealSearchInput(query) {
+    this._currentMealSearch = query.trim().toLowerCase();
+    this.refreshMealLibraryGrid();
+  },
+
+  refreshMealLibraryGrid() {
+    const grid = document.getElementById("sub-meal-grid-mount");
+    if (grid) {
+      grid.innerHTML = this.getMealLibraryCardsHTML(this._currentMealFilter || "all", this._currentMealSearch || "");
+    }
+  },
+
+  refreshAllQuickPickSelects() {
+    const selects = document.querySelectorAll(".sub-opt-quick-select");
+    selects.forEach(sel => {
+      const currentVal = sel.value;
+      sel.innerHTML = this.getQuickPickOptions(currentVal);
+      if (currentVal) sel.value = currentVal;
+    });
+  },
+
+  openMealLibraryModal(mealId = null) {
+    const mount = document.getElementById("admin-sub-meal-modal-mount");
+    if (!mount) return;
+
+    let meal = null;
+    if (mealId) {
+      meal = this.getAllSubscriptionMeals()[mealId] || null;
+    }
+
+    const isNew = !meal;
+    const modalTitle = isNew
+      ? "➕ إضافة وجبة جديدة إلى مكتبة الاشتراكات"
+      : `✏️ تعديل تفاصيل الوجبة: ${meal.name?.ar || meal.name?.en || mealId}`;
+
+    const idVal = meal ? meal.id : "";
+    const typeVal = meal ? (meal.type || "chicken") : "chicken";
+    const priceVal = meal && meal.price !== undefined ? Number(meal.price).toFixed(2) : "5.50";
+    const arNameVal = meal ? (meal.name?.ar || "") : "";
+    const enNameVal = meal ? (meal.name?.en || "") : "";
+    const arDescVal = meal ? (meal.desc?.ar || "") : "";
+    const enDescVal = meal ? (meal.desc?.en || "") : "";
+
+    mount.innerHTML = `
+      <div class="admin-modal" style="z-index: 99999;">
+        <div class="modal-overlay active" onclick="AdminApp.closeMealLibraryModal()" style="z-index: 99990;"></div>
+        <div class="admin-modal-box" style="max-width: 650px; z-index: 99991;">
+          <div class="admin-modal-header">
+            <h2 class="admin-modal-title">${modalTitle}</h2>
+            <button class="btn-action-icon" onclick="AdminApp.closeMealLibraryModal()">✕</button>
+          </div>
+
+          <div class="admin-modal-body">
+            <input type="hidden" id="sub-meal-modal-id" value="${idVal}">
+
+            <!-- Type & Price -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+              <div class="admin-form-group">
+                <label class="admin-form-label">الصنف · Category *</label>
+                <select id="sub-meal-modal-type" class="admin-form-input" style="height: 42px; font-weight: 700;">
+                  <option value="chicken" ${typeVal === "chicken" ? "selected" : ""}>🍗 دجاج (Chicken)</option>
+                  <option value="meat" ${typeVal === "meat" ? "selected" : ""}>🥩 لحم (Meat)</option>
+                  <option value="fish" ${typeVal === "fish" ? "selected" : ""}>🐟 سمك (Fish)</option>
+                  <option value="pasta" ${typeVal === "pasta" ? "selected" : ""}>🍝 باستا (Pasta)</option>
+                  <option value="veg" ${typeVal === "veg" ? "selected" : ""}>🥗 نباتي (Vegetarian)</option>
+                  <option value="special" ${typeVal === "special" ? "selected" : ""}>✨ طبق مميز (Specialty)</option>
+                </select>
+              </div>
+
+              <div class="admin-form-group">
+                <label class="admin-form-label">السعر الافتراضي (د.أ) · Price *</label>
+                <input type="number" step="0.25" min="0" id="sub-meal-modal-price" class="admin-form-input" value="${priceVal}" placeholder="5.50" style="height: 42px; font-weight: 800; color: var(--c-forest); text-align: center; direction: ltr;" required>
+              </div>
+            </div>
+
+            <!-- Bilingual Names -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+              <div class="admin-form-group">
+                <div class="sub-field-label-wrap">
+                  <label class="admin-form-label">اسم الوجبة (عربي) *</label>
+                  <span class="sub-lang-pill ar">عربي AR</span>
+                </div>
+                <input type="text" id="sub-meal-modal-name-ar" class="admin-form-input sub-input-ar" value="${arNameVal}" placeholder="مثال: ستيك لحم بصلصة المشروم" style="height: 42px; font-weight: 700;" required>
+              </div>
+
+              <div class="admin-form-group">
+                <div class="sub-field-label-wrap">
+                  <label class="admin-form-label">Meal Name (EN) *</label>
+                  <span class="sub-lang-pill en">English EN</span>
+                </div>
+                <input type="text" id="sub-meal-modal-name-en" class="admin-form-input sub-input-en" value="${enNameVal}" placeholder="e.g. Mushroom Steak Tenderloin" style="height: 42px; font-weight: 600;" required>
+              </div>
+            </div>
+
+            <!-- Bilingual Descriptions / Ingredients -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+              <div class="admin-form-group">
+                <div class="sub-field-label-wrap">
+                  <label class="admin-form-label">الوصف والمكونات (عربي)</label>
+                  <span class="sub-lang-pill ar">عربي AR</span>
+                </div>
+                <textarea id="sub-meal-modal-desc-ar" class="admin-form-textarea sub-input-ar" rows="3" placeholder="أرز بسمتي، لحم مشوي، صصوص مشروم طازج، بهارات خالية من الغلوتين...">${arDescVal}</textarea>
+              </div>
+
+              <div class="admin-form-group">
+                <div class="sub-field-label-wrap">
+                  <label class="admin-form-label">Ingredients & Description (EN)</label>
+                  <span class="sub-lang-pill en">English EN</span>
+                </div>
+                <textarea id="sub-meal-modal-desc-en" class="admin-form-textarea sub-input-en" rows="3" placeholder="Basmati rice, grilled beef, fresh mushroom sauce, gluten-free spices...">${enDescVal}</textarea>
+              </div>
+            </div>
+
+            <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 8px; padding: 10px 14px; font-size: 0.8rem; color: #166534; display: flex; align-items: center; gap: 8px;">
+              <span>💡</span>
+              <span>الوجبة المحفوظة ستكون متاحة فوراً للاختيار في القوائم السريعة لجداول الأسابيع الأربعة مع تحديث الأسعار والمكونات تلقائياً.</span>
+            </div>
+
+          </div>
+
+          <div class="admin-modal-footer" style="padding: 16px 24px; border-top: 1px solid #E2E8E2; display: flex; align-items: center; justify-content: flex-end; gap: 10px; background: #FAFCFA;">
+            <button type="button" class="btn-secondary" onclick="AdminApp.closeMealLibraryModal()" style="padding: 10px 18px;">إلغاء (Cancel)</button>
+            <button type="button" class="btn-primary" onclick="AdminApp.saveMealLibraryModal()" style="padding: 10px 22px;">💾 حفظ الوجبة في المكتبة</button>
+          </div>
+        </div>
+      </div>
+    `;
+  },
+
+  closeMealLibraryModal() {
+    const mount = document.getElementById("admin-sub-meal-modal-mount");
+    if (mount) mount.innerHTML = "";
+  },
+
+  saveMealLibraryModal() {
+    const idInput = document.getElementById("sub-meal-modal-id");
+    const typeInput = document.getElementById("sub-meal-modal-type");
+    const priceInput = document.getElementById("sub-meal-modal-price");
+    const arNameInput = document.getElementById("sub-meal-modal-name-ar");
+    const enNameInput = document.getElementById("sub-meal-modal-name-en");
+    const arDescInput = document.getElementById("sub-meal-modal-desc-ar");
+    const enDescInput = document.getElementById("sub-meal-modal-desc-en");
+
+    const arName = arNameInput?.value.trim() || "";
+    const enName = enNameInput?.value.trim() || "";
+
+    if (!arName && !enName) {
+      App.showToast("يرجى كتابة اسم الوجبة بالعربي أو الإنجليزي على الأقل.", "warning");
+      return;
+    }
+
+    let mealId = idInput?.value.trim();
+    if (!mealId) {
+      const baseSlug = (enName || arName).toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
+      mealId = baseSlug || `meal_${Date.now()}`;
+    }
+
+    const type = typeInput?.value || "chicken";
+    const priceVal = priceInput?.value ? (parseFloat(priceInput.value) || 5.50) : 5.50;
+    const arDesc = arDescInput?.value.trim() || "";
+    const enDesc = enDescInput?.value.trim() || "";
+
+    if (!this.editingSubConfig.meal_library) {
+      this.editingSubConfig.meal_library = {};
+    }
+
+    const mealData = {
+      id: mealId,
+      type: type,
+      price: priceVal,
+      basePrice: priceVal,
+      name: {
+        ar: arName || enName,
+        en: enName || arName
+      },
+      desc: {
+        ar: arDesc,
+        en: enDesc
+      }
+    };
+
+    this.editingSubConfig.meal_library[mealId] = mealData;
+    this.subscriptionMealCatalog[mealId] = mealData;
+    if (typeof SubscriptionApp !== "undefined" && SubscriptionApp.mealLibrary) {
+      SubscriptionApp.mealLibrary[mealId] = mealData;
+    }
+
+    this.closeMealLibraryModal();
+    this.refreshMealLibraryGrid();
+    this.refreshAllQuickPickSelects();
+    this.markSubDirty();
+    App.showToast(`تم حفظ الوجبة "${mealData.name.ar}" في المكتبة بنجاح! 🍲`, "success");
+  },
+
+  deleteMealLibraryItem(mealId) {
+    const meal = this.getAllSubscriptionMeals()[mealId];
+    const name = meal?.name?.ar || mealId;
+    if (!confirm(`هل أنت متأكد من حذف الوجبة "${name}" من المكتبة؟`)) {
+      return;
+    }
+
+    if (this.editingSubConfig?.meal_library) {
+      delete this.editingSubConfig.meal_library[mealId];
+    }
+    if (this.subscriptionMealCatalog) {
+      delete this.subscriptionMealCatalog[mealId];
+    }
+    if (typeof SubscriptionApp !== "undefined" && SubscriptionApp.mealLibrary) {
+      delete SubscriptionApp.mealLibrary[mealId];
+    }
+
+    this.refreshMealLibraryGrid();
+    this.refreshAllQuickPickSelects();
+    this.markSubDirty();
+    App.showToast(`تم حذف الوجبة "${name}" من المكتبة. 🗑️`, "info");
   },
 
   defaultSubContent: {
@@ -1994,28 +2410,7 @@ const AdminApp = {
     const slider = this.editingSubConfig.slider || [];
 
     // Quick Pick Select Options Generator
-    const getQuickPickOptions = (selectedId) => {
-      let optHtml = `<option value="">⚡ اختر وجبة من القائمة (Quick Pick)...</option>`;
-      const groups = [
-        { label: "الأسبوع 1 · Week 1", keys: ["kabsa_chicken", "creamy_mushroom_chicken", "biryani_chicken", "penne_pesto", "zarb_chicken", "bbq_chicken", "kabsa_meat", "meatballs_creamy_mushroom", "biryani_meat", "fusilli_meat", "zarb_meat", "fish_cream_lemon"] },
-        { label: "الأسبوع 2 · Week 2", keys: ["mandi_chicken", "fajita_chicken", "teriyaki_chicken", "fettuccine_chicken", "ouzi_chicken", "strips_chicken", "mandi_meat", "fajita_meat", "mongolian_beef", "dawood_basha", "ouzi_meat", "fish_lemon_herbs"] },
-        { label: "الأسبوع 3 · Week 3", keys: ["zurbian_chicken", "lemon_garlic_chicken", "curry_chicken", "spaghetti_marinara", "qidreh_chicken", "chicken_mushroom_sauce", "zurbian_meat", "meat_potato_tajin", "curry_fish", "spaghetti_bolognese", "qidreh_meat", "armenian_kofta"] },
-        { label: "الأسبوع 4 · Week 4", keys: ["madghoot_chicken", "mexican_chicken", "sweet_sour_chicken", "shell_pasta_tomato_cream", "uzbekian_chicken", "shawarma_chicken_cuts", "stuffed_zucchini", "mexican_meat", "kofta_tahini", "indian_kebab", "uzbekian_meat", "sayadieh_fish"] }
-      ];
-
-      groups.forEach(g => {
-        optHtml += `<optgroup label="${g.label}">`;
-        g.keys.forEach(k => {
-          const m = AdminApp.subscriptionMealCatalog[k];
-          if (m) {
-            const isSel = k === selectedId ? " selected" : "";
-            optHtml += `<option value="${m.id}"${isSel}>${m.name.ar} (${m.name.en})</option>`;
-          }
-        });
-        optHtml += `</optgroup>`;
-      });
-      return optHtml;
-    };
+    const getQuickPickOptions = (selectedId) => AdminApp.getQuickPickOptions(selectedId);
 
     // Build the Weeks Grid
     let weeksHtml = "";
@@ -2029,7 +2424,7 @@ const AdminApp = {
       wed: { ar: "الأربعاء", en: "Wednesday" },
       thu: { ar: "الخميس", en: "Thursday" }
     };
-    const lib = this.editingSubConfig.meal_library || {};
+    const allAvailableMeals = AdminApp.getAllSubscriptionMeals();
 
     weeks.forEach((wk, i) => {
       weeksHtml += `
@@ -2046,7 +2441,7 @@ const AdminApp = {
         const opt1Id = s[wk]?.[day]?.[1] || "";
 
         const getMealDisplay = (mealId, defaultType) => {
-          const m = lib[mealId] || AdminApp.subscriptionMealCatalog[mealId] || null;
+          const m = allAvailableMeals[mealId] || null;
           let ar = m?.name?.ar || (typeof m?.name === "string" ? m.name : "");
           let en = m?.name?.en || "";
           let type = m?.type || defaultType;
@@ -2781,6 +3176,48 @@ const AdminApp = {
               </div>
             </div>
 
+          </div>
+        </div>
+
+        <!-- SECTION 7: SUBSCRIPTION MEAL LIBRARY & MANAGEMENT -->
+        <div class="sub-admin-card" id="sub-sec-meal-library">
+          <div class="sub-admin-card-header" style="flex-wrap: wrap; gap: 14px;">
+            <div class="sub-admin-card-header-left">
+              <h3 class="sub-admin-card-title">🍲 مكتبة وتفاصيل وجبات الاشتراكات (Meal Library & Catalog)</h3>
+              <p class="sub-admin-card-subtitle">
+                إضافة وجبات جديدة، وتعديل تفاصيل وأسعار ومكونات/وصف الوجبات باللغتين العربية والإنجليزية. تظهر الوجبات المضافة هنا تلقائياً في القوائم السريعة لجداول الأسابيع.
+              </p>
+            </div>
+            <div>
+              <button type="button" class="sub-save-btn-primary" style="background: var(--c-forest); padding: 9px 18px; font-size: 0.88rem; display: inline-flex; align-items: center; gap: 6px;" onclick="AdminApp.openMealLibraryModal()">
+                <span>➕</span>
+                <span>إضافة وجبة جديدة للمكتبة (Add Meal)</span>
+              </button>
+            </div>
+          </div>
+          
+          <div class="sub-admin-card-body">
+            <!-- Search & Category Filters -->
+            <div class="sub-meal-lib-toolbar">
+              <div class="sub-meal-lib-search-wrap">
+                <span style="font-size: 1rem;">🔍</span>
+                <input type="text" id="sub-meal-search-input" class="admin-form-input sub-meal-search-input" placeholder="ابحث باسم الوجبة أو المكونات (عربي / English)..." oninput="AdminApp.onMealSearchInput(this.value)">
+              </div>
+              <div class="sub-meal-lib-filters" id="sub-meal-filter-chips">
+                <button type="button" class="sub-meal-filter-chip active" onclick="AdminApp.filterMealLibrary('all', this)">الكل (All)</button>
+                <button type="button" class="sub-meal-filter-chip" onclick="AdminApp.filterMealLibrary('chicken', this)">🍗 دجاج (Chicken)</button>
+                <button type="button" class="sub-meal-filter-chip" onclick="AdminApp.filterMealLibrary('meat', this)">🥩 لحم (Meat)</button>
+                <button type="button" class="sub-meal-filter-chip" onclick="AdminApp.filterMealLibrary('fish', this)">🐟 سمك (Fish)</button>
+                <button type="button" class="sub-meal-filter-chip" onclick="AdminApp.filterMealLibrary('pasta', this)">🍝 باستا (Pasta)</button>
+                <button type="button" class="sub-meal-filter-chip" onclick="AdminApp.filterMealLibrary('veg', this)">🥗 نباتي (Veg)</button>
+                <button type="button" class="sub-meal-filter-chip" onclick="AdminApp.filterMealLibrary('special', this)">✨ مميز (Specialty)</button>
+              </div>
+            </div>
+
+            <!-- Meals Grid Container -->
+            <div id="sub-meal-grid-mount" class="sub-meal-cards-grid">
+              ${this.getMealLibraryCardsHTML()}
+            </div>
           </div>
         </div>
 
