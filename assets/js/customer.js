@@ -478,7 +478,6 @@ const CustomerApp = {
         <nav class="category-nav-bar" aria-label="Menu categories">
           ${categories.map(c => `
             <button class="category-pill ${this.activeCategory === c.id ? "active" : ""}" data-category="${c.id}" onclick="CustomerApp.selectCategory('${c.id}', this)">
-              <span class="cat-icon">${c.icon || "🍽️"}</span>
               <span>${CustomerApp.T(c, "name")}</span>
             </button>
           `).join("")}
