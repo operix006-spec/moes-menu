@@ -479,6 +479,9 @@ const CustomerApp = {
           `).join("")}
         </nav>
 
+        <!-- Next-Day Pre-Order Dynamic Section -->
+        ${this.getTomorrowMealsHTML(settings)}
+
         <!-- Product Cards List -->
         <div class="product-list">
           ${products.map(p => this.renderProductCard(p, settings)).join("")}
@@ -495,6 +498,82 @@ const CustomerApp = {
         activePill.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
       }
     }, 20);
+  },
+
+  getTomorrowMealsHTML(settings) {
+    if (typeof SubscriptionApp === 'undefined') return '';
+    const now = new Date();
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    const dayOfWeek = tomorrow.getDay();
+    const daysMap = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+    const dayKey = daysMap[dayOfWeek];
+    
+    if (dayKey === 'fri') return ''; // No Friday meals
+
+    // Calculate week based on a known Saturday (e.g. Jan 6, 2024 was a Saturday)
+    const week1Start = new Date('2024-01-06T00:00:00');
+    // Ensure we ignore time for day diff
+    const tomorrowDateOnly = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate());
+    const startDateOnly = new Date(week1Start.getFullYear(), week1Start.getMonth(), week1Start.getDate());
+    
+    const diffTime = tomorrowDateOnly.getTime() - startDateOnly.getTime();
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    
+    // Fallback if negative (before 2024) - unlikely but safe math
+    const safeDiffDays = diffDays >= 0 ? diffDays : (28 + (diffDays % 28));
+    const cycleDay = safeDiffDays % 28;
+    const currentWeekNum = Math.floor(cycleDay / 7) + 1;
+    const weekKey = 'week' + currentWeekNum;
+
+    const mealIds = SubscriptionApp.dailyOptionsSchedule[weekKey]?.[dayKey];
+    if (!mealIds || mealIds.length === 0) return '';
+    
+    const lang = MoeStore.getLang();
+    const isAr = lang === 'ar';
+    const title = isAr ? "اطلب وجبة الغد (توصيل مع الوجبات)" : "Tomorrow's Pre-Order (Delivered with Meals)";
+    const desc = isAr ? "هذه الوجبات متاحة للطلب المسبق لليوم التالي. سيتم تحضيرها طازجة وتوصيلها مع جدول الاشتراكات." : "These meals are available for next-day pre-order. Prepared fresh and delivered with the subscription schedule.";
+
+    let html = \`
+      <div style="margin: 16px 16px 24px; padding: 18px 16px; background: linear-gradient(135deg, #fdf8e9 0%, #fff 100%); border: 2px solid var(--c-orange); border-radius: var(--radius-lg); box-shadow: 0 4px 15px rgba(230,126,34,0.15);">
+        <h3 style="color: var(--c-forest); font-family: var(--font-serif); font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--c-orange)" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          \${title}
+        </h3>
+        <p style="font-size: 0.85rem; color: #555; margin-bottom: 16px; line-height: 1.5;">
+          \${desc}
+        </p>
+        <div class="product-list" style="padding: 0;">
+    \`;
+
+    mealIds.forEach(id => {
+      const meal = SubscriptionApp.mealLibrary[id];
+      if (meal) {
+        const fakeId = 'preorder_' + id;
+        const fakeProduct = {
+          id: fakeId,
+          name: typeof meal.name === 'object' ? meal.name : { en: meal.name, ar: meal.name },
+          description: typeof meal.desc === 'object' ? meal.desc : { en: meal.desc, ar: meal.desc },
+          basePrice: 5.50, // Default fixed price for daily meals
+          image: meal.image || 'assets/images/subscription_hero.jpg',
+          available: true,
+          isPreOrder24h: true,
+          tags: [isAr ? 'خالي من الغلوتين' : 'Gluten-Free', isAr ? 'طلب مسبق' : 'Pre-Order'],
+          optionGroups: []
+        };
+        
+        // Inject into store so quick-add and modals work normally
+        if (!MoeStore.getProductById(fakeId)) {
+           MoeStore.state.products.push(fakeProduct);
+        }
+        
+        html += this.renderProductCard(fakeProduct, settings);
+      }
+    });
+
+    html += \`</div></div>\`;
+    return html;
   },
 
   selectCategory(categoryId, clickedBtn) {

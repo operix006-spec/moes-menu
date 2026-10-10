@@ -1286,6 +1286,10 @@ const SubscriptionApp = {
   },
 
   async init() {
+    // Only initialize UI and bindings if we are on the subscriptions page
+    const subAppContainer = document.getElementById('sub-all-weeks-grid');
+    if (!subAppContainer) return;
+    
     // Sync contact info and subscription config with central store if available
     try {
       const saved = localStorage.getItem('moes_purebite_db_v1');
