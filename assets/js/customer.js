@@ -534,6 +534,7 @@ const CustomerApp = {
 
     const lang = MoeStore.getLang();
     const isAr = lang === 'ar';
+    const currencyStr = isAr ? 'د.أ' : (settings?.currency || 'JOD');
     
     let mealName = mealId;
     if (meal) {
@@ -544,14 +545,21 @@ const CustomerApp = {
 
     const dayText = dayName || (isAr ? "الغد" : "Tomorrow");
     const weekText = weekName ? ` (${weekName})` : "";
+    const mealPrice = (meal && meal.price !== undefined) ? Number(meal.price) : 5.50;
+    const formattedPrice = mealPrice.toFixed(2);
     
     const msgText = isAr
-      ? `مرحباً Moe's PureBite، أود طلب وجبة الغد المسبقة:\n🍽️ الوجبة: ${mealName}\n📅 اليوم: ${dayText}${weekText}\n💰 السعر: 5.50 د.أ\nيرجى تأكيد التوصيل مع جدول الوجبات.`
-      : `Hello Moe's PureBite, I would like to pre-order tomorrow's meal:\n🍽️ Meal: ${mealName}\n📅 Day: ${dayText}${weekText}\n💰 Price: 5.50 JOD\nPlease confirm delivery with tomorrow's schedule.`;
+      ? `مرحباً Moe's PureBite، أود طلب وجبة الغد المسبقة:\n🍽️ الوجبة: ${mealName}\n📅 اليوم: ${dayText}${weekText}\n💰 السعر: ${formattedPrice} ${currencyStr}\nيرجى تأكيد التوصيل مع جدول الوجبات.`
+      : `Hello Moe's PureBite, I would like to pre-order tomorrow's meal:\n🍽️ Meal: ${mealName}\n📅 Day: ${dayText}${weekText}\n💰 Price: ${formattedPrice} ${currencyStr}\nPlease confirm delivery with tomorrow's schedule.`;
       
     const msg = encodeURIComponent(msgText);
     App.showToast(isAr ? `جاري فتح واتساب لتأكيد طلب وجبة ${dayText}... 💬` : `Opening WhatsApp to confirm meal pre-order... 💬`, "success");
     window.open(`https://wa.me/${rawNumber}?text=${msg}`, "_blank");
+  },
+
+  openPreorderMealModal(mealId, targetDayName, currentWeekName) {
+    const fakeId = 'preorder_' + mealId;
+    this.openProductModal(fakeId);
   },
 
   getTomorrowMealsHTML(settings) {
@@ -645,16 +653,22 @@ const CustomerApp = {
           typeClass = 'fish';
         }
 
+        const mealPrice = (meal && meal.price !== undefined) ? Number(meal.price) : 5.50;
+        const formattedPrice = mealPrice.toFixed(2);
+
         const fakeProduct = {
           id: fakeId,
+          originalMealId: id,
           name: nameEn,
           name_ar: nameAr,
           description: descEn,
           description_ar: descAr,
-          basePrice: 5.50,
+          basePrice: mealPrice,
           image: meal.image || 'assets/images/subscription_hero.jpg',
           available: true,
           isPreOrder24h: true,
+          targetDayName: targetDayName,
+          currentWeekName: currentWeekName,
           tags: [isAr ? 'خالي من الغلوتين' : 'Gluten-Free', isAr ? 'طلب مسبق' : 'Pre-Order'],
           optionGroups: []
         };
@@ -667,7 +681,12 @@ const CustomerApp = {
         }
 
         itemsHtml += `
-          <div class="tomorrow-preorder-item">
+          <div 
+            class="tomorrow-preorder-item" 
+            onclick="CustomerApp.openPreorderMealModal('${id}', '${targetDayName}', '${currentWeekName}')"
+            style="cursor: pointer;"
+            title="${isAr ? 'اضغط لعرض تفاصيل الوجبة' : 'Click to view meal details'}"
+          >
             <div class="tomorrow-preorder-item-info">
               <div class="tomorrow-preorder-item-header">
                 <h4 class="tomorrow-preorder-item-name">${currentName}</h4>
@@ -677,12 +696,12 @@ const CustomerApp = {
             </div>
             <div class="tomorrow-preorder-item-action">
               <div class="tomorrow-preorder-item-price">
-                5.50 <small>${currencyStr}</small>
+                ${formattedPrice} <small>${currencyStr}</small>
               </div>
               <button 
                 type="button" 
                 class="tomorrow-preorder-btn-wa" 
-                onclick="CustomerApp.orderPreOrderWhatsApp('${id}', '${targetDayName}', '${currentWeekName}')"
+                onclick="event.stopPropagation(); CustomerApp.orderPreOrderWhatsApp('${id}', '${targetDayName}', '${currentWeekName}')"
                 aria-label="${isAr ? 'حجز عبر واتساب' : 'Order via WhatsApp'}"
                 title="${isAr ? 'حجز عبر واتساب' : 'Order via WhatsApp'}"
               >
@@ -938,8 +957,8 @@ const CustomerApp = {
             </div>
             <p class="modal-product-desc">${CustomerApp.T(p, "description")}</p>
             ${p.isPreOrder24h ? `
-              <div class="preorder-warning-banner modal-preorder-banner">
-                <span>${i18n("preorder_warn")}</span>
+              <div class="preorder-warning-banner modal-preorder-banner" style="background: rgba(6, 59, 41, 0.08); color: var(--c-forest); border: 1px solid rgba(6, 59, 41, 0.18); font-weight: 700; border-radius: 8px; padding: 8px 12px;">
+                <span>${MoeStore.getLang() === 'ar' ? `⚡ وجبة طلب مسبق (${p.targetDayName || 'الغد'}) • تُحضّر طازجة مع جدول الاشتراكات` : `⚡ Pre-Order Meal (${p.targetDayName || 'Tomorrow'}) • Prepared fresh with daily subscriptions`}</span>
               </div>
             ` : ""}
           </div>
@@ -1041,13 +1060,20 @@ const CustomerApp = {
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
             <span>${i18n("currently_unavailable")}</span>
           </button>
+        ` : (p.isPreOrder24h ? `
+          <button class="btn-modal-add" style="background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); gap: 8px;" onclick="CustomerApp.orderPreOrderWhatsApp('${p.originalMealId || p.id.replace('preorder_', '')}', '${p.targetDayName || ''}', '${p.currentWeekName || ''}')">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.41a8.16 8.16 0 0 1 2.4 5.83c0 4.54-3.7 8.24-8.24 8.24-1.44 0-2.85-.38-4.09-1.11l-.29-.17-3.04.8.81-2.96-.19-.31a8.188 8.188 0 0 1-1.25-4.49c0-4.54 3.7-8.24 8.24-8.24m-3.57 3.52c-.2 0-.44.07-.67.33-.23.26-.88.86-.88 2.09s.9 2.42 1.02 2.59c.13.16 1.74 2.76 4.29 3.78.61.24 1.08.39 1.45.51.61.19 1.16.17 1.6-.01.49-.2 1.5-.61 1.71-1.21.21-.59.21-1.1.15-1.21-.06-.11-.23-.17-.49-.3-.26-.13-1.5-.74-1.73-.83-.23-.08-.4-.13-.57.13-.17.26-.66.83-.81.99-.15.17-.3.19-.56.06-.26-.13-1.1-.41-2.1-1.3-.77-.69-1.3-1.54-1.45-1.8-.15-.26-.02-.4.11-.53.12-.11.26-.3.39-.46.13-.15.17-.26.26-.43.09-.17.04-.32-.02-.45-.07-.13-.59-1.42-.81-1.95-.21-.51-.43-.44-.59-.45-.15-.01-.33-.01-.5-.01z"/></svg>
+            <span>${MoeStore.getLang() === 'ar' ? 'حجز الوجبة عبر واتساب' : 'Reserve via WhatsApp'}</span>
+            <span>•</span>
+            <span id="modal-btn-total-price">${pricing.totalPrice.toFixed(2)} ${settings.currency}</span>
+          </button>
         ` : `
           <button class="btn-modal-add" onclick="CustomerApp.submitAddToCart()">
             <span>${i18n("add_to_cart")}</span>
             <span>•</span>
             <span id="modal-btn-total-price">${pricing.totalPrice.toFixed(2)} ${settings.currency}</span>
           </button>
-        `}
+        `)}
       </div>
     `;
 

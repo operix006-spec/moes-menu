@@ -1112,12 +1112,19 @@ input:checked + .toggle-slider:before {
 
 .sub-opt-fields-grid {
   display: grid;
-  grid-template-columns: 145px 1fr 1fr;
+  grid-template-columns: 130px 1fr 1fr 95px;
   gap: 10px;
   align-items: flex-end;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 992px) {
+  .sub-opt-fields-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 600px) {
   .sub-opt-fields-grid {
     grid-template-columns: 1fr;
     gap: 8px;
@@ -1129,11 +1136,18 @@ input:checked + .toggle-slider:before {
 
 .sub-opt-field-type,
 .sub-opt-field-ar,
-.sub-opt-field-en {
+.sub-opt-field-en,
+.sub-opt-field-price {
   display: flex;
   flex-direction: column;
   gap: 4px;
   min-width: 0;
+}
+
+.sub-input-price {
+  font-weight: 700;
+  color: var(--c-forest);
+  text-align: center;
 }
 
 .sub-opt-type-select {

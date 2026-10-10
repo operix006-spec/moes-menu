@@ -1853,11 +1853,13 @@ const AdminApp = {
     const arInput = document.getElementById(`sched-${wk}-${day}-${optIdx}-ar`);
     const enInput = document.getElementById(`sched-${wk}-${day}-${optIdx}-en`);
     const typeSelect = document.getElementById(`sched-${wk}-${day}-${optIdx}-type`);
+    const priceInput = document.getElementById(`sched-${wk}-${day}-${optIdx}-price`);
     const idInput = document.getElementById(`sched-${wk}-${day}-${optIdx}-id`);
 
     if (arInput) arInput.value = meal.name.ar;
     if (enInput) enInput.value = meal.name.en;
     if (typeSelect) typeSelect.value = meal.type;
+    if (priceInput) priceInput.value = meal.price !== undefined ? meal.price : "5.50";
     if (idInput) idInput.value = meal.id;
 
     this.markSubDirty();
@@ -2048,7 +2050,8 @@ const AdminApp = {
           let ar = m?.name?.ar || (typeof m?.name === "string" ? m.name : "");
           let en = m?.name?.en || "";
           let type = m?.type || defaultType;
-          return { id: mealId || "", type, ar, en };
+          let price = (m?.price !== undefined) ? m.price : (m?.basePrice !== undefined ? m.basePrice : "5.50");
+          return { id: mealId || "", type, ar, en, price };
         };
 
         const opt0 = getMealDisplay(opt0Id, "chicken");
@@ -2094,6 +2097,11 @@ const AdminApp = {
                   <label class="sub-field-label">Meal Name (EN)</label>
                   <input type="text" class="admin-form-input sub-input-en" id="sched-${wk}-${day}-0-en" value="${opt0.en || ''}" placeholder="Meal Name in English" oninput="AdminApp.markSubDirty()">
                 </div>
+
+                <div class="sub-opt-field-price">
+                  <label class="sub-field-label">السعر (د.أ)</label>
+                  <input type="number" step="0.25" min="0" class="admin-form-input sub-input-price" id="sched-${wk}-${day}-0-price" value="${opt0.price !== undefined ? opt0.price : '5.50'}" placeholder="5.50" oninput="AdminApp.markSubDirty()">
+                </div>
               </div>
 
               <input type="hidden" id="sched-${wk}-${day}-0-id" value="${opt0.id}">
@@ -2131,6 +2139,11 @@ const AdminApp = {
                 <div class="sub-opt-field-en">
                   <label class="sub-field-label">Meal Name (EN)</label>
                   <input type="text" class="admin-form-input sub-input-en" id="sched-${wk}-${day}-1-en" value="${opt1.en || ''}" placeholder="Meal Name in English" oninput="AdminApp.markSubDirty()">
+                </div>
+
+                <div class="sub-opt-field-price">
+                  <label class="sub-field-label">السعر (د.أ)</label>
+                  <input type="number" step="0.25" min="0" class="admin-form-input sub-input-price" id="sched-${wk}-${day}-1-price" value="${opt1.price !== undefined ? opt1.price : '5.50'}" placeholder="5.50" oninput="AdminApp.markSubDirty()">
                 </div>
               </div>
 
@@ -2891,6 +2904,8 @@ const AdminApp = {
           const arVal = document.getElementById(`sched-${wk}-${day}-${optIdx}-ar`)?.value.trim() || "";
           const enVal = document.getElementById(`sched-${wk}-${day}-${optIdx}-en`)?.value.trim() || "";
           const typeVal = document.getElementById(`sched-${wk}-${day}-${optIdx}-type`)?.value || (optIdx === 0 ? "chicken" : "meat");
+          const priceInputVal = document.getElementById(`sched-${wk}-${day}-${optIdx}-price`)?.value.trim();
+          const priceVal = priceInputVal !== undefined && priceInputVal !== "" ? (parseFloat(priceInputVal) || 5.50) : 5.50;
           let idVal = document.getElementById(`sched-${wk}-${day}-${optIdx}-id`)?.value.trim() || "";
 
           if (arVal || enVal || idVal) {
@@ -2904,6 +2919,8 @@ const AdminApp = {
               ...existingMeal,
               id: idVal,
               type: typeVal,
+              price: priceVal,
+              basePrice: priceVal,
               name: {
                 ar: arVal || (existingMeal.name && existingMeal.name.ar) || idVal,
                 en: enVal || (existingMeal.name && existingMeal.name.en) || idVal
