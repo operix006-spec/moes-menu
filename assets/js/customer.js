@@ -614,11 +614,10 @@ const CustomerApp = {
       ? (isDirectTomorrow ? `الغد (${targetDayName})` : `يوم ${targetDayName}`)
       : (isDirectTomorrow ? `Tomorrow (${targetDayName})` : targetDayName);
 
-    const title = isAr ? `وجبات ${dayLabel} الطازجة` : `Tomorrow's Specials (${targetDayName})`;
+    const title = isAr ? `وجبات ${dayLabel}` : `Tomorrow's Meals (${targetDayName})`;
     const subtitle = isAr 
-      ? `تُحضّر يومياً مع جدول الاشتراكات • الحجز المسبق متاح عبر واتساب` 
-      : `Prepared fresh daily with subscriptions • Reserve in advance via WhatsApp`;
-    const badgeText = isAr ? `طلب مسبق ليوم ${targetDayName}` : `Pre-Order for ${targetDayName}`;
+      ? `طلب مسبق • ${currentWeekName} • تُحضّر طازجة مع جدول الاشتراكات • الحجز عبر واتساب` 
+      : `Pre-Order • ${currentWeekName} • Prepared fresh daily with subscriptions • Reserve via WhatsApp`;
 
     let itemsHtml = '';
     mealIds.forEach(id => {
@@ -703,17 +702,8 @@ const CustomerApp = {
     return `
       <section class="tomorrow-preorder-container" aria-label="${title}">
         <div class="tomorrow-preorder-header">
-          <div class="preorder-header-eyebrow">
-            <span class="preorder-badge-pill">
-              <span class="preorder-pulse-dot"></span>
-              ${badgeText}
-            </span>
-            <span class="preorder-week-tag">${currentWeekName}</span>
-          </div>
-          <div class="preorder-title-wrapper">
-            <h3 class="tomorrow-preorder-title">${title}</h3>
-            <p class="tomorrow-preorder-subtitle">${subtitle}</p>
-          </div>
+          <h3 class="tomorrow-preorder-title">${title}</h3>
+          <p class="tomorrow-preorder-subtitle">${subtitle}</p>
         </div>
         <div class="tomorrow-preorder-items">
           ${itemsHtml}

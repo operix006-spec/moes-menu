@@ -2648,59 +2648,9 @@
   z-index: 1;
 }
 
-.preorder-header-eyebrow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 6px;
-}
-
-.preorder-badge-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 3px 10px;
-  background: rgba(229, 184, 105, 0.12);
-  border: 1px solid rgba(229, 184, 105, 0.32);
-  border-radius: 999px;
-  font-size: 0.68rem;
-  font-weight: 700;
-  color: #F5C06A;
-  letter-spacing: 0.02em;
-}
-
-.preorder-pulse-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #E99A16;
-  box-shadow: 0 0 8px #E99A16;
-  animation: preorderPulse 2s infinite ease-in-out;
-}
-
-@keyframes preorderPulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.35; transform: scale(0.8); }
-}
-
-.preorder-week-tag {
-  font-size: 0.68rem;
-  font-weight: 700;
-  color: #A3CEB8;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 2px 9px;
-  border-radius: 999px;
-}
-
-.preorder-title-wrapper {
-  margin-top: 2px;
-}
-
 .tomorrow-preorder-title {
   margin: 0;
-  font-size: 1.02rem;
+  font-size: 1.05rem;
   font-weight: 800;
   color: #FFFFFF;
   font-family: var(--font-serif);
@@ -2709,10 +2659,10 @@
 }
 
 .tomorrow-preorder-subtitle {
-  margin: 3px 0 0;
-  font-size: 0.73rem;
-  color: #8EB7A3;
-  line-height: 1.35;
+  margin: 4px 0 0;
+  font-size: 0.74rem;
+  color: #9EC0AF;
+  line-height: 1.4;
   font-weight: 400;
 }
 
