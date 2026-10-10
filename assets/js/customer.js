@@ -959,7 +959,6 @@ const CustomerApp = {
             ✕
           </button>
           <div style="font-weight: 700; font-size: 0.95rem; color: var(--c-forest); display: flex; align-items: center; gap: 6px;">
-            <span style="color: var(--c-orange);">⚡</span>
             <span>${p.isPreOrder24h ? (MoeStore.getLang() === 'ar' ? `وجبة طلب مسبق (${p.targetDayName || 'الغد'})` : `Pre-Order Meal (${p.targetDayName || 'Tomorrow'})`) : CustomerApp.T(p, "name")}</span>
           </div>
           <button onclick="CustomerApp.directWhatsAppContact()" class="btn-modal-close" title="Chat on WhatsApp" style="color: #25D366;">
@@ -982,7 +981,7 @@ const CustomerApp = {
             <p class="modal-product-desc">${CustomerApp.T(p, "description")}</p>
             ${p.isPreOrder24h ? `
               <div class="preorder-warning-banner modal-preorder-banner" style="background: rgba(6, 59, 41, 0.08); color: var(--c-forest); border: 1px solid rgba(6, 59, 41, 0.18); font-weight: 700; border-radius: 8px; padding: 8px 12px;">
-                <span>${MoeStore.getLang() === 'ar' ? `⚡ وجبة طلب مسبق (${p.targetDayName || 'الغد'}) • تُحضّر طازجة مع جدول الاشتراكات` : `⚡ Pre-Order Meal (${p.targetDayName || 'Tomorrow'}) • Prepared fresh with daily subscriptions`}</span>
+                <span>${MoeStore.getLang() === 'ar' ? `وجبة طلب مسبق (${p.targetDayName || 'الغد'}) • تُحضّر طازجة مع جدول الاشتراكات` : `Pre-Order Meal (${p.targetDayName || 'Tomorrow'}) • Prepared fresh with daily subscriptions`}</span>
               </div>
             ` : ""}
           </div>

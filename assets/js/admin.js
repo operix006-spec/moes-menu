@@ -1920,7 +1920,7 @@ const AdminApp = {
   },
 
   getQuickPickOptions(selectedId) {
-    let optHtml = `<option value="">⚡ اختر وجبة من القائمة (Quick Pick)...</option>`;
+    let optHtml = `<option value="">اختر وجبة من القائمة (Quick Pick)...</option>`;
     const allMeals = this.getAllSubscriptionMeals();
     const groups = [
       { label: "الأسبوع 1 · Week 1", keys: ["kabsa_chicken", "creamy_mushroom_chicken", "biryani_chicken", "penne_pesto", "zarb_chicken", "bbq_chicken", "kabsa_meat", "meatballs_creamy_mushroom", "biryani_meat", "fusilli_meat", "zarb_meat", "fish_cream_lemon"] },
