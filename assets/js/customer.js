@@ -17,6 +17,11 @@ const CustomerApp = {
     if (!obj) return "";
     const lang = (typeof MoeStore !== 'undefined' && MoeStore.getLang) ? MoeStore.getLang() : "en";
 
+    // Defend against field already being an object { en: "...", ar: "..." }
+    if (obj[field] && typeof obj[field] === 'object') {
+      return obj[field][lang] || obj[field].ar || obj[field].en || "";
+    }
+
     if (lang === "ar") {
       if (obj[`${field}_ar`]) {
         return obj[`${field}_ar`];
@@ -480,7 +485,9 @@ const CustomerApp = {
         </nav>
 
         <!-- Next-Day Pre-Order Dynamic Section -->
-        ${this.getTomorrowMealsHTML(settings)}
+        <div id="tomorrow-preorder-container" style="${this.activeCategory === 'all' ? '' : 'display: none;'}">
+          ${this.getTomorrowMealsHTML(settings)}
+        </div>
 
         <!-- Product Cards List -->
         <div class="product-list">
@@ -501,7 +508,7 @@ const CustomerApp = {
   },
 
   getTomorrowMealsHTML(settings) {
-    if (typeof SubscriptionApp === 'undefined') return '';
+    if (typeof SubscriptionApp === 'undefined' || !SubscriptionApp.dailyOptionsSchedule) return '';
     const now = new Date();
     const tomorrow = new Date(now);
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -514,14 +521,12 @@ const CustomerApp = {
 
     // Calculate week based on a known Saturday (e.g. Jan 6, 2024 was a Saturday)
     const week1Start = new Date('2024-01-06T00:00:00');
-    // Ensure we ignore time for day diff
     const tomorrowDateOnly = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate());
     const startDateOnly = new Date(week1Start.getFullYear(), week1Start.getMonth(), week1Start.getDate());
     
     const diffTime = tomorrowDateOnly.getTime() - startDateOnly.getTime();
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
     
-    // Fallback if negative (before 2024) - unlikely but safe math
     const safeDiffDays = diffDays >= 0 ? diffDays : (28 + (diffDays % 28));
     const cycleDay = safeDiffDays % 28;
     const currentWeekNum = Math.floor(cycleDay / 7) + 1;
@@ -532,30 +537,43 @@ const CustomerApp = {
     
     const lang = MoeStore.getLang();
     const isAr = lang === 'ar';
-    const title = isAr ? "اطلب وجبة الغد (توصيل مع الوجبات)" : "Tomorrow's Pre-Order (Delivered with Meals)";
-    const desc = isAr ? "هذه الوجبات متاحة للطلب المسبق لليوم التالي. سيتم تحضيرها طازجة وتوصيلها مع جدول الاشتراكات." : "These meals are available for next-day pre-order. Prepared fresh and delivered with the subscription schedule.";
+    const currencyStr = isAr ? 'د.أ' : (settings?.currency || 'JOD');
+    const title = isAr ? "وجبات الغد (طلب مسبق)" : "Tomorrow's Pre-Order Meals";
+    const subtitle = isAr ? "تُحضّر طازجة وتُسلّم مع جدول الوجبات" : "Prepared fresh & delivered with subscription meals";
 
-    let html = `
-      <div style="margin: 16px 16px 24px; padding: 18px 16px; background: linear-gradient(135deg, #fdf8e9 0%, #fff 100%); border: 2px solid var(--c-orange); border-radius: var(--radius-lg); box-shadow: 0 4px 15px rgba(230,126,34,0.15);">
-        <h3 style="color: var(--c-forest); font-family: var(--font-serif); font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--c-orange)" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          ${title}
-        </h3>
-        <p style="font-size: 0.85rem; color: #555; margin-bottom: 16px; line-height: 1.5;">
-          ${desc}
-        </p>
-        <div class="product-list" style="padding: 0;">
-    `;
-
+    let itemsHtml = '';
     mealIds.forEach(id => {
-      const meal = SubscriptionApp.mealLibrary[id];
+      const meal = SubscriptionApp.mealLibrary?.[id];
       if (meal) {
         const fakeId = 'preorder_' + id;
+        const nameEn = typeof meal.name === 'object' ? (meal.name.en || meal.name.ar) : meal.name;
+        const nameAr = typeof meal.name === 'object' ? (meal.name.ar || meal.name.en) : meal.name;
+        const descEn = typeof meal.desc === 'object' ? (meal.desc.en || meal.desc.ar) : (meal.desc || '');
+        const descAr = typeof meal.desc === 'object' ? (meal.desc.ar || meal.desc.en) : (meal.desc || '');
+        
+        const currentName = isAr ? nameAr : nameEn;
+        const currentDesc = isAr ? descAr : descEn;
+
+        let typeLabel = '';
+        let typeClass = 'chicken';
+        if (meal.type === 'chicken') {
+          typeLabel = isAr ? 'دجاج' : 'Chicken';
+          typeClass = 'chicken';
+        } else if (meal.type === 'meat') {
+          typeLabel = isAr ? 'لحم' : 'Meat';
+          typeClass = 'meat';
+        } else if (meal.type === 'fish' || id.includes('fish')) {
+          typeLabel = isAr ? 'سمك' : 'Fish';
+          typeClass = 'fish';
+        }
+
         const fakeProduct = {
           id: fakeId,
-          name: typeof meal.name === 'object' ? meal.name : { en: meal.name, ar: meal.name },
-          description: typeof meal.desc === 'object' ? meal.desc : { en: meal.desc, ar: meal.desc },
-          basePrice: 5.50, // Default fixed price for daily meals
+          name: nameEn,
+          name_ar: nameAr,
+          description: descEn,
+          description_ar: descAr,
+          basePrice: 5.50,
           image: meal.image || 'assets/images/subscription_hero.jpg',
           available: true,
           isPreOrder24h: true,
@@ -563,17 +581,63 @@ const CustomerApp = {
           optionGroups: []
         };
         
-        // Inject into store so quick-add and modals work normally
-        if (!MoeStore.getProductById(fakeId)) {
-           MoeStore.state.products.push(fakeProduct);
+        // Inject or update in store so quick-add and cart work normally
+        const existingIdx = MoeStore.state.products.findIndex(p => p.id === fakeId);
+        if (existingIdx !== -1) {
+          MoeStore.state.products[existingIdx] = fakeProduct;
+        } else {
+          MoeStore.state.products.push(fakeProduct);
         }
-        
-        html += this.renderProductCard(fakeProduct, settings);
+
+        itemsHtml += `
+          <div class="tomorrow-preorder-item">
+            <div class="tomorrow-preorder-item-info">
+              <div class="tomorrow-preorder-item-header">
+                <h4 class="tomorrow-preorder-item-name">${currentName}</h4>
+                ${typeLabel ? `<span class="tomorrow-preorder-type-badge ${typeClass}">${typeLabel}</span>` : ''}
+              </div>
+              <p class="tomorrow-preorder-item-desc" title="${currentDesc}">${currentDesc}</p>
+            </div>
+            <div class="tomorrow-preorder-item-action">
+              <div class="tomorrow-preorder-item-price">
+                5.50 <small>${currencyStr}</small>
+              </div>
+              <button 
+                type="button"
+                class="tomorrow-preorder-btn-add" 
+                onclick="CustomerApp.handleQuickAdd('${fakeId}', event)"
+                aria-label="${isAr ? 'إضافة إلى الطلب' : 'Add to order'}"
+                title="${isAr ? 'إضافة إلى الطلب' : 'Add to order'}"
+              >
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              </button>
+            </div>
+          </div>
+        `;
       }
     });
 
-    html += `</div></div>`;
-    return html;
+    if (!itemsHtml) return '';
+
+    return `
+      <section class="tomorrow-preorder-container" aria-label="${title}">
+        <div class="tomorrow-preorder-header">
+          <div class="tomorrow-preorder-title-wrap">
+            <span class="tomorrow-preorder-icon-badge" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </span>
+            <div>
+              <h3 class="tomorrow-preorder-title">${title}</h3>
+              <p class="tomorrow-preorder-subtitle">${subtitle}</p>
+            </div>
+          </div>
+          <span class="tomorrow-preorder-pill">${isAr ? 'طلب مسبق' : 'Pre-Order'}</span>
+        </div>
+        <div class="tomorrow-preorder-items">
+          ${itemsHtml}
+        </div>
+      </section>
+    `;
   },
 
   selectCategory(categoryId, clickedBtn) {
@@ -591,6 +655,11 @@ const CustomerApp = {
       const targetBtn = clickedBtn || navBar.querySelector(`[data-category="${categoryId}"]`);
       if (targetBtn) {
         targetBtn.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+      }
+
+      const preorderContainer = document.getElementById("tomorrow-preorder-container");
+      if (preorderContainer) {
+        preorderContainer.style.display = categoryId === "all" ? "block" : "none";
       }
 
       const settings = MoeStore.getSettings();
@@ -666,6 +735,7 @@ const CustomerApp = {
       MoeStore.addToCart({
         productId: product.id,
         name: product.name,
+        name_ar: product.name_ar,
         image: product.image,
         unitPrice: product.basePrice,
         quantity: 1,

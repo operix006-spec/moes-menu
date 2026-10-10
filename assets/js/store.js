@@ -153,7 +153,30 @@ class PureBiteStore {
     return prods.sort((a, b) => a.order - b.order);
   }
   getProductById(id) {
-    return this.state.products.find(p => p.id === id) || null;
+    let p = this.state.products.find(p => p.id === id);
+    if (!p && id && id.startsWith('preorder_') && typeof SubscriptionApp !== 'undefined') {
+      const mealId = id.replace('preorder_', '');
+      const meal = SubscriptionApp.mealLibrary?.[mealId];
+      if (meal) {
+        const lang = (typeof MoeStore !== 'undefined' && MoeStore.getLang) ? MoeStore.getLang() : "en";
+        const isAr = lang === 'ar';
+        p = {
+          id: id,
+          name: typeof meal.name === 'object' ? (meal.name.en || meal.name.ar) : meal.name,
+          name_ar: typeof meal.name === 'object' ? (meal.name.ar || meal.name.en) : meal.name,
+          description: typeof meal.desc === 'object' ? (meal.desc.en || meal.desc.ar) : (meal.desc || ''),
+          description_ar: typeof meal.desc === 'object' ? (meal.desc.ar || meal.desc.en) : (meal.desc || ''),
+          basePrice: 5.50,
+          image: meal.image || 'assets/images/subscription_hero.jpg',
+          available: true,
+          isPreOrder24h: true,
+          tags: [isAr ? 'خالي من الغلوتين' : 'Gluten-Free', isAr ? 'طلب مسبق' : 'Pre-Order'],
+          optionGroups: []
+        };
+        this.state.products.push(p);
+      }
+    }
+    return p || null;
   }
   getFeaturedProducts() {
     return this.state.products.filter(p => p.isFeatured && p.available);
