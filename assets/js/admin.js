@@ -2088,19 +2088,19 @@ const AdminApp = {
                   </select>
                 </div>
 
+                <div class="sub-opt-field-price">
+                  <label class="sub-field-label">السعر (د.أ) · Price</label>
+                  <input type="number" step="0.25" min="0" class="admin-form-input sub-input-price" id="sched-${wk}-${day}-0-price" value="${opt0.price !== undefined ? opt0.price : '5.50'}" placeholder="5.50" oninput="AdminApp.markSubDirty()">
+                </div>
+
                 <div class="sub-opt-field-ar">
-                  <label class="sub-field-label">اسم الوجبة (عربي)</label>
+                  <label class="sub-field-label">الاسم (عربي) · Arabic</label>
                   <input type="text" class="admin-form-input sub-input-ar" id="sched-${wk}-${day}-0-ar" value="${opt0.ar || ''}" placeholder="اسم الوجبة بالعربي" oninput="AdminApp.markSubDirty()">
                 </div>
 
                 <div class="sub-opt-field-en">
-                  <label class="sub-field-label">Meal Name (EN)</label>
+                  <label class="sub-field-label">الاسم (EN) · English</label>
                   <input type="text" class="admin-form-input sub-input-en" id="sched-${wk}-${day}-0-en" value="${opt0.en || ''}" placeholder="Meal Name in English" oninput="AdminApp.markSubDirty()">
-                </div>
-
-                <div class="sub-opt-field-price">
-                  <label class="sub-field-label">السعر (د.أ)</label>
-                  <input type="number" step="0.25" min="0" class="admin-form-input sub-input-price" id="sched-${wk}-${day}-0-price" value="${opt0.price !== undefined ? opt0.price : '5.50'}" placeholder="5.50" oninput="AdminApp.markSubDirty()">
                 </div>
               </div>
 
@@ -2131,19 +2131,19 @@ const AdminApp = {
                   </select>
                 </div>
 
+                <div class="sub-opt-field-price">
+                  <label class="sub-field-label">السعر (د.أ) · Price</label>
+                  <input type="number" step="0.25" min="0" class="admin-form-input sub-input-price" id="sched-${wk}-${day}-1-price" value="${opt1.price !== undefined ? opt1.price : '5.50'}" placeholder="5.50" oninput="AdminApp.markSubDirty()">
+                </div>
+
                 <div class="sub-opt-field-ar">
-                  <label class="sub-field-label">اسم الوجبة (عربي)</label>
+                  <label class="sub-field-label">الاسم (عربي) · Arabic</label>
                   <input type="text" class="admin-form-input sub-input-ar" id="sched-${wk}-${day}-1-ar" value="${opt1.ar || ''}" placeholder="اسم الوجبة بالعربي" oninput="AdminApp.markSubDirty()">
                 </div>
 
                 <div class="sub-opt-field-en">
-                  <label class="sub-field-label">Meal Name (EN)</label>
+                  <label class="sub-field-label">الاسم (EN) · English</label>
                   <input type="text" class="admin-form-input sub-input-en" id="sched-${wk}-${day}-1-en" value="${opt1.en || ''}" placeholder="Meal Name in English" oninput="AdminApp.markSubDirty()">
-                </div>
-
-                <div class="sub-opt-field-price">
-                  <label class="sub-field-label">السعر (د.أ)</label>
-                  <input type="number" step="0.25" min="0" class="admin-form-input sub-input-price" id="sched-${wk}-${day}-1-price" value="${opt1.price !== undefined ? opt1.price : '5.50'}" placeholder="5.50" oninput="AdminApp.markSubDirty()">
                 </div>
               </div>
 

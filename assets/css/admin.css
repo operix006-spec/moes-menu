@@ -1112,21 +1112,22 @@ input:checked + .toggle-slider:before {
 
 .sub-opt-fields-grid {
   display: grid;
-  grid-template-columns: 130px 1fr 1fr 95px;
-  gap: 10px;
-  align-items: flex-end;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    "type price"
+    "ar   en";
+  gap: 8px 10px;
+  align-items: start;
 }
 
-@media (max-width: 992px) {
-  .sub-opt-fields-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
-}
-
-@media (max-width: 600px) {
+@media (max-width: 520px) {
   .sub-opt-fields-grid {
     grid-template-columns: 1fr;
+    grid-template-areas:
+      "type"
+      "price"
+      "ar"
+      "en";
     gap: 8px;
   }
   .sub-opt-quick-wrap {
@@ -1134,20 +1135,67 @@ input:checked + .toggle-slider:before {
   }
 }
 
-.sub-opt-field-type,
-.sub-opt-field-ar,
-.sub-opt-field-en,
-.sub-opt-field-price {
+.sub-opt-field-type {
+  grid-area: type;
   display: flex;
   flex-direction: column;
   gap: 4px;
   min-width: 0;
 }
 
-.sub-input-price {
+.sub-opt-field-price {
+  grid-area: price;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.sub-opt-field-ar {
+  grid-area: ar;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.sub-opt-field-en {
+  grid-area: en;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.sub-opt-fields-grid .sub-field-label {
+  font-size: 0.74rem;
   font-weight: 700;
+  color: #475569;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  margin-bottom: 2px;
+  line-height: 1.2;
+}
+
+.sub-opt-field-price .sub-input-price {
+  height: 38px;
+  font-size: 0.86rem;
+  font-weight: 800;
+  border: 1.5px solid #CBD5E1;
+  border-radius: 8px;
+  padding: 6px 10px;
+  background: #FFFFFF;
   color: var(--c-forest);
   text-align: center;
+  direction: ltr;
+}
+
+.sub-opt-field-price .sub-input-price:focus {
+  border-color: var(--c-forest);
+  box-shadow: 0 0 0 2px rgba(6, 59, 41, 0.12);
+  outline: none;
 }
 
 .sub-opt-type-select {
