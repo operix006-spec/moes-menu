@@ -525,7 +525,7 @@ const CustomerApp = {
     }, Math.max(msUntilMidnight, 1000));
   },
 
-  orderPreOrderWhatsApp(mealId, dayName, weekName) {
+  orderPreOrderWhatsApp(mealId, dayName, weekName, qty) {
     const meal = typeof SubscriptionApp !== 'undefined' ? SubscriptionApp.mealLibrary?.[mealId] : null;
     const settings = MoeStore.getSettings();
     let rawNumber = (settings.whatsappNumber || "962792512221").replace(/[^0-9]/g, "");
@@ -543,14 +543,18 @@ const CustomerApp = {
         : meal.name;
     }
 
+    const count = (typeof qty === 'number' && qty > 0) ? qty : 1;
     const dayText = dayName || (isAr ? "الغد" : "Tomorrow");
     const weekText = weekName ? ` (${weekName})` : "";
     const mealPrice = (meal && meal.price !== undefined) ? Number(meal.price) : 5.50;
-    const formattedPrice = mealPrice.toFixed(2);
+    const totalPrice = (mealPrice * count).toFixed(2);
     
+    const qtyLineAr = count > 1 ? `🔢 العدد: ${count}\n` : '';
+    const qtyLineEn = count > 1 ? `🔢 Quantity: ${count}\n` : '';
+
     const msgText = isAr
-      ? `مرحباً Moe's PureBite، أود طلب وجبة الغد المسبقة:\n🍽️ الوجبة: ${mealName}\n📅 اليوم: ${dayText}${weekText}\n💰 السعر: ${formattedPrice} ${currencyStr}\nيرجى تأكيد التوصيل مع جدول الوجبات.`
-      : `Hello Moe's PureBite, I would like to pre-order tomorrow's meal:\n🍽️ Meal: ${mealName}\n📅 Day: ${dayText}${weekText}\n💰 Price: ${formattedPrice} ${currencyStr}\nPlease confirm delivery with tomorrow's schedule.`;
+      ? `مرحباً Moe's PureBite، أود طلب وجبة الغد المسبقة:\n🍽️ الوجبة: ${mealName}\n📅 اليوم: ${dayText}${weekText}\n${qtyLineAr}💰 السعر الإجمالي: ${totalPrice} ${currencyStr}\nيرجى تأكيد التوصيل مع جدول الوجبات.`
+      : `Hello Moe's PureBite, I would like to pre-order tomorrow's meal:\n🍽️ Meal: ${mealName}\n📅 Day: ${dayText}${weekText}\n${qtyLineEn}💰 Total Price: ${totalPrice} ${currencyStr}\nPlease confirm delivery with tomorrow's schedule.`;
       
     const msg = encodeURIComponent(msgText);
     App.showToast(isAr ? `جاري فتح واتساب لتأكيد طلب وجبة ${dayText}... 💬` : `Opening WhatsApp to confirm meal pre-order... 💬`, "success");
@@ -664,7 +668,7 @@ const CustomerApp = {
           description: descEn,
           description_ar: descAr,
           basePrice: mealPrice,
-          image: meal.image || 'assets/images/subscription_hero.jpg',
+          image: meal.image || '',
           available: true,
           isPreOrder24h: true,
           targetDayName: targetDayName,
@@ -929,23 +933,43 @@ const CustomerApp = {
     const scrollBody = container.querySelector(".modal-scroll-body");
     const savedScroll = scrollBody ? scrollBody.scrollTop : 0;
 
-    container.innerHTML = `
-      <div style="position: absolute; top: 16px; left: 16px; right: 16px; display: flex; justify-content: space-between; z-index: 100; pointer-events: none;">
-        <button class="btn-modal-close" onclick="CustomerApp.closeProductModal()" aria-label="Close product details" style="pointer-events: auto; box-shadow: 0 2px 10px rgba(0,0,0,0.2);">
-          ✕
-        </button>
-        <button onclick="CustomerApp.directWhatsAppContact()" class="btn-modal-close" title="Chat on WhatsApp" style="pointer-events: auto; color: #25D366; box-shadow: 0 2px 10px rgba(0,0,0,0.2);">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12C2 13.85 2.5 15.58 3.38 17.07L2 22L7.07 20.65C8.54 21.5 10.22 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z"/></svg>
-        </button>
-      </div>
+    const showHeroImage = !p.isPreOrder24h && !!p.image;
 
-      <div class="modal-scroll-body" style="padding-top: 0; padding-inline: 0; gap: 0;">
-        <!-- Edge-to-Edge Hero Image -->
-        <div class="modal-product-hero-img-wrap" style="height: 300px; border-radius: 0; flex-shrink: 0;">
-          <img src="${p.image}" alt="${CustomerApp.T(p, "name")}" class="modal-product-hero-img" />
+    container.innerHTML = `
+      ${showHeroImage ? `
+        <div style="position: absolute; top: 16px; left: 16px; right: 16px; display: flex; justify-content: space-between; z-index: 100; pointer-events: none;">
+          <button class="btn-modal-close" onclick="CustomerApp.closeProductModal()" aria-label="Close product details" style="pointer-events: auto; box-shadow: 0 2px 10px rgba(0,0,0,0.2);">
+            ✕
+          </button>
+          <button onclick="CustomerApp.directWhatsAppContact()" class="btn-modal-close" title="Chat on WhatsApp" style="pointer-events: auto; color: #25D366; box-shadow: 0 2px 10px rgba(0,0,0,0.2);">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12C2 13.85 2.5 15.58 3.38 17.07L2 22L7.07 20.65C8.54 21.5 10.22 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z"/></svg>
+          </button>
         </div>
 
-        <div style="padding: 24px 18px; display: flex; flex-direction: column; gap: 20px;">
+        <div class="modal-scroll-body" style="padding-top: 0; padding-inline: 0; gap: 0;">
+          <!-- Edge-to-Edge Hero Image -->
+          <div class="modal-product-hero-img-wrap" style="height: 300px; border-radius: 0; flex-shrink: 0;">
+            <img src="${p.image}" alt="${CustomerApp.T(p, "name")}" class="modal-product-hero-img" />
+          </div>
+
+          <div style="padding: 24px 18px; display: flex; flex-direction: column; gap: 20px;">
+      ` : `
+        <div class="modal-header-bar" style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--c-cream-border); background-color: var(--c-cream-soft); flex-shrink: 0;">
+          <button class="btn-modal-close" onclick="CustomerApp.closeProductModal()" aria-label="Close product details">
+            ✕
+          </button>
+          <div style="font-weight: 700; font-size: 0.95rem; color: var(--c-forest); display: flex; align-items: center; gap: 6px;">
+            <span style="color: var(--c-orange);">⚡</span>
+            <span>${p.isPreOrder24h ? (MoeStore.getLang() === 'ar' ? `وجبة طلب مسبق (${p.targetDayName || 'الغد'})` : `Pre-Order Meal (${p.targetDayName || 'Tomorrow'})`) : CustomerApp.T(p, "name")}</span>
+          </div>
+          <button onclick="CustomerApp.directWhatsAppContact()" class="btn-modal-close" title="Chat on WhatsApp" style="color: #25D366;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12C2 13.85 2.5 15.58 3.38 17.07L2 22L7.07 20.65C8.54 21.5 10.22 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z"/></svg>
+          </button>
+        </div>
+
+        <div class="modal-scroll-body" style="padding: 20px 18px 24px; display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: flex; flex-direction: column; gap: 20px;">
+      `}
           <!-- Product Head -->
           <div class="modal-product-info-head">
             <div class="modal-product-title-row">
@@ -1061,7 +1085,7 @@ const CustomerApp = {
             <span>${i18n("currently_unavailable")}</span>
           </button>
         ` : (p.isPreOrder24h ? `
-          <button class="btn-modal-add" style="background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); gap: 8px;" onclick="CustomerApp.orderPreOrderWhatsApp('${p.originalMealId || p.id.replace('preorder_', '')}', '${p.targetDayName || ''}', '${p.currentWeekName || ''}')">
+          <button class="btn-modal-add" style="background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); gap: 8px;" onclick="CustomerApp.orderPreOrderWhatsApp('${p.originalMealId || p.id.replace('preorder_', '')}', '${p.targetDayName || ''}', '${p.currentWeekName || ''}', ${this.currentModalState.quantity})">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.41a8.16 8.16 0 0 1 2.4 5.83c0 4.54-3.7 8.24-8.24 8.24-1.44 0-2.85-.38-4.09-1.11l-.29-.17-3.04.8.81-2.96-.19-.31a8.188 8.188 0 0 1-1.25-4.49c0-4.54 3.7-8.24 8.24-8.24m-3.57 3.52c-.2 0-.44.07-.67.33-.23.26-.88.86-.88 2.09s.9 2.42 1.02 2.59c.13.16 1.74 2.76 4.29 3.78.61.24 1.08.39 1.45.51.61.19 1.16.17 1.6-.01.49-.2 1.5-.61 1.71-1.21.21-.59.21-1.1.15-1.21-.06-.11-.23-.17-.49-.3-.26-.13-1.5-.74-1.73-.83-.23-.08-.4-.13-.57.13-.17.26-.66.83-.81.99-.15.17-.3.19-.56.06-.26-.13-1.1-.41-2.1-1.3-.77-.69-1.3-1.54-1.45-1.8-.15-.26-.02-.4.11-.53.12-.11.26-.3.39-.46.13-.15.17-.26.26-.43.09-.17.04-.32-.02-.45-.07-.13-.59-1.42-.81-1.95-.21-.51-.43-.44-.59-.45-.15-.01-.33-.01-.5-.01z"/></svg>
             <span>${MoeStore.getLang() === 'ar' ? 'حجز الوجبة عبر واتساب' : 'Reserve via WhatsApp'}</span>
             <span>•</span>
