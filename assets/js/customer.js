@@ -567,7 +567,14 @@ const CustomerApp = {
   },
 
   getTomorrowMealsHTML(settings) {
-    if (typeof SubscriptionApp === 'undefined' || !SubscriptionApp.dailyOptionsSchedule) return '';
+    if (typeof SubscriptionApp === 'undefined') return '';
+    if (typeof MoeStore !== 'undefined' && MoeStore.getSubscriptionConfig) {
+      const cfg = MoeStore.getSubscriptionConfig();
+      if (cfg && Object.keys(cfg).length > 0 && typeof SubscriptionApp.mergeRemoteConfig === 'function') {
+        SubscriptionApp.mergeRemoteConfig(cfg);
+      }
+    }
+    if (!SubscriptionApp.dailyOptionsSchedule) return '';
     const now = new Date();
     const targetDate = new Date(now);
     targetDate.setDate(targetDate.getDate() + 1);

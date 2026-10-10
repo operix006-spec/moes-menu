@@ -1286,11 +1286,7 @@ const SubscriptionApp = {
   },
 
   async init() {
-    // Only initialize UI and bindings if we are on the subscriptions page
-    const subAppContainer = document.getElementById('sub-all-weeks-grid');
-    if (!subAppContainer) return;
-    
-    // Sync contact info and subscription config with central store if available
+    // 1. Sync contact info and subscription config with central store/localStorage on any page
     try {
       const saved = localStorage.getItem('moes_purebite_db_v1');
       if (saved) {
@@ -1312,15 +1308,28 @@ const SubscriptionApp = {
       }
     } catch (e) {}
 
-    // Listen for live updates from store
+    // 2. Listen for live updates from store on any page
     window.addEventListener("moe:data-updated", (e) => {
       const db = e.detail;
       if (db && db.subscriptionConfig) {
         this.mergeRemoteConfig(db.subscriptionConfig);
-        this.applyLanguage();
-        this.render(); // Re-render everything
+        const container = document.getElementById('sub-all-weeks-grid');
+        if (container) {
+          this.applyLanguage();
+          this.render(); // Re-render subscriptions page if present
+        }
       }
     });
+
+    // 3. Only initialize full subscriptions page UI if sub-all-weeks-grid is present
+    const subAppContainer = document.getElementById('sub-all-weeks-grid');
+    if (!subAppContainer) {
+      if (!this._fetchedConfig) {
+        this._fetchedConfig = true;
+        await this.fetchRemoteConfig();
+      }
+      return;
+    }
 
     let savedLang = localStorage.getItem('moe_lang');
     if (!savedLang && typeof MoeStore !== 'undefined' && MoeStore.getLang) {

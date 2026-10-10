@@ -38,7 +38,12 @@ class PureBiteStore {
       if (settingsData) this.state.settings = { ...this.state.settings, ...settingsData };
       if (homeData) this.state.homeContent = { ...this.state.homeContent, ...homeData };
       if (aboutData) this.state.aboutContent = { ...this.state.aboutContent, ...aboutData };
-      if (subConfigData) this.state.subscriptionConfig = subConfigData;
+      if (subConfigData) {
+        this.state.subscriptionConfig = subConfigData;
+        if (typeof SubscriptionApp !== 'undefined' && typeof SubscriptionApp.mergeRemoteConfig === 'function') {
+          SubscriptionApp.mergeRemoteConfig(subConfigData);
+        }
+      }
 
       this.saveDatabase(); // Persist and trigger UI update
     } catch (e) {
@@ -153,15 +158,16 @@ class PureBiteStore {
     return prods.sort((a, b) => a.order - b.order);
   }
   getProductById(id) {
-    let p = this.state.products.find(p => p.id === id);
-    if (!p && id && id.startsWith('preorder_') && typeof SubscriptionApp !== 'undefined') {
+    if (id && id.startsWith('preorder_') && typeof SubscriptionApp !== 'undefined') {
       const mealId = id.replace('preorder_', '');
       const meal = SubscriptionApp.mealLibrary?.[mealId];
       if (meal) {
         const lang = (typeof MoeStore !== 'undefined' && MoeStore.getLang) ? MoeStore.getLang() : "en";
         const isAr = lang === 'ar';
-        p = {
+        const existingIdx = this.state.products.findIndex(p => p.id === id);
+        const dynamicProduct = {
           id: id,
+          originalMealId: mealId,
           name: typeof meal.name === 'object' ? (meal.name.en || meal.name.ar) : meal.name,
           name_ar: typeof meal.name === 'object' ? (meal.name.ar || meal.name.en) : meal.name,
           description: typeof meal.desc === 'object' ? (meal.desc.en || meal.desc.ar) : (meal.desc || ''),
@@ -173,9 +179,16 @@ class PureBiteStore {
           tags: [isAr ? 'خالي من الغلوتين' : 'Gluten-Free', isAr ? 'طلب مسبق' : 'Pre-Order'],
           optionGroups: []
         };
-        this.state.products.push(p);
+        if (existingIdx !== -1) {
+          this.state.products[existingIdx] = { ...this.state.products[existingIdx], ...dynamicProduct };
+          return this.state.products[existingIdx];
+        } else {
+          this.state.products.push(dynamicProduct);
+          return dynamicProduct;
+        }
       }
     }
+    const p = this.state.products.find(p => p.id === id);
     return p || null;
   }
   getFeaturedProducts() {
@@ -381,6 +394,9 @@ class PureBiteStore {
   async updateSubscriptionConfig(newConfig) {
     const oldConfig = { ...this.state.subscriptionConfig };
     this.state.subscriptionConfig = { ...this.state.subscriptionConfig, ...newConfig };
+    if (typeof SubscriptionApp !== 'undefined' && typeof SubscriptionApp.mergeRemoteConfig === 'function') {
+      SubscriptionApp.mergeRemoteConfig(this.state.subscriptionConfig);
+    }
     this.saveDatabase();
     
     if (window.supabaseClient) {
