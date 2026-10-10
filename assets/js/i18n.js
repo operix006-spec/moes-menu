@@ -276,11 +276,23 @@ const Translations = {
 };
 
 window.i18n = function(key) {
-  const lang = (typeof MoeStore !== 'undefined' && MoeStore.getLang) ? MoeStore.getLang() : "en";
+  let lang = "ar";
+  try {
+    const stored = localStorage.getItem('moe_lang');
+    if (stored === 'ar' || stored === 'en') {
+      lang = stored;
+    } else if (typeof MoeStore !== 'undefined' && MoeStore.getLang) {
+      lang = MoeStore.getLang();
+    }
+  } catch (e) {}
+
   if (Translations[lang] && Translations[lang][key]) {
     return Translations[lang][key];
   }
-  // Fallback to english
+  // Fallbacks
+  if (Translations["ar"] && Translations["ar"][key]) {
+    return Translations["ar"][key];
+  }
   if (Translations["en"] && Translations["en"][key]) {
     return Translations["en"][key];
   }

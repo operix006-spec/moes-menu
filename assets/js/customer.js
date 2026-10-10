@@ -104,6 +104,15 @@ const CustomerApp = {
       }
     });
 
+    // Cross-tab / cross-page language sync listener
+    window.addEventListener("storage", (e) => {
+      if (e.key === "moe_lang" && (e.newValue === "ar" || e.newValue === "en")) {
+        if (MoeStore.getLang() !== e.newValue) {
+          MoeStore.setLang(e.newValue);
+        }
+      }
+    });
+
     // Close modal when clicking backdrop
     const modalOverlay = document.getElementById("customer-modal-overlay");
     if (modalOverlay) {
@@ -127,6 +136,9 @@ const CustomerApp = {
     const currentLang = MoeStore.getLang();
     const newLang = currentLang === "en" ? "ar" : "en";
     MoeStore.setLang(newLang);
+    if (typeof SubscriptionApp !== 'undefined') {
+      SubscriptionApp.state.lang = newLang;
+    }
   },
 
   applyLanguageUI() {

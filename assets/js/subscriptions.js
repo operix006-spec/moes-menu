@@ -1331,15 +1331,42 @@ const SubscriptionApp = {
       return;
     }
 
-    let savedLang = localStorage.getItem('moe_lang');
-    if (!savedLang && typeof MoeStore !== 'undefined' && MoeStore.getLang) {
-      savedLang = MoeStore.getLang();
-    }
-    if (savedLang) {
-      this.state.lang = savedLang;
-    } else {
-      this.state.lang = 'ar';
-    }
+    let savedLang = 'ar';
+    try {
+      const explicit = localStorage.getItem('moe_lang');
+      if (explicit === 'ar' || explicit === 'en') {
+        savedLang = explicit;
+      } else if (typeof MoeStore !== 'undefined' && MoeStore.getLang) {
+        savedLang = MoeStore.getLang();
+      }
+    } catch (e) {}
+    this.state.lang = savedLang;
+
+    // Cross-tab and store lang listener
+    window.addEventListener("moe:lang-changed", (e) => {
+      const newLang = e.detail;
+      if (newLang && this.state.lang !== newLang) {
+        this.state.lang = newLang;
+        const subAppContainer = document.getElementById('sub-all-weeks-grid');
+        if (subAppContainer) {
+          this.applyLanguage();
+          this.render();
+        }
+      }
+    });
+
+    window.addEventListener("storage", (e) => {
+      if (e.key === "moe_lang" && (e.newValue === "ar" || e.newValue === "en")) {
+        if (this.state.lang !== e.newValue) {
+          this.state.lang = e.newValue;
+          const subAppContainer = document.getElementById('sub-all-weeks-grid');
+          if (subAppContainer) {
+            this.applyLanguage();
+            this.render();
+          }
+        }
+      }
+    });
 
     this.applyLanguage();
     this.render();
@@ -1359,7 +1386,9 @@ const SubscriptionApp = {
 
   toggleLanguage() {
     this.state.lang = this.state.lang === 'en' ? 'ar' : 'en';
-    localStorage.setItem('moe_lang', this.state.lang);
+    try {
+      localStorage.setItem('moe_lang', this.state.lang);
+    } catch (e) {}
     if (typeof MoeStore !== 'undefined' && MoeStore.setLang) {
       try { MoeStore.setLang(this.state.lang); } catch (e) {}
     }

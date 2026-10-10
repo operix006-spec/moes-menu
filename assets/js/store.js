@@ -35,7 +35,12 @@ class PureBiteStore {
 
       if (categories) this.state.categories = categories;
       if (products) this.state.products = products;
-      if (settingsData) this.state.settings = { ...this.state.settings, ...settingsData };
+      if (settingsData) {
+        const clientLang = this.getLang();
+        this.state.settings = { ...this.state.settings, ...settingsData };
+        // User language is a client device preference, NEVER overwritten by remote database settings
+        this.state.settings.lang = clientLang;
+      }
       if (homeData) this.state.homeContent = { ...this.state.homeContent, ...homeData };
       if (aboutData) this.state.aboutContent = { ...this.state.aboutContent, ...aboutData };
       if (subConfigData) {
@@ -52,8 +57,16 @@ class PureBiteStore {
   }
 
   loadDatabase() {
+    let userPrefLang = 'ar';
+    try {
+      const savedMoeLang = localStorage.getItem('moe_lang');
+      if (savedMoeLang === 'ar' || savedMoeLang === 'en') {
+        userPrefLang = savedMoeLang;
+      }
+    } catch (e) {}
+
     const defaults = {
-      settings: { lang: 'en', currency: 'JOD' },
+      settings: { lang: userPrefLang, currency: 'JOD' },
       categories: [],
       products: [],
       homeContent: {},
@@ -76,7 +89,10 @@ class PureBiteStore {
       const cached = localStorage.getItem(this.STORAGE_KEY);
       if (cached) {
         const parsed = JSON.parse(cached);
-        return { ...defaults, ...parsed };
+        const merged = { ...defaults, ...parsed };
+        merged.settings = merged.settings || {};
+        merged.settings.lang = userPrefLang;
+        return merged;
       }
     } catch (e) {
       console.warn("Failed to load cached DB", e);
@@ -134,13 +150,21 @@ class PureBiteStore {
   }
   
   getLang() {
-    return this.state.settings.lang || "en";
+    try {
+      const explicit = localStorage.getItem('moe_lang');
+      if (explicit === 'ar' || explicit === 'en') return explicit;
+    } catch (e) {}
+    return this.state.settings.lang || "ar";
   }
 
   setLang(lang) {
-    this.state.settings.lang = lang;
+    const validLang = (lang === 'en') ? 'en' : 'ar';
+    try {
+      localStorage.setItem('moe_lang', validLang);
+    } catch (e) {}
+    this.state.settings.lang = validLang;
     this.saveDatabase();
-    this.emit("lang-changed", lang);
+    this.emit("lang-changed", validLang);
   }
 
   getCategories() { return [...this.state.categories].sort((a, b) => (a.order || 0) - (b.order || 0)); }
