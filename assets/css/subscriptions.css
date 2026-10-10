@@ -3831,3 +3831,227 @@ body.sub-modal-open {
   margin: 0;
   line-height: 1.45;
 }
+
+/* ==========================================================================
+   MOBILE & MULTI-SCREEN OPTIMIZATIONS (SUBSCRIPTIONS)
+   Guarantees perfect rendering across all phone sizes down to 320px
+   ========================================================================== */
+@media (max-width: 480px) {
+  .site-header {
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  .header-page-title {
+    font-size: clamp(0.95rem, 3.8vw, 1.15rem);
+  }
+
+  .sub-main {
+    padding: 0 12px 60px;
+  }
+
+  /* Chapter 1 Hero */
+  .sub-hero-editorial {
+    padding: 20px 12px 24px;
+    gap: 16px;
+  }
+
+  .sub-hero-title {
+    font-size: clamp(1.30rem, 5.5vw, 1.75rem);
+    line-height: 1.25;
+  }
+
+  .sub-hero-subtitle {
+    font-size: clamp(0.80rem, 3vw, 0.90rem);
+  }
+
+  .sub-hero-trust-row {
+    gap: 5px;
+  }
+
+  .sub-hero-trust-pill {
+    padding: 4px 9px;
+    font-size: 0.72rem;
+  }
+
+  .sub-hero-photo-frame {
+    height: clamp(170px, 46vw, 230px);
+    border-radius: 16px;
+  }
+
+  /* Delivery Section */
+  .sub-delivery-horizontal-block {
+    padding: 16px 12px;
+    border-radius: 16px;
+    gap: 14px;
+  }
+
+  .sub-delivery-title {
+    font-size: 0.98rem;
+  }
+
+  .sub-delivery-statement {
+    font-size: 0.80rem;
+    line-height: 1.4;
+  }
+
+  .sub-delivery-areas-pills {
+    gap: 4px;
+  }
+
+  .sub-area-pill {
+    padding: 4px 8px;
+    font-size: 0.70rem;
+  }
+
+  /* Brochures Section */
+  .sub-brochures-section {
+    padding: 18px 8px 22px;
+    border-radius: 18px;
+  }
+
+  .sub-slider-container {
+    padding: 0 6px;
+  }
+
+  /* Schedule Chapter */
+  .sub-schedule-section {
+    padding: 16px 10px 20px;
+    border-radius: 18px;
+  }
+
+  .sub-section-title {
+    font-size: 1.18rem;
+  }
+
+  .sub-schedule-toggle-row {
+    padding: 12px 10px;
+    border-radius: 12px;
+  }
+
+  .sub-schedule-toggle-btn {
+    padding: 10px 14px;
+    font-size: 0.82rem;
+  }
+
+  /* 4-Week Schedule Board (2x2 on mobile) */
+  .sub-all-weeks-grid.weeks-4 {
+    gap: 6px !important;
+  }
+
+  .sub-week-card {
+    padding: 7px 6px 10px;
+    border-radius: 12px;
+  }
+
+  .sub-week-card-header {
+    gap: 5px;
+    margin-bottom: 6px;
+    padding-bottom: 6px;
+  }
+
+  .sub-week-num {
+    font-size: 1.05rem;
+  }
+
+  .sub-week-title {
+    font-size: 0.72rem;
+  }
+
+  .sub-day-name {
+    font-size: 0.64rem;
+  }
+
+  .sub-scheduled-meal-item {
+    padding: 5px 6px;
+    border-radius: 6px;
+  }
+
+  .sub-scheduled-meal-name {
+    font-size: 0.63rem;
+  }
+
+  .sub-meal-type-tag {
+    font-size: 0.50rem;
+    padding: 1px 4px;
+  }
+
+  .sub-meal-price-tag {
+    font-size: 0.60rem;
+  }
+
+  /* Chapter 3 Builder */
+  .sub-builder-chapter {
+    padding: 16px 10px 22px;
+    border-radius: 18px;
+  }
+
+  .sub-builder-title {
+    font-size: 1.02rem;
+  }
+
+  .sub-segmented-control {
+    gap: 4px;
+    padding: 4px;
+  }
+
+  .sub-segmented-btn {
+    padding: 9px 6px;
+    font-size: 0.80rem;
+  }
+
+  .sub-summary-container {
+    padding: 16px 12px calc(14px + env(safe-area-inset-bottom, 0px));
+    border-radius: 16px;
+  }
+
+  .sub-summary-price-amount {
+    font-size: 1.65rem;
+  }
+
+  .sub-cta-whatsapp-pulse {
+    height: 48px;
+    font-size: 0.95rem;
+  }
+
+  /* Meal Modal Bottom Sheet */
+  .sub-meal-modal-wrapper {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .sub-meal-sheet {
+    max-height: 88vh;
+    border-radius: 20px 20px 0 0;
+  }
+
+  .sub-modal-image-wrap {
+    height: clamp(140px, 38vw, 190px);
+  }
+
+  .sub-meal-sheet-content {
+    padding: 16px 14px 24px;
+  }
+}
+
+/* Extra Small Phones (max-width: 360px) */
+@media (max-width: 360px) {
+  .sub-all-weeks-grid.weeks-4 {
+    gap: 4px !important;
+  }
+
+  .sub-week-card {
+    padding: 5px 4px 8px;
+  }
+
+  .sub-scheduled-meal-item {
+    padding: 4px 4px;
+  }
+
+  .sub-scheduled-meal-name {
+    font-size: 0.58rem;
+  }
+
+  .sub-day-name {
+    font-size: 0.60rem;
+  }
+}
