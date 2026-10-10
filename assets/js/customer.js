@@ -80,6 +80,7 @@ const CustomerApp = {
     this.applyLanguageUI();
     this.updateStickyCart();
     this.updateCartBadge();
+    this.scheduleMidnightRefresh();
   },
 
   bindEvents() {
@@ -504,9 +505,27 @@ const CustomerApp = {
         activePill.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
       }
     }, 20);
+
+    this.scheduleMidnightRefresh();
   },
 
-  orderPreOrderWhatsApp(mealId) {
+  scheduleMidnightRefresh() {
+    if (this._midnightTimer) clearTimeout(this._midnightTimer);
+    const now = new Date();
+    const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 2);
+    const msUntilMidnight = midnight.getTime() - now.getTime();
+    
+    this._midnightTimer = setTimeout(() => {
+      const preorderContainer = document.getElementById("tomorrow-preorder-container");
+      if (preorderContainer) {
+        const settings = MoeStore.getSettings();
+        preorderContainer.innerHTML = this.getTomorrowMealsHTML(settings);
+      }
+      this.scheduleMidnightRefresh();
+    }, Math.max(msUntilMidnight, 1000));
+  },
+
+  orderPreOrderWhatsApp(mealId, dayName, weekName) {
     const meal = typeof SubscriptionApp !== 'undefined' ? SubscriptionApp.mealLibrary?.[mealId] : null;
     const settings = MoeStore.getSettings();
     let rawNumber = (settings.whatsappNumber || "962792512221").replace(/[^0-9]/g, "");
@@ -522,40 +541,47 @@ const CustomerApp = {
         ? (isAr ? (meal.name.ar || meal.name.en) : (meal.name.en || meal.name.ar))
         : meal.name;
     }
+
+    const dayText = dayName || (isAr ? "الغد" : "Tomorrow");
+    const weekText = weekName ? ` (${weekName})` : "";
     
     const msgText = isAr
-      ? `مرحباً Moe's PureBite، أود طلب وجبة الغد (طلب مسبق):\n🍽️ الوجبة: ${mealName}\n💰 السعر: 5.50 د.أ\nيرجى تأكيد موعد التوصيل مع جدول الوجبات.`
-      : `Hello Moe's PureBite, I would like to pre-order tomorrow's meal:\n🍽️ Meal: ${mealName}\n💰 Price: 5.50 JOD\nPlease confirm delivery with tomorrow's schedule.`;
+      ? `مرحباً Moe's PureBite، أود طلب وجبة الغد المسبقة:\n🍽️ الوجبة: ${mealName}\n📅 اليوم: ${dayText}${weekText}\n💰 السعر: 5.50 د.أ\nيرجى تأكيد التوصيل مع جدول الوجبات.`
+      : `Hello Moe's PureBite, I would like to pre-order tomorrow's meal:\n🍽️ Meal: ${mealName}\n📅 Day: ${dayText}${weekText}\n💰 Price: 5.50 JOD\nPlease confirm delivery with tomorrow's schedule.`;
       
     const msg = encodeURIComponent(msgText);
-    App.showToast(isAr ? "جاري فتح واتساب لتأكيد طلب الوجبة... 💬" : "Opening WhatsApp to confirm your meal pre-order... 💬", "success");
+    App.showToast(isAr ? `جاري فتح واتساب لتأكيد طلب وجبة ${dayText}... 💬` : `Opening WhatsApp to confirm meal pre-order... 💬`, "success");
     window.open(`https://wa.me/${rawNumber}?text=${msg}`, "_blank");
   },
 
   getTomorrowMealsHTML(settings) {
     if (typeof SubscriptionApp === 'undefined' || !SubscriptionApp.dailyOptionsSchedule) return '';
     const now = new Date();
-    const tomorrow = new Date(now);
-    tomorrow.setDate(tomorrow.getDate() + 1);
+    const targetDate = new Date(now);
+    targetDate.setDate(targetDate.getDate() + 1);
     
-    const dayOfWeek = tomorrow.getDay();
+    // If tomorrow is Friday (kitchen closed), advance to Saturday
+    if (targetDate.getDay() === 5) {
+      targetDate.setDate(targetDate.getDate() + 1);
+    }
+    
     const daysMap = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
-    const dayKey = daysMap[dayOfWeek];
-    
-    if (dayKey === 'fri') return ''; // No Friday meals
+    const dayKey = daysMap[targetDate.getDay()];
+    if (dayKey === 'fri') return '';
 
-    // Calculate week based on a known Saturday (e.g. Jan 6, 2024 was a Saturday)
-    const week1Start = new Date('2024-01-06T00:00:00');
-    const tomorrowDateOnly = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate());
-    const startDateOnly = new Date(week1Start.getFullYear(), week1Start.getMonth(), week1Start.getDate());
-    
-    const diffTime = tomorrowDateOnly.getTime() - startDateOnly.getTime();
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-    
-    const safeDiffDays = diffDays >= 0 ? diffDays : (28 + (diffDays % 28));
-    const cycleDay = safeDiffDays % 28;
-    const currentWeekNum = Math.floor(cycleDay / 7) + 1;
-    const weekKey = 'week' + currentWeekNum;
+    // Calculate which Saturday of the month began this subscription week
+    const daysSinceSat = (targetDate.getDay() + 1) % 7;
+    const satDate = new Date(targetDate);
+    satDate.setDate(targetDate.getDate() - daysSinceSat);
+
+    let satIndex;
+    if (satDate.getMonth() === targetDate.getMonth()) {
+      satIndex = Math.floor((satDate.getDate() - 1) / 7) + 1;
+    } else {
+      satIndex = 1;
+    }
+    const weekNum = ((satIndex - 1) % 4) + 1;
+    const weekKey = 'week' + weekNum;
 
     const mealIds = SubscriptionApp.dailyOptionsSchedule[weekKey]?.[dayKey];
     if (!mealIds || mealIds.length === 0) return '';
@@ -563,8 +589,36 @@ const CustomerApp = {
     const lang = MoeStore.getLang();
     const isAr = lang === 'ar';
     const currencyStr = isAr ? 'د.أ' : (settings?.currency || 'JOD');
-    const title = isAr ? "وجبات الغد (طلب مسبق)" : "Tomorrow's Pre-Order Specials";
-    const subtitle = isAr ? "تُحضّر طازجة مع جدول الاشتراكات • الطلب عبر واتساب فقط" : "Prepared fresh daily • Order via WhatsApp only";
+
+    const dayNames = {
+      sat: { ar: 'السبت', en: 'Saturday' },
+      sun: { ar: 'الأحد', en: 'Sunday' },
+      mon: { ar: 'الاثنين', en: 'Monday' },
+      tue: { ar: 'الثلاثاء', en: 'Tuesday' },
+      wed: { ar: 'الأربعاء', en: 'Wednesday' },
+      thu: { ar: 'الخميس', en: 'Thursday' }
+    };
+    
+    const weekNames = {
+      1: { ar: 'الأسبوع الأول', en: 'Week 1' },
+      2: { ar: 'الأسبوع الثاني', en: 'Week 2' },
+      3: { ar: 'الأسبوع الثالث', en: 'Week 3' },
+      4: { ar: 'الأسبوع الرابع', en: 'Week 4' }
+    };
+
+    const targetDayName = isAr ? dayNames[dayKey]?.ar : dayNames[dayKey]?.en;
+    const currentWeekName = isAr ? weekNames[weekNum]?.ar : weekNames[weekNum]?.en;
+
+    const isDirectTomorrow = (targetDate.getTime() - now.getTime()) <= (2 * 24 * 60 * 60 * 1000);
+    const dayLabel = isAr 
+      ? (isDirectTomorrow ? `الغد (${targetDayName})` : `يوم ${targetDayName}`)
+      : (isDirectTomorrow ? `Tomorrow (${targetDayName})` : targetDayName);
+
+    const title = isAr ? `وجبات ${dayLabel} - طلب مسبق` : `${dayLabel}'s Meals (Pre-Order)`;
+    const subtitle = isAr 
+      ? `${currentWeekName} • تُحضّر طازجة مع جدول الاشتراكات • الطلب عبر واتساب فقط` 
+      : `${currentWeekName} • Prepared fresh daily • Order via WhatsApp only`;
+    const pillText = isAr ? `⚡ ليوم ${targetDayName}` : `⚡ For ${targetDayName}`;
 
     let itemsHtml = '';
     mealIds.forEach(id => {
@@ -606,7 +660,6 @@ const CustomerApp = {
           optionGroups: []
         };
         
-        // Inject or update in store so any product lookup works normally
         const existingIdx = MoeStore.state.products.findIndex(p => p.id === fakeId);
         if (existingIdx !== -1) {
           MoeStore.state.products[existingIdx] = fakeProduct;
@@ -630,7 +683,7 @@ const CustomerApp = {
               <button 
                 type="button"
                 class="tomorrow-preorder-btn-wa" 
-                onclick="CustomerApp.orderPreOrderWhatsApp('${id}')"
+                onclick="CustomerApp.orderPreOrderWhatsApp('${id}', '${targetDayName}', '${currentWeekName}')"
                 aria-label="${isAr ? 'طلب عبر واتساب' : 'Order via WhatsApp'}"
                 title="${isAr ? 'طلب عبر واتساب' : 'Order via WhatsApp'}"
               >
@@ -659,7 +712,7 @@ const CustomerApp = {
               <p class="tomorrow-preorder-subtitle">${subtitle}</p>
             </div>
           </div>
-          <span class="tomorrow-preorder-pill">${isAr ? 'طلب مسبق' : 'Pre-Order'}</span>
+          <span class="tomorrow-preorder-pill">${pillText}</span>
         </div>
         <div class="tomorrow-preorder-items">
           ${itemsHtml}
