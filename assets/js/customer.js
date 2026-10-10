@@ -535,17 +535,17 @@ const CustomerApp = {
     const title = isAr ? "اطلب وجبة الغد (توصيل مع الوجبات)" : "Tomorrow's Pre-Order (Delivered with Meals)";
     const desc = isAr ? "هذه الوجبات متاحة للطلب المسبق لليوم التالي. سيتم تحضيرها طازجة وتوصيلها مع جدول الاشتراكات." : "These meals are available for next-day pre-order. Prepared fresh and delivered with the subscription schedule.";
 
-    let html = \`
+    let html = `
       <div style="margin: 16px 16px 24px; padding: 18px 16px; background: linear-gradient(135deg, #fdf8e9 0%, #fff 100%); border: 2px solid var(--c-orange); border-radius: var(--radius-lg); box-shadow: 0 4px 15px rgba(230,126,34,0.15);">
         <h3 style="color: var(--c-forest); font-family: var(--font-serif); font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
           <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--c-orange)" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          \${title}
+          ${title}
         </h3>
         <p style="font-size: 0.85rem; color: #555; margin-bottom: 16px; line-height: 1.5;">
-          \${desc}
+          ${desc}
         </p>
         <div class="product-list" style="padding: 0;">
-    \`;
+    `;
 
     mealIds.forEach(id => {
       const meal = SubscriptionApp.mealLibrary[id];
@@ -572,7 +572,7 @@ const CustomerApp = {
       }
     });
 
-    html += \`</div></div>\`;
+    html += `</div></div>`;
     return html;
   },
 
