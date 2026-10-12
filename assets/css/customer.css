@@ -2615,201 +2615,287 @@
    Tomorrow's Pre-Order Section (Luxury Dark Forest Theme • Artisanal Menu)
    ========================================================================== */
 .tomorrow-preorder-container {
-  margin: 8px -16px 18px;
-  width: calc(100% + 32px);
+  margin: 10px 0 20px;
+  width: 100%;
   padding: 16px 16px 18px;
-  background: linear-gradient(155deg, #021a11 0%, #052c1e 48%, #031e15 100%);
-  border-top: 1px solid rgba(229, 184, 105, 0.28);
-  border-bottom: 1px solid rgba(229, 184, 105, 0.28);
-  box-shadow: 0 8px 24px rgba(2, 26, 17, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  background: linear-gradient(155deg, #031c13 0%, #063323 52%, #021a11 100%);
+  border: 1.5px solid rgba(229, 184, 105, 0.32);
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(2, 26, 17, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   position: relative;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 .tomorrow-preorder-container::before {
   content: "";
   position: absolute;
-  top: -30px;
-  right: -30px;
-  width: 120px;
-  height: 120px;
-  background: radial-gradient(circle, rgba(233, 154, 22, 0.12) 0%, transparent 70%);
+  top: -40px;
+  right: -40px;
+  width: 140px;
+  height: 140px;
+  background: radial-gradient(circle, rgba(233, 154, 22, 0.16) 0%, transparent 70%);
   pointer-events: none;
 }
 
 [dir="rtl"] .tomorrow-preorder-container::before {
   right: auto;
-  left: -30px;
+  left: -40px;
 }
 
 .tomorrow-preorder-header {
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   position: relative;
   z-index: 1;
 }
 
+.tomorrow-preorder-badge-row {
+  margin-bottom: 6px;
+}
+
+.tomorrow-preorder-eyebrow-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(229, 184, 105, 0.14);
+  border: 1px solid rgba(229, 184, 105, 0.35);
+  color: #F8C36A;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+[dir="rtl"] .tomorrow-preorder-eyebrow-badge {
+  font-family: 'Cairo', var(--font-arabic), sans-serif;
+  letter-spacing: 0;
+}
+
+.tomorrow-preorder-eyebrow-badge .eyebrow-sparkle {
+  color: #FBBF24;
+  font-size: 0.72rem;
+}
+
 .tomorrow-preorder-title {
   margin: 0;
-  font-size: 1.05rem;
-  font-weight: 800;
+  font-size: 1.15rem;
+  font-weight: 900;
   color: #FFFFFF;
-  font-family: var(--font-serif);
   line-height: 1.3;
   letter-spacing: -0.01em;
 }
 
+[dir="rtl"] .tomorrow-preorder-title {
+  font-family: 'Cairo', var(--font-arabic), sans-serif;
+}
+
 .tomorrow-preorder-subtitle {
-  margin: 4px 0 0;
-  font-size: 0.74rem;
-  color: #9EC0AF;
-  line-height: 1.4;
-  font-weight: 400;
+  margin: 5px 0 0;
+  font-size: 0.76rem;
+  color: #A3C9B6;
+  line-height: 1.45;
+  font-weight: 500;
+}
+
+[dir="rtl"] .tomorrow-preorder-subtitle {
+  font-family: 'Cairo', var(--font-arabic), sans-serif;
 }
 
 .tomorrow-preorder-items {
   display: flex;
   flex-direction: column;
-  gap: 9px;
+  gap: 11px;
   position: relative;
   z-index: 1;
 }
 
 .tomorrow-preorder-item {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  background: rgba(255, 255, 255, 0.045);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  border-left: 3px solid #E99A16;
-  border-radius: 10px;
-  padding: 10px 13px;
+  flex-direction: column;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.055);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1.5px solid rgba(229, 184, 105, 0.22);
+  border-radius: 14px;
+  padding: 12px 14px 11px;
   transition: all 0.22s ease;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
   cursor: pointer;
-}
-
-[dir="rtl"] .tomorrow-preorder-item {
-  border-left: 1px solid rgba(255, 255, 255, 0.09);
-  border-right: 3px solid #E99A16;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .tomorrow-preorder-item:hover {
-  background: rgba(255, 255, 255, 0.075);
-  border-color: rgba(229, 184, 105, 0.35);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  background: rgba(255, 255, 255, 0.085);
+  border-color: rgba(229, 184, 105, 0.45);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.32);
 }
 
-.tomorrow-preorder-item-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.tomorrow-preorder-item-header {
+/* Tier 1: Title, Category Badge & Price */
+.tomorrow-preorder-row-top {
   display: flex;
   align-items: center;
-  gap: 7px;
-  margin-bottom: 3px;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+}
+
+.tomorrow-preorder-name-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
   flex-wrap: wrap;
 }
 
 .tomorrow-preorder-item-name {
   margin: 0;
-  font-size: 0.92rem;
-  font-weight: 700;
+  font-size: 1.02rem;
+  font-weight: 800;
   color: #FFFFFF;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   line-height: 1.3;
 }
 
+[dir="rtl"] .tomorrow-preorder-item-name {
+  font-family: 'Cairo', var(--font-arabic), sans-serif;
+  font-size: 1.05rem;
+}
+
 .tomorrow-preorder-type-badge {
-  font-size: 0.62rem;
+  font-size: 0.64rem;
   font-weight: 700;
-  padding: 1px 7px;
+  padding: 2px 8px;
   border-radius: 999px;
   flex-shrink: 0;
   white-space: nowrap;
   letter-spacing: 0.02em;
 }
 
+[dir="rtl"] .tomorrow-preorder-type-badge {
+  font-family: 'Cairo', var(--font-arabic), sans-serif;
+  letter-spacing: 0;
+}
+
 .tomorrow-preorder-type-badge.chicken {
-  background: rgba(233, 154, 22, 0.18);
+  background: rgba(233, 154, 22, 0.22);
   color: #F8C36A;
-  border: 1px solid rgba(233, 154, 22, 0.35);
+  border: 1px solid rgba(233, 154, 22, 0.42);
 }
 
 .tomorrow-preorder-type-badge.meat {
-  background: rgba(239, 68, 68, 0.18);
+  background: rgba(239, 68, 68, 0.22);
   color: #FCA5A5;
-  border: 1px solid rgba(239, 68, 68, 0.35);
+  border: 1px solid rgba(239, 68, 68, 0.42);
 }
 
 .tomorrow-preorder-type-badge.fish {
-  background: rgba(14, 165, 233, 0.18);
+  background: rgba(14, 165, 233, 0.22);
   color: #7DD3FC;
-  border: 1px solid rgba(14, 165, 233, 0.35);
+  border: 1px solid rgba(14, 165, 233, 0.42);
 }
 
-.tomorrow-preorder-item-desc {
-  margin: 0;
-  font-size: 0.72rem;
-  color: #9EC0AF;
-  line-height: 1.35;
+.tomorrow-preorder-item-price {
+  font-size: 1.12rem;
+  font-weight: 900;
+  color: #F6C470;
   white-space: nowrap;
+  line-height: 1;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 3px;
+}
+
+.tomorrow-preorder-item-price .price-curr,
+.tomorrow-preorder-item-price small {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #A3C9B6;
+}
+
+/* Tier 2: Ingredients Description (Full Width) */
+.tomorrow-preorder-item-desc {
+  margin: 2px 0 4px;
+  font-size: 0.78rem;
+  color: #B4D5C4;
+  line-height: 1.48;
+  width: 100%;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.tomorrow-preorder-item-action {
+[dir="rtl"] .tomorrow-preorder-item-desc {
+  font-family: 'Cairo', var(--font-arabic), sans-serif;
+  font-size: 0.79rem;
+  text-align: right;
+}
+
+/* Tier 3: Bottom Action Row */
+.tomorrow-preorder-row-bottom {
   display: flex;
   align-items: center;
-  gap: 11px;
-  flex-shrink: 0;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.09);
+  margin-top: 2px;
 }
 
-.tomorrow-preorder-item-price {
-  font-size: 0.98rem;
-  font-weight: 800;
-  color: #F5C06A;
-  white-space: nowrap;
-  line-height: 1;
-}
-
-.tomorrow-preorder-item-price small {
-  font-size: 0.68rem;
+.tomorrow-preorder-detail-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  color: #92BBA7;
   font-weight: 600;
-  color: #8EB7A3;
-  margin-inline-start: 2px;
+  transition: color 0.2s ease;
+}
+
+[dir="rtl"] .tomorrow-preorder-detail-hint {
+  font-family: 'Cairo', var(--font-arabic), sans-serif;
+}
+
+.tomorrow-preorder-item:hover .tomorrow-preorder-detail-hint {
+  color: #F8C36A;
 }
 
 .tomorrow-preorder-btn-wa {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
+  gap: 6px;
   height: 32px;
-  padding: 0 12px;
+  padding: 0 14px;
   border-radius: 999px;
-  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
-  color: #FFFFFF;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  font-size: 0.74rem;
-  font-weight: 700;
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  color: #FFFFFF !important;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  font-size: 0.78rem;
+  font-weight: 800;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 3px 10px rgba(18, 140, 126, 0.35);
+  box-shadow: 0 3px 10px rgba(16, 185, 129, 0.35);
   white-space: nowrap;
+  flex-shrink: 0;
+}
+
+[dir="rtl"] .tomorrow-preorder-btn-wa {
+  font-family: 'Cairo', var(--font-arabic), sans-serif;
+  font-size: 0.78rem;
 }
 
 .tomorrow-preorder-btn-wa:hover {
-  background: linear-gradient(135deg, #2ae26f 0%, #17a898 100%);
+  background: linear-gradient(135deg, #2ee59d 0%, #059669 100%);
   transform: translateY(-1px);
-  box-shadow: 0 5px 15px rgba(37, 211, 102, 0.45);
+  box-shadow: 0 5px 15px rgba(16, 185, 129, 0.45);
 }
 
 .tomorrow-preorder-btn-wa:active {
@@ -2999,41 +3085,43 @@
 
   /* Pre-Order Section on Mobile */
   .tomorrow-preorder-container {
-    padding: 13px 12px;
-    border-radius: 14px;
-    margin: 8px 0 14px;
+    padding: 14px 12px 16px;
+    border-radius: 16px;
+    margin: 8px 0 16px;
   }
 
   .tomorrow-preorder-title {
-    font-size: clamp(0.92rem, 3.8vw, 1.02rem);
+    font-size: clamp(1.00rem, 4.2vw, 1.12rem);
   }
 
   .tomorrow-preorder-subtitle {
-    font-size: clamp(0.68rem, 2.7vw, 0.74rem);
+    font-size: clamp(0.72rem, 2.9vw, 0.76rem);
   }
 
   .tomorrow-preorder-item {
-    padding: 9px 10px;
-    gap: 8px;
+    padding: 11px 12px;
+    gap: 7px;
+    border-radius: 13px;
   }
 
   .tomorrow-preorder-item-name {
-    font-size: clamp(0.82rem, 3.2vw, 0.90rem);
+    font-size: clamp(0.94rem, 3.8vw, 1.02rem);
   }
 
   .tomorrow-preorder-item-desc {
-    font-size: 0.68rem;
+    font-size: 0.75rem;
+    line-height: 1.45;
   }
 
   .tomorrow-preorder-item-price {
-    font-size: 0.92rem;
+    font-size: 1.05rem;
   }
 
   .tomorrow-preorder-btn-wa {
-    height: 29px;
-    padding: 0 10px;
-    font-size: 0.70rem;
-    gap: 4px;
+    height: 30px;
+    padding: 0 12px;
+    font-size: 0.74rem;
+    gap: 5px;
   }
 
   /* Product Modal on Mobile */
@@ -3133,12 +3221,10 @@
     font-size: 0.98rem;
   }
 
-  .tomorrow-preorder-btn-wa span {
-    display: none;
-  }
-
   .tomorrow-preorder-btn-wa {
-    padding: 0 8px;
-    min-width: 30px;
+    padding: 0 10px;
+    height: 28px;
+    font-size: 0.70rem;
+    gap: 4px;
   }
 }

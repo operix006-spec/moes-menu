@@ -707,20 +707,32 @@ const CustomerApp = {
           <div 
             class="tomorrow-preorder-item" 
             onclick="CustomerApp.openPreorderMealModal('${id}', '${targetDayName}', '${currentWeekName}')"
-            style="cursor: pointer;"
-            title="${isAr ? 'اضغط لعرض تفاصيل الوجبة' : 'Click to view meal details'}"
+            title="${isAr ? 'اضغط لعرض تفاصيل ومكونات الوجبة' : 'Click to view meal details & ingredients'}"
           >
-            <div class="tomorrow-preorder-item-info">
-              <div class="tomorrow-preorder-item-header">
+            <!-- Top Tier: Name, Category Tag & Price -->
+            <div class="tomorrow-preorder-row-top">
+              <div class="tomorrow-preorder-name-group">
                 <h4 class="tomorrow-preorder-item-name">${currentName}</h4>
                 ${typeLabel ? `<span class="tomorrow-preorder-type-badge ${typeClass}">${typeLabel}</span>` : ''}
               </div>
-              <p class="tomorrow-preorder-item-desc" title="${currentDesc}">${currentDesc}</p>
-            </div>
-            <div class="tomorrow-preorder-item-action">
               <div class="tomorrow-preorder-item-price">
-                ${formattedPrice} <small>${currencyStr}</small>
+                <span class="price-val">${formattedPrice}</span> <small class="price-curr">${currencyStr}</small>
               </div>
+            </div>
+
+            <!-- Middle Tier: Full Width Ingredients Description -->
+            <p class="tomorrow-preorder-item-desc" title="${currentDesc}">${currentDesc}</p>
+
+            <!-- Bottom Tier: Details Hint & Direct WhatsApp Action -->
+            <div class="tomorrow-preorder-row-bottom">
+              <span class="tomorrow-preorder-detail-hint">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" cy="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <span>${isAr ? 'عرض التفاصيل والمكونات' : 'View Ingredients & Details'}</span>
+              </span>
+
               <button 
                 type="button" 
                 class="tomorrow-preorder-btn-wa" 
@@ -728,7 +740,7 @@ const CustomerApp = {
                 aria-label="${isAr ? 'حجز عبر واتساب' : 'Order via WhatsApp'}"
                 title="${isAr ? 'حجز عبر واتساب' : 'Order via WhatsApp'}"
               >
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true">
                   <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.41a8.16 8.16 0 0 1 2.4 5.83c0 4.54-3.7 8.24-8.24 8.24-1.44 0-2.85-.38-4.09-1.11l-.29-.17-3.04.8.81-2.96-.19-.31a8.188 8.188 0 0 1-1.25-4.49c0-4.54 3.7-8.24 8.24-8.24m-3.57 3.52c-.2 0-.44.07-.67.33-.23.26-.88.86-.88 2.09s.9 2.42 1.02 2.59c.13.16 1.74 2.76 4.29 3.78.61.24 1.08.39 1.45.51.61.19 1.16.17 1.6-.01.49-.2 1.5-.61 1.71-1.21.21-.59.21-1.1.15-1.21-.06-.11-.23-.17-.49-.3-.26-.13-1.5-.74-1.73-.83-.23-.08-.4-.13-.57.13-.17.26-.66.83-.81.99-.15.17-.3.19-.56.06-.26-.13-1.1-.41-2.1-1.3-.77-.69-1.3-1.54-1.45-1.8-.15-.26-.02-.4.11-.53.12-.11.26-.3.39-.46.13-.15.17-.26.26-.43.09-.17.04-.32-.02-.45-.07-.13-.59-1.42-.81-1.95-.21-.51-.43-.44-.59-.45-.15-.01-.33-.01-.5-.01z"/>
                 </svg>
                 <span>${isAr ? 'حجز واتساب' : 'WhatsApp'}</span>
@@ -744,6 +756,12 @@ const CustomerApp = {
     return `
       <section class="tomorrow-preorder-container" aria-label="${title}">
         <div class="tomorrow-preorder-header">
+          <div class="tomorrow-preorder-badge-row">
+            <span class="tomorrow-preorder-eyebrow-badge">
+              <span class="eyebrow-sparkle">✦</span>
+              ${isAr ? 'عرض وجبات الغد • طلب مسبق' : 'Tomorrow\'s Specials • Pre-Order'}
+            </span>
+          </div>
           <h3 class="tomorrow-preorder-title">${title}</h3>
           <p class="tomorrow-preorder-subtitle">${subtitle}</p>
         </div>
