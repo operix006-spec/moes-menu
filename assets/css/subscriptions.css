@@ -696,7 +696,7 @@ body.sub-body {
   line-height: 1.20;
   font-weight: 900;
   color: var(--sub-forest);
-  margin: 6px 0 10px;
+  margin: 0;
   letter-spacing: -0.025em;
 }
 
