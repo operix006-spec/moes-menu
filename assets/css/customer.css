@@ -2690,6 +2690,13 @@
   font-family: 'Cairo', var(--font-arabic), sans-serif;
 }
 
+.tomorrow-preorder-trial-tag {
+  color: #F8C36A;
+  font-weight: 700;
+  font-size: 0.9em;
+  display: inline-block;
+}
+
 .tomorrow-preorder-subtitle {
   margin: 5px 0 0;
   font-size: 0.76rem;

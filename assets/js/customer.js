@@ -645,7 +645,9 @@ const CustomerApp = {
       ? (isDirectTomorrow ? `الغد (${targetDayName})` : `يوم ${targetDayName}`)
       : (isDirectTomorrow ? `Tomorrow (${targetDayName})` : targetDayName);
 
-    const title = isAr ? `وجبات ${dayLabel}` : `Tomorrow's Meals (${targetDayName})`;
+    const trialTag = isAr ? 'لتجربة الاشتراكات' : 'Subscription Trial';
+    const mainTitle = isAr ? `وجبات ${dayLabel}` : `Tomorrow's Meals (${targetDayName})`;
+    const title = `${mainTitle} - ${trialTag}`;
     const subtitle = isAr 
       ? `طلب مسبق • ${currentWeekName} • تُحضّر طازجة مع جدول الاشتراكات • الحجز عبر واتساب` 
       : `Pre-Order • ${currentWeekName} • Prepared fresh daily with subscriptions • Reserve via WhatsApp`;
@@ -756,13 +758,7 @@ const CustomerApp = {
     return `
       <section class="tomorrow-preorder-container" aria-label="${title}">
         <div class="tomorrow-preorder-header">
-          <div class="tomorrow-preorder-badge-row">
-            <span class="tomorrow-preorder-eyebrow-badge">
-              <span class="eyebrow-sparkle">✦</span>
-              ${isAr ? 'عرض وجبات الغد • طلب مسبق' : 'Tomorrow\'s Specials • Pre-Order'}
-            </span>
-          </div>
-          <h3 class="tomorrow-preorder-title">${title}</h3>
+          <h3 class="tomorrow-preorder-title">${mainTitle} <span class="tomorrow-preorder-trial-tag">- ${trialTag}</span></h3>
           <p class="tomorrow-preorder-subtitle">${subtitle}</p>
         </div>
         <div class="tomorrow-preorder-items">
