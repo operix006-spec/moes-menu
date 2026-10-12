@@ -6,6 +6,9 @@
     (function() {
       try {
         var lang = localStorage.getItem('moe_lang') || 'ar';
+        if (!localStorage.getItem('moe_lang')) {
+          localStorage.setItem('moe_lang', 'ar');
+        }
         document.documentElement.lang = lang;
         document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
       } catch (e) {}

@@ -146,7 +146,7 @@ class PureBiteStore {
 
   // --- GETTERS ---
   getSettings() { 
-    return { lang: "en", ...this.state.settings }; 
+    return { ...this.state.settings, lang: this.getLang() }; 
   }
   
   getLang() {

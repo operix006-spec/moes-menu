@@ -12,7 +12,7 @@ const SubscriptionApp = {
     meals: '6_meals',       // '5_meals' | '6_meals'
     activeWeek: 'week1',    // 'week1' | 'week2' | 'week3' | 'week4'
     activeDay: 'sat',       // 'sat' | 'sun' | 'mon' | 'tue' | 'wed' | 'thu'
-    lang: 'en',             // 'en' | 'ar'
+    lang: 'ar',             // 'ar' | 'en' (defaults to 'ar' to match storefront)
     slideIndex: 0,
     scheduleExpanded: false
   },
@@ -996,6 +996,7 @@ const SubscriptionApp = {
   },
 
   updateSliderUI() {
+    if (!this.isSubscriptionsPage()) return;
     const index = this.state.slideIndex;
     const isAr = this.state.lang === 'ar';
     const track = document.getElementById('slider-track');
@@ -1292,17 +1293,37 @@ const SubscriptionApp = {
 
       if (data) {
         this.mergeRemoteConfig(data);
-        this.applyLanguage();
-        this.render();
-        this.updateSliderUI();
+        if (this.isSubscriptionsPage()) {
+          this.applyLanguage();
+          this.render();
+          this.updateSliderUI();
+        }
       }
     } catch (err) {
       console.warn("SubscriptionApp fetchRemoteConfig warning:", err);
     }
   },
 
+  isSubscriptionsPage() {
+    return !!document.getElementById('sub-all-weeks-grid') || 
+           !!document.getElementById('sub-builder-chapter') ||
+           (typeof window !== 'undefined' && window.location.pathname.includes('subscriptions'));
+  },
+
   async init() {
-    // 1. Sync contact info and subscription config with central store/localStorage on any page
+    // 1. Sync language preference immediately from localStorage or central store
+    let savedLang = 'ar';
+    try {
+      const explicit = localStorage.getItem('moe_lang');
+      if (explicit === 'ar' || explicit === 'en') {
+        savedLang = explicit;
+      } else if (typeof MoeStore !== 'undefined' && MoeStore.getLang) {
+        savedLang = MoeStore.getLang();
+      }
+    } catch (e) {}
+    this.state.lang = savedLang;
+
+    // 2. Sync contact info and subscription config with central store/localStorage on any page
     try {
       const saved = localStorage.getItem('moes_purebite_db_v1');
       if (saved) {
@@ -1324,47 +1345,24 @@ const SubscriptionApp = {
       }
     } catch (e) {}
 
-    // 2. Listen for live updates from store on any page
+    // 3. Listen for live updates from store on any page
     window.addEventListener("moe:data-updated", (e) => {
       const db = e.detail;
       if (db && db.subscriptionConfig) {
         this.mergeRemoteConfig(db.subscriptionConfig);
-        const container = document.getElementById('sub-all-weeks-grid');
-        if (container) {
+        if (this.isSubscriptionsPage()) {
           this.applyLanguage();
           this.render(); // Re-render subscriptions page if present
         }
       }
     });
 
-    // 3. Only initialize full subscriptions page UI if sub-all-weeks-grid is present
-    const subAppContainer = document.getElementById('sub-all-weeks-grid');
-    if (!subAppContainer) {
-      if (!this._fetchedConfig) {
-        this._fetchedConfig = true;
-        await this.fetchRemoteConfig();
-      }
-      return;
-    }
-
-    let savedLang = 'ar';
-    try {
-      const explicit = localStorage.getItem('moe_lang');
-      if (explicit === 'ar' || explicit === 'en') {
-        savedLang = explicit;
-      } else if (typeof MoeStore !== 'undefined' && MoeStore.getLang) {
-        savedLang = MoeStore.getLang();
-      }
-    } catch (e) {}
-    this.state.lang = savedLang;
-
-    // Cross-tab and store lang listener
+    // 4. Cross-tab and store lang listener
     window.addEventListener("moe:lang-changed", (e) => {
       const newLang = e.detail;
-      if (newLang && this.state.lang !== newLang) {
+      if (newLang && (newLang === 'ar' || newLang === 'en')) {
         this.state.lang = newLang;
-        const subAppContainer = document.getElementById('sub-all-weeks-grid');
-        if (subAppContainer) {
+        if (this.isSubscriptionsPage()) {
           this.applyLanguage();
           this.render();
         }
@@ -1375,8 +1373,7 @@ const SubscriptionApp = {
       if (e.key === "moe_lang" && (e.newValue === "ar" || e.newValue === "en")) {
         if (this.state.lang !== e.newValue) {
           this.state.lang = e.newValue;
-          const subAppContainer = document.getElementById('sub-all-weeks-grid');
-          if (subAppContainer) {
+          if (this.isSubscriptionsPage()) {
             this.applyLanguage();
             this.render();
           }
@@ -1384,6 +1381,17 @@ const SubscriptionApp = {
       }
     });
 
+    // 5. If NOT on subscriptions page, stop UI initialization here!
+    // (This guarantees the main storefront index.html will never have its direction or lang hijacked)
+    if (!this.isSubscriptionsPage()) {
+      if (!this._fetchedConfig) {
+        this._fetchedConfig = true;
+        await this.fetchRemoteConfig();
+      }
+      return;
+    }
+
+    // 6. Only for Subscriptions Page UI:
     this.applyLanguage();
     this.render();
     this.updateCartBadge();
@@ -1407,12 +1415,18 @@ const SubscriptionApp = {
     } catch (e) {}
     if (typeof MoeStore !== 'undefined' && MoeStore.setLang) {
       try { MoeStore.setLang(this.state.lang); } catch (e) {}
+    } else {
+      window.dispatchEvent(new CustomEvent('moe:lang-changed', { detail: this.state.lang }));
     }
     this.applyLanguage();
     this.render();
   },
 
   applyLanguage() {
+    if (!this.isSubscriptionsPage()) {
+      return;
+    }
+
     const isAr = this.state.lang === 'ar';
     document.documentElement.setAttribute('lang', this.state.lang);
     document.documentElement.setAttribute('dir', isAr ? 'rtl' : 'ltr');
@@ -1697,6 +1711,7 @@ const SubscriptionApp = {
   // =========================================================================
 
   render() {
+    if (!this.isSubscriptionsPage()) return;
     this.updateSegmentedControls();
     this.updateSummaryUI();
     this.renderAllWeeks();
