@@ -2917,33 +2917,61 @@ body.sub-modal-open {
 
 
 /* ==========================================================================
-   CHAPTER 2.5: DELIVERY ACTIONS STACK (TWO VERTICALLY STACKED BUTTONS)
+   CHAPTER 2.5: DELIVERY INQUIRY SECTION (COMPACT CARD & HORIZONTAL BUTTONS)
    ========================================================================== */
-.sub-delivery-actions-stack {
+.sub-delivery-contact-section {
+  background: linear-gradient(135deg, #FFFFFF 0%, #FBF8F2 60%, #F5EDE0 100%);
+  border: 1.5px solid rgba(6, 59, 41, 0.12);
+  border-radius: 20px;
+  padding: 22px 24px;
+  margin: 24px 0 26px;
+  box-shadow: 0 6px 24px rgba(6, 59, 41, 0.06);
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.sub-delivery-inquiry-text {
+  font-size: 1.04rem;
+  font-weight: 800;
+  color: var(--sub-forest);
+  margin: 0 0 16px;
+  line-height: 1.45;
+}
+
+[dir="rtl"] .sub-delivery-inquiry-text {
+  font-family: 'Cairo', var(--font-arabic), sans-serif;
+  font-size: 1.05rem;
+}
+
+.sub-delivery-buttons-row {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
   width: 100%;
-  max-width: 440px;
-  margin: 20px auto 0;
+  max-width: 480px;
+  margin: 0 auto;
   box-sizing: border-box;
 }
 
 .sub-delivery-btn {
-  display: flex;
+  flex: 1;
+  min-width: 0;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding: 14px 20px;
+  padding: 13px 18px;
   border-radius: 50px;
   font-weight: 800;
   font-size: 0.95rem;
   text-decoration: none;
   cursor: pointer;
   transition: all 0.25s ease;
-  width: 100%;
   box-sizing: border-box;
   text-align: center;
+  white-space: nowrap;
   font-family: inherit;
 }
 
@@ -3897,28 +3925,35 @@ body.sub-modal-open {
   }
 
   /* Delivery Section */
-  .sub-delivery-horizontal-block {
-    padding: 16px 12px;
+  .sub-delivery-contact-section {
+    padding: 18px 14px;
+    margin: 18px 0 22px;
     border-radius: 16px;
-    gap: 14px;
   }
 
-  .sub-delivery-title {
-    font-size: 0.98rem;
+  .sub-delivery-inquiry-text {
+    font-size: 0.94rem;
+    margin-bottom: 12px;
   }
 
-  .sub-delivery-statement {
-    font-size: 0.80rem;
-    line-height: 1.4;
+  [dir="rtl"] .sub-delivery-inquiry-text {
+    font-size: 0.96rem;
   }
 
-  .sub-delivery-areas-pills {
-    gap: 4px;
+  .sub-delivery-buttons-row {
+    gap: 8px;
   }
 
-  .sub-area-pill {
-    padding: 4px 8px;
-    font-size: 0.70rem;
+  .sub-delivery-buttons-row .sub-delivery-btn {
+    padding: 10px 8px;
+    font-size: 0.82rem;
+    gap: 6px;
+  }
+
+  .sub-delivery-buttons-row .sub-delivery-btn svg {
+    width: 17px;
+    height: 17px;
+    flex-shrink: 0;
   }
 
   /* Brochures Section */

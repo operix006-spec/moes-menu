@@ -2297,6 +2297,8 @@ const AdminApp = {
     hero_trust_fresh: "جداول متجددة أسبوعياً",
     hero_trust_fresh_en: "Fresh Weekly Schedules",
     hero_image: "assets/images/subscription_hero.jpg",
+    delivery_inquiry_text: "لمعرفة إمكانية التوصيل التواصل على الرقم التالي",
+    delivery_inquiry_text_en: "To check delivery availability, please contact us at the following number",
     delivery_section_eyebrow: "منطقة التوصيل",
     delivery_section_eyebrow_en: "Delivery Area",
     delivery_main_statement: "نوصل ضمن نطاق 10 كم من موقع Moe’s PureBite",
@@ -2823,12 +2825,12 @@ const AdminApp = {
           </div>
         </div>
 
-        <!-- SECTION 3: DELIVERY AREA & COVERAGE -->
+        <!-- SECTION 3: DELIVERY INQUIRY -->
         <div class="sub-admin-card" id="sub-sec-delivery">
           <div class="sub-admin-card-header">
             <div class="sub-admin-card-header-left">
-              <h3 class="sub-admin-card-title">🚚 منطقة ونطاق التوصيل (Delivery Area & Radius)</h3>
-              <p class="sub-admin-card-subtitle">الرادار التفاعلي، نطاق الـ 10 كم، قائمة المناطق القريبة، وملاحظات التوصيل.</p>
+              <h3 class="sub-admin-card-title">🚚 الاستفسار عن التوصيل (Delivery Inquiry)</h3>
+              <p class="sub-admin-card-subtitle">تعديل جملة الاستفسار عن إمكانية التوصيل والتواصل الظاهرة في صفحة الاشتراكات.</p>
             </div>
           </div>
           <div class="sub-admin-card-body">
@@ -2836,102 +2838,17 @@ const AdminApp = {
             <div class="sub-bilingual-row">
               <div class="sub-field-column">
                 <div class="sub-field-label-wrap">
-                  <span class="sub-field-label">شارة قسم التوصيل</span>
+                  <span class="sub-field-label">نص الاستفسار عن التوصيل</span>
                   <span class="sub-lang-pill ar">عربي AR</span>
                 </div>
-                <input type="text" class="admin-form-input sub-input-ar" id="sub-txt-d-eye" value="${c.delivery_section_eyebrow || ''}" placeholder="منطقة التوصيل" oninput="AdminApp.markSubDirty()">
+                <input type="text" class="admin-form-input sub-input-ar" id="sub-txt-d-inquiry" value="${c.delivery_inquiry_text || 'لمعرفة إمكانية التوصيل التواصل على الرقم التالي'}" placeholder="لمعرفة إمكانية التوصيل التواصل على الرقم التالي" oninput="AdminApp.markSubDirty()">
               </div>
               <div class="sub-field-column">
                 <div class="sub-field-label-wrap">
-                  <span class="sub-field-label">Delivery Eyebrow</span>
+                  <span class="sub-field-label">Delivery Inquiry Text</span>
                   <span class="sub-lang-pill en">English EN</span>
                 </div>
-                <input type="text" class="admin-form-input sub-input-en" id="sub-txt-d-eye-en" value="${c.delivery_section_eyebrow_en || ''}" placeholder="Delivery Area" oninput="AdminApp.markSubDirty()">
-              </div>
-            </div>
-
-            <div class="sub-bilingual-row">
-              <div class="sub-field-column">
-                <div class="sub-field-label-wrap">
-                  <span class="sub-field-label">بيان التغطية الرئيسي</span>
-                  <span class="sub-lang-pill ar">عربي AR</span>
-                </div>
-                <input type="text" class="admin-form-input sub-input-ar" id="sub-txt-d-main" value="${c.delivery_main_statement || ''}" placeholder="نوصل ضمن نطاق 10 كم من موقع Moe’s PureBite" oninput="AdminApp.markSubDirty()">
-              </div>
-              <div class="sub-field-column">
-                <div class="sub-field-label-wrap">
-                  <span class="sub-field-label">Main Delivery Statement</span>
-                  <span class="sub-lang-pill en">English EN</span>
-                </div>
-                <input type="text" class="admin-form-input sub-input-en" id="sub-txt-d-main-en" value="${c.delivery_main_statement_en || ''}" placeholder="Delivery is available within a 10 KM radius of Moe’s PureBite." oninput="AdminApp.markSubDirty()">
-              </div>
-            </div>
-
-            <div class="sub-bilingual-row">
-              <div class="sub-field-column">
-                <div class="sub-field-label-wrap">
-                  <span class="sub-field-label">النص التوضيحي</span>
-                  <span class="sub-lang-pill ar">عربي AR</span>
-                </div>
-                <input type="text" class="admin-form-input sub-input-ar" id="sub-txt-d-sub" value="${c.delivery_subtext || ''}" placeholder="تشمل التغطية مناطق قريبة من المطبخ..." oninput="AdminApp.markSubDirty()">
-              </div>
-              <div class="sub-field-column">
-                <div class="sub-field-label-wrap">
-                  <span class="sub-field-label">Delivery Subtext</span>
-                  <span class="sub-lang-pill en">English EN</span>
-                </div>
-                <input type="text" class="admin-form-input sub-input-en" id="sub-txt-d-sub-en" value="${c.delivery_subtext_en || ''}" placeholder="Coverage includes areas near our kitchen..." oninput="AdminApp.markSubDirty()">
-              </div>
-            </div>
-
-            <div class="sub-bilingual-row">
-              <div class="sub-field-column">
-                <div class="sub-field-label-wrap">
-                  <span class="sub-field-label">المناطق القريبة (مفصولة بفواصل)</span>
-                  <span class="sub-lang-pill ar">عربي AR</span>
-                </div>
-                <input type="text" class="admin-form-input sub-input-ar" id="sub-txt-d-areas-ar" value="${Array.isArray(c.delivery_areas_ar || c.delivery_areas) ? (c.delivery_areas_ar || c.delivery_areas).join('، ') : (c.delivery_areas_ar || c.delivery_areas || 'مرج الحمام، السابع، البنيات، الصويفية، دير غبار، عبدون')}" placeholder="مرج الحمام، السابع، البنيات..." oninput="AdminApp.markSubDirty()">
-              </div>
-              <div class="sub-field-column">
-                <div class="sub-field-label-wrap">
-                  <span class="sub-field-label">Nearby Areas (comma-separated)</span>
-                  <span class="sub-lang-pill en">English EN</span>
-                </div>
-                <input type="text" class="admin-form-input sub-input-en" id="sub-txt-d-areas-en" value="${Array.isArray(c.delivery_areas_en) ? c.delivery_areas_en.join(', ') : (c.delivery_areas_en || 'Marj Al Hamam, Seventh Circle, Al Bunayyat, Sweifieh, Deir Ghbar, Abdoun')}" placeholder="Marj Al Hamam, Seventh Circle..." oninput="AdminApp.markSubDirty()">
-              </div>
-            </div>
-
-            <div class="sub-bilingual-row">
-              <div class="sub-field-column">
-                <div class="sub-field-label-wrap">
-                  <span class="sub-field-label">ملاحظة داخل النطاق</span>
-                  <span class="sub-lang-pill ar">عربي AR</span>
-                </div>
-                <input type="text" class="admin-form-input sub-input-ar" id="sub-txt-d-note-in" value="${c.delivery_note_inside || ''}" placeholder="التغطية تعتمد على موقعك الدقيق..." oninput="AdminApp.markSubDirty()">
-              </div>
-              <div class="sub-field-column">
-                <div class="sub-field-label-wrap">
-                  <span class="sub-field-label">Inside Zone Note</span>
-                  <span class="sub-lang-pill en">English EN</span>
-                </div>
-                <input type="text" class="admin-form-input sub-input-en" id="sub-txt-d-note-in-en" value="${c.delivery_note_inside_en || ''}" placeholder="Coverage depends on your exact location..." oninput="AdminApp.markSubDirty()">
-              </div>
-            </div>
-
-            <div class="sub-bilingual-row">
-              <div class="sub-field-column">
-                <div class="sub-field-label-wrap">
-                  <span class="sub-field-label">ملاحظة خارج النطاق</span>
-                  <span class="sub-lang-pill ar">عربي AR</span>
-                </div>
-                <input type="text" class="admin-form-input sub-input-ar" id="sub-txt-d-note-out" value="${c.delivery_note_outside || ''}" placeholder="تتوفر إمكانية التنسيق والتوصيل..." oninput="AdminApp.markSubDirty()">
-              </div>
-              <div class="sub-field-column">
-                <div class="sub-field-label-wrap">
-                  <span class="sub-field-label">Outside Zone Note</span>
-                  <span class="sub-lang-pill en">English EN</span>
-                </div>
-                <input type="text" class="admin-form-input sub-input-en" id="sub-txt-d-note-out-en" value="${c.delivery_note_outside_en || ''}" placeholder="Delivery coordination may be arranged upon request..." oninput="AdminApp.markSubDirty()">
+                <input type="text" class="admin-form-input sub-input-en" id="sub-txt-d-inquiry-en" value="${c.delivery_inquiry_text_en || 'To check delivery availability, please contact us at the following number'}" placeholder="To check delivery availability, please contact us at the following number" oninput="AdminApp.markSubDirty()">
               </div>
             </div>
 
@@ -3273,18 +3190,8 @@ const AdminApp = {
     this.editingSubConfig.content.hero_image = heroImg || AdminApp.defaultSubContent.hero_image;
 
     // 3. Read Delivery Bilingual Texts
-    this.editingSubConfig.content.delivery_section_eyebrow = getSubFieldVal("sub-txt-d-eye", "delivery_section_eyebrow");
-    this.editingSubConfig.content.delivery_section_eyebrow_en = getSubFieldVal("sub-txt-d-eye-en", "delivery_section_eyebrow_en");
-    this.editingSubConfig.content.delivery_main_statement = getSubFieldVal("sub-txt-d-main", "delivery_main_statement");
-    this.editingSubConfig.content.delivery_main_statement_en = getSubFieldVal("sub-txt-d-main-en", "delivery_main_statement_en");
-    this.editingSubConfig.content.delivery_subtext = getSubFieldVal("sub-txt-d-sub", "delivery_subtext");
-    this.editingSubConfig.content.delivery_subtext_en = getSubFieldVal("sub-txt-d-sub-en", "delivery_subtext_en");
-    this.editingSubConfig.content.delivery_areas_ar = getSubFieldVal("sub-txt-d-areas-ar", "delivery_areas_ar");
-    this.editingSubConfig.content.delivery_areas_en = getSubFieldVal("sub-txt-d-areas-en", "delivery_areas_en");
-    this.editingSubConfig.content.delivery_note_inside = getSubFieldVal("sub-txt-d-note-in", "delivery_note_inside");
-    this.editingSubConfig.content.delivery_note_inside_en = getSubFieldVal("sub-txt-d-note-in-en", "delivery_note_inside_en");
-    this.editingSubConfig.content.delivery_note_outside = getSubFieldVal("sub-txt-d-note-out", "delivery_note_outside");
-    this.editingSubConfig.content.delivery_note_outside_en = getSubFieldVal("sub-txt-d-note-out-en", "delivery_note_outside_en");
+    this.editingSubConfig.content.delivery_inquiry_text = getSubFieldVal("sub-txt-d-inquiry", "delivery_inquiry_text");
+    this.editingSubConfig.content.delivery_inquiry_text_en = getSubFieldVal("sub-txt-d-inquiry-en", "delivery_inquiry_text_en");
 
     // 4. Read Brochures Bilingual Texts & 5 Slides
     this.editingSubConfig.content.brochures_badge = getSubFieldVal("sub-txt-b-badge", "brochures_badge");

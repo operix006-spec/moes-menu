@@ -33,6 +33,8 @@ VALUES (
         "hero_trust_fresh": "جداول متجددة أسبوعياً",
         "hero_trust_fresh_en": "Fresh Weekly Schedules",
         "hero_image": "assets/images/subscription_hero.jpg",
+        "delivery_inquiry_text": "لمعرفة إمكانية التوصيل التواصل على الرقم التالي",
+        "delivery_inquiry_text_en": "To check delivery availability, please contact us at the following number",
         "delivery_section_eyebrow": "منطقة التوصيل",
         "delivery_section_eyebrow_en": "Delivery Area",
         "delivery_main_statement": "نوصل ضمن نطاق 10 كم من موقع Moe’s PureBite",
