@@ -58,14 +58,14 @@ const SubscriptionApp = {
       id: '14_days',
       title: { en: '14 Days', ar: '١٤ يوم' },
       subtitle: { en: '2 Weeks', ar: 'أسبوعان' },
-      summaryTag: { en: '14 Days · 2-Week Plan', ar: '١٤ يوم · خطة أسبوعين' },
+      summaryTag: { en: '14 Days - 2-Week Plan', ar: '١٤ يوم - خطة أسبوعين' },
       weeks: ['week1', 'week2']
     },
     'monthly': {
       id: 'monthly',
       title: { en: 'Monthly', ar: 'شهري' },
       subtitle: { en: '4 Weeks', ar: '٤ أسابيع' },
-      summaryTag: { en: 'Monthly · 4-Week Plan', ar: 'شهري · خطة ٤ أسابيع' },
+      summaryTag: { en: 'Monthly - 4-Week Plan', ar: 'شهري - خطة ٤ أسابيع' },
       weeks: ['week1', 'week2', 'week3', 'week4']
     }
   },
@@ -789,7 +789,7 @@ const SubscriptionApp = {
       schedule_toggle_btn_show: 'Show Detailed Weekly Meal Plans',
       schedule_toggle_btn_hide: 'Hide Detailed Weekly Meal Plans',
       schedule_toggle_hint: 'Click here to view daily dishes and diverse meal options in detail',
-      schedule_active_tag: '4 Weeks · 24 Meals',
+      schedule_active_tag: '4 Weeks - 24 Meals',
 
       // Schedule Section
       schedule_title: 'Meal Plan',
@@ -910,7 +910,7 @@ const SubscriptionApp = {
       schedule_toggle_btn_show: 'عرض خطة وجبات الأسابيع التفصيلية',
       schedule_toggle_btn_hide: 'إخفاء خطة وجبات الأسابيع التفصيلية',
       schedule_toggle_hint: 'اضغط هنا لاستعراض وجبات الأيام وخياراتها المتنوعة بالتفصيل',
-      schedule_active_tag: '٤ أسابيع · ٢٤ وجبة',
+      schedule_active_tag: '٤ أسابيع - ٢٤ وجبة',
       zoom_hint: '🔍 تكبير الصورة',
 
       // Schedule Section
@@ -1751,7 +1751,7 @@ const SubscriptionApp = {
     if (summaryTextEl) {
       const durationTitle = durationObj.title[lang];
       const mealsTitle = mealsObj.title[lang];
-      summaryTextEl.textContent = `${durationTitle} · ${mealsTitle}`;
+      summaryTextEl.textContent = `${durationTitle} - ${mealsTitle}`;
     }
 
     const priceNumEl = document.getElementById('summary-price-number');
@@ -1875,15 +1875,15 @@ const SubscriptionApp = {
     if (activeTag) {
       if (isAr) {
         if (is14Days) {
-          activeTag.textContent = is5Meals ? 'أسبوعان · ١٠ وجبات مشمولة' : 'أسبوعان · ١٢ وجبة مشمولة';
+          activeTag.textContent = is5Meals ? 'أسبوعان - ١٠ وجبات مشمولة' : 'أسبوعان - ١٢ وجبة مشمولة';
         } else {
-          activeTag.textContent = is5Meals ? '٤ أسابيع · ٢٠ وجبة مشمولة' : '٤ أسابيع · ٢٤ وجبة';
+          activeTag.textContent = is5Meals ? '٤ أسابيع - ٢٠ وجبة مشمولة' : '٤ أسابيع - ٢٤ وجبة';
         }
       } else {
         if (is14Days) {
-          activeTag.textContent = is5Meals ? '2 Weeks · 10 Meals Included' : '2 Weeks · 12 Meals Included';
+          activeTag.textContent = is5Meals ? '2 Weeks - 10 Meals Included' : '2 Weeks - 12 Meals Included';
         } else {
-          activeTag.textContent = is5Meals ? '4 Weeks · 20 Meals Included' : '4 Weeks · 24 Meals';
+          activeTag.textContent = is5Meals ? '4 Weeks - 20 Meals Included' : '4 Weeks - 24 Meals';
         }
       }
     }
