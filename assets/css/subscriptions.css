@@ -3014,7 +3014,7 @@ body.sub-modal-open {
 
 .sub-brochures-title {
   color: #FFFFFF;
-  font-size: 1.5rem;
+  font-size: 1.55rem;
   font-weight: 900;
   margin: 0;
   line-height: 1.25;
@@ -3022,6 +3022,23 @@ body.sub-modal-open {
 
 [dir="rtl"] .sub-brochures-title {
   font-family: 'Cairo', var(--font-arabic), sans-serif;
+}
+
+.sub-brochures-subtitle {
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.82rem;
+  font-weight: 500;
+  line-height: 1.5;
+  margin: 8px auto 0;
+  max-width: 480px;
+  text-align: center;
+  letter-spacing: 0.01em;
+}
+
+[dir="rtl"] .sub-brochures-subtitle {
+  font-family: 'Cairo', var(--font-arabic), sans-serif;
+  font-size: 0.82rem;
+  letter-spacing: 0;
 }
 
 /* Expanded Slider Container (Makes Images Much Larger & Clearer) */
@@ -3908,6 +3925,21 @@ body.sub-modal-open {
   .sub-brochures-section {
     padding: 18px 8px 22px;
     border-radius: 18px;
+  }
+
+  .sub-brochures-header {
+    margin-bottom: 12px;
+    padding: 0 8px;
+  }
+
+  .sub-brochures-title {
+    font-size: clamp(1.20rem, 5vw, 1.45rem);
+  }
+
+  .sub-brochures-subtitle {
+    font-size: clamp(0.74rem, 2.8vw, 0.80rem);
+    color: rgba(255, 255, 255, 0.88);
+    margin-top: 5px;
   }
 
   .sub-slider-container {

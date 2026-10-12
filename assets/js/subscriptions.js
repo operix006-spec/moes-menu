@@ -783,7 +783,7 @@ const SubscriptionApp = {
       delivery_btn_call: 'Call: 079-251-2221',
       brochures_badge: 'OFFICIAL FLYERS & MENUS',
       brochures_title: 'Official Menu & Plan Posters',
-      brochures_subtitle: 'Browse our official flyers for weekly menus, pricing, and dedicated kitchen details',
+      brochures_subtitle: 'Browse official meal flyers and pricing plans',
       zoom_hint: '🔍 Tap to Zoom',
       schedule_toggle_eyebrow: 'COMPLETE WEEKLY SCHEDULE',
       schedule_toggle_btn_show: 'Show Detailed Weekly Meal Plans',
@@ -904,7 +904,7 @@ const SubscriptionApp = {
       delivery_btn_call: 'اتصال: 079-251-2221',
       brochures_badge: 'النشرات وقوائم الأسعار الرسمية',
       brochures_title: 'نشرات وباقات الوجبات',
-      brochures_subtitle: 'تصفح النشرات الرسمية للوجبات، الأسعار، وتفاصيل المطبخ المعتمد (اسحب أو اضغط للتكبير)',
+      brochures_subtitle: 'تصفح النشرات الرسمية للوجبات وقوائم الأسعار',
       schedule_toggle_eyebrow: 'الجدول الأسبوعي الكامل',
       schedule_toggle_btn_show: 'عرض خطة وجبات الأسابيع التفصيلية',
       schedule_toggle_btn_hide: 'إخفاء خطة وجبات الأسابيع التفصيلية',
@@ -1166,6 +1166,20 @@ const SubscriptionApp = {
           this.content.en[k] = rc[k];
         }
       });
+      
+      if (this.content.ar.brochures_subtitle) {
+        this.content.ar.brochures_subtitle = this.content.ar.brochures_subtitle
+          .replace(/\s*\(اسحب أو اضغط للتكبير\)/g, '')
+          .replace(/\s*\(اضغط للتكبير\)/g, '')
+          .replace(/\s*\(اسحب للتكبير\)/g, '')
+          .trim();
+      }
+      if (this.content.en.brochures_subtitle) {
+        this.content.en.brochures_subtitle = this.content.en.brochures_subtitle
+          .replace(/\s*\(tap to zoom\)/gi, '')
+          .replace(/\s*\(swipe or tap to zoom\)/gi, '')
+          .trim();
+      }
       
       if (rc.hero_image) {
         this.content.ar.hero_image = rc.hero_image;
