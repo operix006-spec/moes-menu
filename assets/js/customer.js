@@ -649,8 +649,8 @@ const CustomerApp = {
     const mainTitle = isAr ? `وجبات ${dayLabel}` : `Tomorrow's Meals (${targetDayName})`;
     const title = `${mainTitle} - ${trialTag}`;
     const subtitle = isAr 
-      ? `طلب مسبق • ${currentWeekName} • تُحضّر طازجة مع جدول الاشتراكات • الحجز عبر واتساب` 
-      : `Pre-Order • ${currentWeekName} • Prepared fresh daily with subscriptions • Reserve via WhatsApp`;
+      ? `طلب مسبق • ${currentWeekName} • تُحضّر طازجة مع جدول الاشتراكات` 
+      : `Pre-Order • ${currentWeekName} • Prepared fresh daily with subscriptions`;
 
     let itemsHtml = '';
     mealIds.forEach(id => {
