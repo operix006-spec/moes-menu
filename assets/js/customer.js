@@ -472,6 +472,27 @@ const CustomerApp = {
           </div>
         </div>
         
+        <!-- Official JFDA Accreditation Certificate Card (Between Trust Strip & Delivery Banner) -->
+        <div class="menu-cert-card" aria-label="Official JFDA Accreditation">
+          <div class="menu-cert-header">
+            <div class="menu-cert-title-group">
+              <h4 class="menu-cert-title">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#C5A059" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                <span>${i18n("jfda_cert_title")}</span>
+              </h4>
+              <p class="menu-cert-sub">${i18n("jfda_cert_sub")}</p>
+            </div>
+            <span class="menu-cert-badge">${i18n("jfda_cert_badge")}</span>
+          </div>
+
+          <div class="menu-cert-img-wrap" onclick="CustomerApp.openCertificateLightbox()" role="button" tabindex="0" aria-label="${i18n('jfda_cert_zoom')}" onkeydown="if(event.key==='Enter'||event.key===' ')CustomerApp.openCertificateLightbox()">
+            <img src="assets/images/jfda_cert.jpg" alt="${i18n('jfda_cert_title')}" class="menu-cert-img" loading="lazy" />
+            <div class="menu-cert-zoom-overlay">
+              <span>${i18n("jfda_cert_zoom")}</span>
+            </div>
+          </div>
+        </div>
+
         <!-- Delivery Only Banner -->
         <div style="background: linear-gradient(135deg, var(--c-forest) 0%, #17543d 50%, var(--c-forest) 100%); color: #fff; margin-top: 12px; border-radius: var(--radius-md); padding: 9px 10px; text-align: center; font-size: clamp(0.72rem, 3.1vw, 0.8rem); font-weight: 700; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(6, 59, 41, 0.15); white-space: nowrap;">
           ${i18n("delivery_only_msg")}
@@ -576,6 +597,34 @@ const CustomerApp = {
   openPreorderMealModal(mealId, targetDayName, currentWeekName) {
     const fakeId = 'preorder_' + mealId;
     this.openProductModal(fakeId);
+  },
+
+  openCertificateLightbox() {
+    let overlay = document.getElementById("cert-lightbox-modal");
+    if (!overlay) {
+      overlay = document.createElement("div");
+      overlay.id = "cert-lightbox-modal";
+      overlay.className = "cert-lightbox-overlay";
+      overlay.innerHTML = `
+        <div class="cert-lightbox-box" onclick="event.stopPropagation()">
+          <button class="cert-lightbox-close" onclick="CustomerApp.closeCertificateLightbox()" aria-label="Close">✕</button>
+          <img src="assets/images/jfda_cert.jpg" alt="${i18n('jfda_cert_title')}" class="cert-lightbox-img" />
+          <div class="cert-lightbox-caption">${i18n("jfda_cert_title")} • ${i18n("jfda_cert_sub")}</div>
+        </div>
+      `;
+      overlay.onclick = () => CustomerApp.closeCertificateLightbox();
+      document.body.appendChild(overlay);
+    }
+    overlay.classList.add("active");
+    document.body.style.overflow = "hidden";
+  },
+
+  closeCertificateLightbox() {
+    const overlay = document.getElementById("cert-lightbox-modal");
+    if (overlay) {
+      overlay.classList.remove("active");
+      document.body.style.overflow = "";
+    }
   },
 
   getTomorrowMealsHTML(settings) {
@@ -1627,5 +1676,13 @@ document.addEventListener("click", (e) => {
   }
 });
 
+// Close certificate lightbox with Escape key
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    if (typeof CustomerApp !== "undefined" && CustomerApp.closeCertificateLightbox) {
+      CustomerApp.closeCertificateLightbox();
+    }
+  }
+});
 
 window.CustomerApp = CustomerApp;

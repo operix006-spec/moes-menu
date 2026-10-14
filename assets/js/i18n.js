@@ -139,7 +139,11 @@ const Translations = {
     "footer_rights": "All rights reserved. 100% Dedicated Gluten-Free.",
     "powered_by": "Powered by",
     
-    "delivery_only_msg": "Gluten Free Kitchen (Delivery and Pickup Only)"
+    "delivery_only_msg": "Gluten Free Kitchen (Delivery and Pickup Only)",
+    "jfda_cert_title": "Official License from Jordan Food & Drug Administration",
+    "jfda_cert_sub": "Certified approval for preparing & selling 100% gluten-free foods",
+    "jfda_cert_zoom": "🔍 Tap to view & inspect full certificate",
+    "jfda_cert_badge": "Official License"
   },
   
   ar: {
@@ -271,7 +275,11 @@ const Translations = {
     "instagram": "إنستغرام",
     "facebook": "فيسبوك",
     
-    "delivery_only_msg": "مطبخ خالٍ من الغلوتين (توصيل واستلام فقط)"
+    "delivery_only_msg": "مطبخ خالٍ من الغلوتين (توصيل واستلام فقط)",
+    "jfda_cert_title": "شهادة ترخيص المؤسسة العامة للغذاء والدواء",
+    "jfda_cert_sub": "تصريح رسمي معتمد لإعداد وبيع أطعمة خالية من الجلوتين",
+    "jfda_cert_zoom": "🔍 اضغط لتكبير الشهادة وقراءة الاعتماد",
+    "jfda_cert_badge": "اعتماد رسمي"
   }
 };
 
