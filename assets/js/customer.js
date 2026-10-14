@@ -1592,6 +1592,28 @@ const CustomerApp = {
           </div>
         </section>
 
+        <!-- 6. Official Kitchen Permit / JFDA Accreditation -->
+        <section class="about-permit-section" style="padding: 0 16px; margin-top: 24px;">
+          <div class="menu-cert-card" aria-label="Official JFDA Accreditation">
+            <div class="menu-cert-header">
+              <div class="menu-cert-title-group">
+                <h4 class="menu-cert-title">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#C5A059" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                  <span>${i18n("jfda_cert_title")}</span>
+                </h4>
+                <p class="menu-cert-sub">${i18n("jfda_cert_sub")}</p>
+              </div>
+              <span class="menu-cert-badge">${i18n("jfda_cert_badge")}</span>
+            </div>
+
+            <div class="menu-cert-img-wrap" onclick="CustomerApp.openCertificateLightbox()" role="button" tabindex="0" aria-label="${i18n('jfda_cert_zoom')}" onkeydown="if(event.key==='Enter'||event.key===' ')CustomerApp.openCertificateLightbox()">
+              <img src="assets/images/jfda_cert.jpg" alt="${i18n('jfda_cert_title')}" class="menu-cert-img" loading="lazy" />
+              <div class="menu-cert-zoom-overlay">
+                <span>${i18n("jfda_cert_zoom")}</span>
+              </div>
+            </div>
+          </div>
+        </section>
 
         <!-- 7. Contact / Social -->
         <section class="about-contact-clean">
