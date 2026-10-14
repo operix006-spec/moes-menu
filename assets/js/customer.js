@@ -992,7 +992,7 @@ const CustomerApp = {
             ✕
           </button>
           <div style="font-weight: 700; font-size: 0.95rem; color: var(--c-forest); display: flex; align-items: center; gap: 6px;">
-            <span>${p.isPreOrder24h ? (MoeStore.getLang() === 'ar' ? `وجبة طلب مسبق (${p.targetDayName || 'الغد'})` : `Pre-Order Meal (${p.targetDayName || 'Tomorrow'})`) : CustomerApp.T(p, "name")}</span>
+            <span>${p.originalMealId ? (MoeStore.getLang() === 'ar' ? `وجبة طلب مسبق (${p.targetDayName || 'الغد'})` : `Pre-Order Meal (${p.targetDayName || 'Tomorrow'})`) : CustomerApp.T(p, "name")}</span>
           </div>
           <button onclick="CustomerApp.directWhatsAppContact()" class="btn-modal-close" title="Chat on WhatsApp" style="color: #25D366;">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12C2 13.85 2.5 15.58 3.38 17.07L2 22L7.07 20.65C8.54 21.5 10.22 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z"/></svg>
@@ -1012,11 +1012,15 @@ const CustomerApp = {
               ${(p.tags || []).map(t => `<span class="badge badge-gf">${t}</span>`).join("")}
             </div>
             <p class="modal-product-desc">${CustomerApp.T(p, "description")}</p>
-            ${p.isPreOrder24h ? `
+            ${p.originalMealId ? `
               <div class="preorder-warning-banner modal-preorder-banner" style="background: rgba(6, 59, 41, 0.08); color: var(--c-forest); border: 1px solid rgba(6, 59, 41, 0.18); font-weight: 700; border-radius: 8px; padding: 8px 12px;">
                 <span>${MoeStore.getLang() === 'ar' ? `وجبة طلب مسبق (${p.targetDayName || 'الغد'}) • تُحضّر طازجة مع جدول الاشتراكات` : `Pre-Order Meal (${p.targetDayName || 'Tomorrow'}) • Prepared fresh with daily subscriptions`}</span>
               </div>
-            ` : ""}
+            ` : (p.isPreOrder24h ? `
+              <div class="preorder-warning-banner modal-preorder-banner">
+                <span>${i18n("preorder_warn")}</span>
+              </div>
+            ` : "")}
           </div>
 
         <!-- Ingredients Section (Removable Customization) -->
@@ -1116,8 +1120,8 @@ const CustomerApp = {
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
             <span>${i18n("currently_unavailable")}</span>
           </button>
-        ` : (p.isPreOrder24h ? `
-          <button class="btn-modal-add" style="background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); gap: 8px;" onclick="CustomerApp.orderPreOrderWhatsApp('${p.originalMealId || p.id.replace('preorder_', '')}', '${p.targetDayName || ''}', '${p.currentWeekName || ''}', ${this.currentModalState.quantity})">
+        ` : (p.originalMealId ? `
+          <button class="btn-modal-add" style="background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); gap: 8px;" onclick="CustomerApp.orderPreOrderWhatsApp('${p.originalMealId}', '${p.targetDayName || ''}', '${p.currentWeekName || ''}', ${this.currentModalState.quantity})">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.41a8.16 8.16 0 0 1 2.4 5.83c0 4.54-3.7 8.24-8.24 8.24-1.44 0-2.85-.38-4.09-1.11l-.29-.17-3.04.8.81-2.96-.19-.31a8.188 8.188 0 0 1-1.25-4.49c0-4.54 3.7-8.24 8.24-8.24m-3.57 3.52c-.2 0-.44.07-.67.33-.23.26-.88.86-.88 2.09s.9 2.42 1.02 2.59c.13.16 1.74 2.76 4.29 3.78.61.24 1.08.39 1.45.51.61.19 1.16.17 1.6-.01.49-.2 1.5-.61 1.71-1.21.21-.59.21-1.1.15-1.21-.06-.11-.23-.17-.49-.3-.26-.13-1.5-.74-1.73-.83-.23-.08-.4-.13-.57.13-.17.26-.66.83-.81.99-.15.17-.3.19-.56.06-.26-.13-1.1-.41-2.1-1.3-.77-.69-1.3-1.54-1.45-1.8-.15-.26-.02-.4.11-.53.12-.11.26-.3.39-.46.13-.15.17-.26.26-.43.09-.17.04-.32-.02-.45-.07-.13-.59-1.42-.81-1.95-.21-.51-.43-.44-.59-.45-.15-.01-.33-.01-.5-.01z"/></svg>
             <span>${MoeStore.getLang() === 'ar' ? 'حجز الوجبة عبر واتساب' : 'Reserve via WhatsApp'}</span>
             <span>•</span>
