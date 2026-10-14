@@ -1016,7 +1016,9 @@ const CustomerApp = {
     const scrollBody = container.querySelector(".modal-scroll-body");
     const savedScroll = scrollBody ? scrollBody.scrollTop : 0;
 
-    const showHeroImage = !p.isPreOrder24h && !!p.image;
+    // Show hero image whenever product has an image
+    const showHeroImage = !!p.image;
+    const isTawasiHero = p.category === "main-dishes";
 
     container.innerHTML = `
       ${showHeroImage ? `
@@ -1031,8 +1033,8 @@ const CustomerApp = {
 
         <div class="modal-scroll-body" style="padding-top: 0; padding-inline: 0; gap: 0;">
           <!-- Edge-to-Edge Hero Image -->
-          <div class="modal-product-hero-img-wrap" style="width: 100%; aspect-ratio: 2 / 1; max-height: 270px; border-radius: 0; flex-shrink: 0; background-color: #f6eee2;">
-            <img src="${p.image}" alt="${CustomerApp.T(p, "name")}" class="modal-product-hero-img" />
+          <div class="modal-product-hero-img-wrap" style="width: 100%; ${isTawasiHero ? "aspect-ratio: 2 / 1; max-height: 270px;" : "height: 240px;"} border-radius: 0; flex-shrink: 0; background-color: #f6eee2;">
+            <img src="${p.image}" alt="${CustomerApp.T(p, "name")}" class="modal-product-hero-img" style="width: 100%; height: 100%; object-fit: cover; object-position: center;" />
           </div>
 
           <div style="padding: 24px 18px; display: flex; flex-direction: column; gap: 20px;">
