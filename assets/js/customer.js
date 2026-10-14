@@ -846,10 +846,11 @@ const CustomerApp = {
   renderProductCard(p, settings) {
     const isUnavailable = !p.available;
     const hasRequiredOptions = (p.optionGroups || []).some(g => g.required);
+    const isTawasi = p.category === "main-dishes";
 
     return `
-      <article class="product-card ${isUnavailable ? "unavailable" : ""}" onclick="CustomerApp.handleCardClick('${p.id}', event)">
-        <div class="product-card-img-wrap">
+      <article class="product-card ${isUnavailable ? "unavailable" : ""} ${isTawasi ? "is-tawasi" : ""}" data-category="${p.category}" onclick="CustomerApp.handleCardClick('${p.id}', event)">
+        <div class="product-card-img-wrap ${isTawasi ? "tawasi-img-wrap" : ""}">
           ${p.isBestSeller ? `<span class="product-card-bestseller-badge">${i18n("best_seller")}</span>` : ""}
           <img src="${p.image}" alt="${CustomerApp.T(p, "name")}" class="product-card-img" loading="lazy" />
         </div>
@@ -1030,7 +1031,7 @@ const CustomerApp = {
 
         <div class="modal-scroll-body" style="padding-top: 0; padding-inline: 0; gap: 0;">
           <!-- Edge-to-Edge Hero Image -->
-          <div class="modal-product-hero-img-wrap" style="height: 300px; border-radius: 0; flex-shrink: 0;">
+          <div class="modal-product-hero-img-wrap" style="width: 100%; aspect-ratio: 2 / 1; max-height: 270px; border-radius: 0; flex-shrink: 0; background-color: #f6eee2;">
             <img src="${p.image}" alt="${CustomerApp.T(p, "name")}" class="modal-product-hero-img" />
           </div>
 
