@@ -343,7 +343,7 @@ INSERT INTO public.products (id, category, name, name_ar, description, descripti
     false,
     true,
     '[{"id":"fish-portion","name":"Fish Quantity (Required)","name_ar":"كمية السمك (مطلوب)","required":true,"type":"radio","options":[{"id":"fish-1kg","name":"1 KG Fish","name_ar":"1 ك سمك","price":0,"default":true},{"id":"fish-2kg","name":"2 KG Fish","name_ar":"2 ك سمك","price":8,"default":false}]}]'::jsonb,
-    '[{"id":"extra-tarator","name":"Extra Tarator Sauce","name_ar":"صلصة طرطور إضافية","price":0.5,"type":"add"},{"id":"extra-almonds","name":"Roasted Almonds & Nuts","name_ar":"لوز ومكسرات محمصة","price":0.5,"type":"add"}]'::jsonb,
+    '[{"id":"extra-daqoos","name":"Extra Daqoos Sauce","name_ar":"دقوس إضافي","price":0.5,"type":"add"},{"id":"extra-almonds","name":"Roasted Almonds & Nuts","name_ar":"لوز ومكسرات محمصة","price":0.5,"type":"add"}]'::jsonb,
     '[{"id":"fish","name":"Fried Fish Fillet","name_ar":"فيليه سمك مقلي","desc":"Golden crispy seasoned fish fillets","icon":"assets/images/ing_chicken.png","removable":false},{"id":"rice","name":"Caramelized Onion Rice","name_ar":"أرز مطبوخ بالبصل المكرمل","desc":"Aromatic brown spiced rice","icon":"assets/images/ing_bun.png","removable":false},{"id":"aromatics","name":"Tomatoes & Dried Lime","name_ar":"طماطم ولومي","desc":"Savory stewed aromatics","icon":"assets/images/ing_tomato.png","removable":false},{"id":"spices","name":"Gluten-Free Seafood Spices","name_ar":"بهارات بحرية غنية خالية من الغلوتين","desc":"Special fish seasoning blend","icon":"assets/images/ing_sauce.png","removable":false}]'::jsonb,
     63
   ) ON CONFLICT (id) DO UPDATE SET
