@@ -630,7 +630,8 @@ body.sub-body {
 }
 
 .sub-main-top {
-  padding-bottom: 0;
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
 }
 
 .sub-main-lower {
@@ -642,7 +643,8 @@ body.sub-body {
     padding: 0 14px 60px;
   }
   .sub-main-top {
-    padding-bottom: 0;
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
   }
   .sub-main-lower {
     padding-top: 0;
@@ -658,24 +660,36 @@ body.sub-body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 32px;
-  padding: 30px 32px 28px;
-  margin-top: 10px;
-  margin-bottom: 24px;
-  background: linear-gradient(135deg, #FFFFFF 0%, #FBF8F2 60%, #F5EDE0 100%);
-  border: 1.5px solid rgba(6, 59, 41, 0.10);
+  gap: 28px;
+  padding: 24px 28px 20px;
+  margin-top: 6px;
+  margin-bottom: 10px;
+  background: linear-gradient(145deg, #FFFFFF 0%, #FAF8F2 60%, #F5EDE0 100%);
+  border: 1.5px solid rgba(197, 160, 89, 0.35);
   border-radius: 22px;
-  box-shadow: 0 10px 36px rgba(6, 59, 41, 0.08), 0 2px 6px rgba(6, 59, 41, 0.04);
+  box-shadow: 0 10px 32px rgba(6, 59, 41, 0.08), 0 2px 8px rgba(197, 160, 89, 0.10);
+  position: relative;
+  overflow: hidden;
+}
+
+.sub-hero-editorial::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3.5px;
+  background: linear-gradient(90deg, #C5A059 0%, var(--sub-forest) 50%, #C5A059 100%);
 }
 
 @media (max-width: 767px) {
   .sub-hero-editorial {
     flex-direction: column;
     align-items: stretch;
-    gap: 18px;
-    padding: 20px 16px 20px;
-    margin-top: 6px;
-    margin-bottom: 18px;
+    gap: 14px;
+    padding: 16px 14px 14px;
+    margin-top: 4px;
+    margin-bottom: 8px;
     border-radius: 18px;
   }
 }
@@ -3048,8 +3062,8 @@ body.sub-modal-open {
   background: linear-gradient(165deg, #093C2B 0%, #04251B 100%);
   color: #FAF7F0;
   border-radius: 0;
-  padding: 30px 0 24px;
-  margin: 30px 0;
+  padding: 24px 0 20px;
+  margin: 10px 0 24px;
   box-shadow: 0 16px 40px rgba(6, 59, 41, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   border-top: 1.5px solid rgba(216, 162, 74, 0.28);
   border-bottom: 1.5px solid rgba(216, 162, 74, 0.28);
@@ -3063,8 +3077,8 @@ body.sub-modal-open {
 @media (min-width: 768px) {
   .sub-brochures-section {
     max-width: 100%;
-    margin: 38px 0;
-    padding: 36px 0 30px;
+    margin: 14px 0 28px;
+    padding: 30px 0 26px;
   }
 }
 
@@ -3951,10 +3965,16 @@ body.sub-modal-open {
     padding: 0 12px 60px;
   }
 
+  .sub-main-top {
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
   /* Chapter 1 Hero */
   .sub-hero-editorial {
-    padding: 20px 12px 24px;
-    gap: 16px;
+    padding: 16px 14px 14px;
+    gap: 14px;
+    margin-bottom: 8px;
   }
 
   .sub-hero-title {
@@ -4014,7 +4034,8 @@ body.sub-modal-open {
 
   /* Brochures Section */
   .sub-brochures-section {
-    padding: 18px 8px 22px;
+    padding: 16px 8px 18px;
+    margin: 6px 0 16px;
     border-radius: 18px;
   }
 

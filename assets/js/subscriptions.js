@@ -1454,6 +1454,8 @@ const SubscriptionApp = {
       const full = dict.hero_title;
       if (highlight && full.includes(highlight)) {
         heroTitleEl.innerHTML = full.replace(highlight, `<span class="sub-hero-title-highlight" data-i18n="hero_title_highlight">${highlight}</span>`);
+      } else if (full.includes('(') && full.includes(')')) {
+        heroTitleEl.innerHTML = full.replace(/(\([^)]+\))/g, `<span class="sub-hero-title-highlight">$1</span>`);
       } else {
         heroTitleEl.innerHTML = full;
       }
