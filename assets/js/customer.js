@@ -442,6 +442,10 @@ const CustomerApp = {
     const container = document.getElementById("main-view-container");
     if (!container) return;
 
+    if (MoeStore.state && Array.isArray(MoeStore.state.products)) {
+      MoeStore.state.products = MoeStore.state.products.filter(p => p && p.id && !p.id.startsWith('preorder_'));
+    }
+
     const settings = MoeStore.getSettings();
     const categories = MoeStore.getCategories().filter(c => c.enabled);
     const products = MoeStore.getProducts(this.activeCategory);
@@ -751,12 +755,8 @@ const CustomerApp = {
           optionGroups: []
         };
         
-        const existingIdx = MoeStore.state.products.findIndex(p => p.id === fakeId);
-        if (existingIdx !== -1) {
-          MoeStore.state.products[existingIdx] = fakeProduct;
-        } else {
-          MoeStore.state.products.push(fakeProduct);
-        }
+        MoeStore.dynamicPreorders = MoeStore.dynamicPreorders || {};
+        MoeStore.dynamicPreorders[fakeId] = fakeProduct;
 
         itemsHtml += `
           <div 

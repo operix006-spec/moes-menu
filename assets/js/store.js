@@ -7,7 +7,11 @@ class PureBiteStore {
     this.STORAGE_KEY = "moes_purebite_db_v1";
     this.CART_KEY = "moes_purebite_cart_v1";
     this.listeners = [];
+    this.dynamicPreorders = {};
     this.state = this.loadDatabase();
+    if (this.state && Array.isArray(this.state.products)) {
+      this.state.products = this.state.products.filter(p => p && p.id && !p.id.startsWith('preorder_'));
+    }
     this.cart = this.loadCart();
     
     // Automatically fetch latest data from Supabase on load
@@ -123,6 +127,9 @@ class PureBiteStore {
         const merged = { ...defaults, ...parsed };
         merged.settings = merged.settings || {};
         merged.settings.lang = userPrefLang;
+        if (Array.isArray(merged.products)) {
+          merged.products = merged.products.filter(p => p && p.id && !p.id.startsWith('preorder_'));
+        }
         return merged;
       }
     } catch (e) {
@@ -133,6 +140,9 @@ class PureBiteStore {
 
   saveDatabase() {
     try {
+      if (this.state && Array.isArray(this.state.products)) {
+        this.state.products = this.state.products.filter(p => p && p.id && !p.id.startsWith('preorder_'));
+      }
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.state));
     } catch (e) {
       console.warn("Failed to save DB to cache", e);
@@ -200,7 +210,7 @@ class PureBiteStore {
 
   getCategories() { return [...this.state.categories].sort((a, b) => (a.order || 0) - (b.order || 0)); }
   getProducts(categoryId = "all") {
-    let prods = [...this.state.products];
+    let prods = [...this.state.products].filter(p => p && p.id && !p.id.startsWith('preorder_'));
     if (categoryId && categoryId !== "all") {
       prods = prods.filter(p => p.category === categoryId);
     }
@@ -213,13 +223,15 @@ class PureBiteStore {
     return prods.sort((a, b) => a.order - b.order);
   }
   getProductById(id) {
+    if (this.dynamicPreorders && this.dynamicPreorders[id]) {
+      return this.dynamicPreorders[id];
+    }
     if (id && id.startsWith('preorder_') && typeof SubscriptionApp !== 'undefined') {
       const mealId = id.replace('preorder_', '');
       const meal = SubscriptionApp.mealLibrary?.[mealId];
       if (meal) {
         const lang = (typeof MoeStore !== 'undefined' && MoeStore.getLang) ? MoeStore.getLang() : "en";
         const isAr = lang === 'ar';
-        const existingIdx = this.state.products.findIndex(p => p.id === id);
         const dynamicProduct = {
           id: id,
           originalMealId: mealId,
@@ -234,13 +246,9 @@ class PureBiteStore {
           tags: [isAr ? 'خالي من الغلوتين' : 'Gluten-Free', isAr ? 'طلب مسبق' : 'Pre-Order'],
           optionGroups: []
         };
-        if (existingIdx !== -1) {
-          this.state.products[existingIdx] = { ...this.state.products[existingIdx], ...dynamicProduct };
-          return this.state.products[existingIdx];
-        } else {
-          this.state.products.push(dynamicProduct);
-          return dynamicProduct;
-        }
+        this.dynamicPreorders = this.dynamicPreorders || {};
+        this.dynamicPreorders[id] = dynamicProduct;
+        return dynamicProduct;
       }
     }
     const p = this.state.products.find(p => p.id === id);
