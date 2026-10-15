@@ -44,6 +44,7 @@ const Translations = {
     "whatsapp": "WhatsApp",
     "instagram": "Instagram",
     "facebook": "Facebook",
+    "inquiries_suggestions": "For Inquiries or Suggestions",
     
     // Buttons & Actions
     "add_to_cart": "Add to Cart",
@@ -276,6 +277,7 @@ const Translations = {
     "whatsapp": "واتساب",
     "instagram": "إنستغرام",
     "facebook": "فيسبوك",
+    "inquiries_suggestions": "لإستفساراتكم أو اقتراحاتكم",
     
     "delivery_only_msg": "مطبخ خالٍ من الغلوتين (توصيل واستلام فقط)",
     "jfda_cert_title": "شهادة ترخيص المؤسسة العامة للغذاء والدواء",

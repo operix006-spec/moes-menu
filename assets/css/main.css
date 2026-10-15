@@ -397,26 +397,59 @@ button, input, select, a {
 /* ==========================================================================
    Footer Contact Block Styles
    ========================================================================== */
-.contact-phone-block-clean {
+.contact-inquiry-box {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 8px;
+  width: 100%;
+  margin-top: 6px;
+}
+
+.contact-inquiry-title {
+  color: var(--c-forest);
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-align: center;
+  margin: 0;
+  line-height: 1.4;
+  letter-spacing: -0.1px;
+}
+
+[dir="rtl"] .contact-inquiry-title {
+  font-family: 'Cairo', var(--font-arabic), sans-serif;
+  letter-spacing: normal;
+}
+
+.contact-phone-block-clean {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   background-color: var(--c-forest);
-  padding: 14px 28px;
+  padding: 12px 28px;
   border-radius: 50px;
   box-shadow: 0 4px 14px rgba(6, 59, 41, 0.15);
-  margin-top: 10px;
+  margin-top: 0;
   text-decoration: none;
   color: #fff;
   transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
   cursor: pointer;
+  max-width: 320px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .contact-phone-block-clean:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 18px rgba(6, 59, 41, 0.25);
   background-color: #0a4f38;
+}
+
+.contact-phone-block-clean svg {
+  color: #fff;
+  flex-shrink: 0;
 }
 
 .contact-phone-label {
@@ -432,3 +465,4 @@ button, input, select, a {
   letter-spacing: 0.5px;
   direction: ltr;
 }
+

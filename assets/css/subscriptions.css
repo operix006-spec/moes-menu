@@ -2870,21 +2870,45 @@ body.sub-modal-open {
   height: 20px;
 }
 
-.contact-phone-block-clean {
+.contact-inquiry-box {
   display: flex !important;
+  flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 12px !important;
+  gap: 8px !important;
+  width: 100% !important;
+  margin-top: 6px !important;
+}
+
+.contact-inquiry-title {
+  color: var(--sub-forest) !important;
+  font-size: 0.95rem !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+  margin: 0 !important;
+  line-height: 1.4 !important;
+}
+
+[dir="rtl"] .contact-inquiry-title {
+  font-family: 'Cairo', var(--font-arabic), sans-serif !important;
+}
+
+.contact-phone-block-clean {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
   background-color: var(--sub-forest) !important;
-  padding: 14px 28px !important;
+  padding: 12px 28px !important;
   border-radius: 50px !important;
   box-shadow: 0 4px 14px rgba(6, 59, 41, 0.15) !important;
-  margin-top: 2px !important;
+  margin-top: 0 !important;
   text-decoration: none !important;
   color: #FFFFFF !important;
   transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s !important;
   cursor: pointer !important;
   width: 100% !important;
+  max-width: 320px !important;
   box-sizing: border-box !important;
   border: none !important;
 }
@@ -2893,6 +2917,11 @@ body.sub-modal-open {
   transform: translateY(-2px) !important;
   box-shadow: 0 6px 18px rgba(6, 59, 41, 0.25) !important;
   background-color: #042419 !important;
+}
+
+.contact-phone-block-clean svg {
+  color: #FFFFFF !important;
+  flex-shrink: 0 !important;
 }
 
 .contact-phone-label {

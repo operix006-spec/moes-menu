@@ -1635,10 +1635,13 @@ const CustomerApp = {
               <span>${i18n("whatsapp")}</span>
             </a>
           </div>
-          <a href="tel:${settings.phoneCallable}" class="contact-phone-block-clean">
-            <span class="contact-phone-label">${i18n("call_us")}</span>
-            <span class="contact-phone-number" dir="ltr">${settings.phoneDisplay}</span>
-          </a>
+          <div class="contact-inquiry-box">
+            <span class="contact-inquiry-title">${i18n("inquiries_suggestions")}</span>
+            <a href="tel:${settings.phoneCallable}" class="contact-phone-block-clean" aria-label="Phone: ${settings.phoneDisplay}">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              <span class="contact-phone-number" dir="ltr">${settings.phoneDisplay}</span>
+            </a>
+          </div>
         </section>
 
         <!-- 8. Minimal Footer -->
@@ -1676,10 +1679,13 @@ const CustomerApp = {
           </a>
         </div>
         
-        <a href="tel:${settings.phoneCallable}" class="contact-phone-block-clean">
-          <span class="contact-phone-label">${i18n("call_us")}</span>
-          <span class="contact-phone-number" dir="ltr">${settings.phoneDisplay}</span>
-        </a>
+        <div class="contact-inquiry-box">
+          <span class="contact-inquiry-title">${i18n("inquiries_suggestions")}</span>
+          <a href="tel:${settings.phoneCallable}" class="contact-phone-block-clean" aria-label="Phone: ${settings.phoneDisplay}">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <span class="contact-phone-number" dir="ltr">${settings.phoneDisplay}</span>
+          </a>
+        </div>
       </section>
       <footer class="about-minimal-footer">
         <p><span dir="ltr">© ${new Date().getFullYear()} ${settings.restaurantName}</span> - ${i18n("footer_rights")}</p>
