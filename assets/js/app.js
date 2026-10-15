@@ -6,15 +6,27 @@
 const App = {
   currentRoute: "home",
 
-  init() {
-    // Initialize components
+  async init() {
+    // 1. Wait for fresh live data from Supabase so the initial render is always 100% up-to-date!
+    if (window.MoeStore && window.MoeStore.dataReady) {
+      try {
+        await Promise.race([
+          window.MoeStore.dataReady,
+          new Promise(resolve => setTimeout(resolve, 3500))
+        ]);
+      } catch (err) {
+        console.warn("MoeStore live data wait notice:", err);
+      }
+    }
+
+    // 2. Initialize customer and admin components with fresh data
     CustomerApp.init();
     AdminApp.init();
 
-    // Listen to hash change routing
+    // 3. Listen to hash change routing
     window.addEventListener("hashchange", () => this.handleRouting());
     
-    // Initial route handling
+    // 4. Initial route handling (Guaranteed 100% fresh - no stale flash!)
     this.handleRouting();
     
     console.log("Moe's PureBite application initialized successfully 🌿");

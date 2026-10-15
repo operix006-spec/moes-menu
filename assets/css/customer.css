@@ -3462,3 +3462,32 @@
     gap: 4px;
   }
 }
+
+/* ==========================================================================
+   Initial App Page Loader (Prevents Stale Content Flash on Boot/Refresh)
+   ========================================================================== */
+.app-initial-loader {
+  min-height: 55vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 40px 20px;
+}
+
+.app-initial-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3.5px solid rgba(6, 59, 41, 0.12);
+  border-top-color: var(--c-orange);
+  border-right-color: var(--c-forest);
+  border-radius: 50%;
+  animation: appSpinLoader 0.75s linear infinite;
+}
+
+@keyframes appSpinLoader {
+  to {
+    transform: rotate(360deg);
+  }
+}

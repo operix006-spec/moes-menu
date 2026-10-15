@@ -16,7 +16,37 @@ class PureBiteStore {
 
   async initSupabaseData() {
     if (!window.supabaseClient) return;
+    const isSubPage = typeof window !== 'undefined' && (
+      window.location.pathname.includes('subscriptions') ||
+      !!document.getElementById('sub-all-weeks-grid')
+    );
+
     try {
+      if (isSubPage) {
+        // Subscriptions page only needs subscription config & contact settings (ultra-fast, skips 5.3MB products!)
+        const [
+          { data: settingsData },
+          { data: subConfigData }
+        ] = await Promise.all([
+          window.supabaseClient.from('settings').select('*').eq('id', 'global').single(),
+          window.supabaseClient.from('subscription_config').select('*').eq('id', 'global').single()
+        ]);
+
+        if (settingsData) {
+          const clientLang = this.getLang();
+          this.state.settings = { ...this.state.settings, ...settingsData };
+          this.state.settings.lang = clientLang;
+        }
+        if (subConfigData) {
+          this.state.subscriptionConfig = subConfigData;
+          if (typeof SubscriptionApp !== 'undefined' && typeof SubscriptionApp.mergeRemoteConfig === 'function') {
+            SubscriptionApp.mergeRemoteConfig(subConfigData);
+          }
+        }
+        this.isLoaded = true;
+        return;
+      }
+
       const [
         { data: categories },
         { data: products },
@@ -50,6 +80,7 @@ class PureBiteStore {
         }
       }
 
+      this.isLoaded = true;
       this.saveDatabase(); // Persist and trigger UI update
     } catch (e) {
       console.error("Failed to load data from Supabase", e);

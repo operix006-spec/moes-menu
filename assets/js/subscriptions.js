@@ -1294,6 +1294,7 @@ const SubscriptionApp = {
       if (data) {
         this.mergeRemoteConfig(data);
         if (this.isSubscriptionsPage()) {
+          this._hasRendered = true;
           this.applyLanguage();
           this.render();
           this.updateSliderUI();
@@ -1392,8 +1393,15 @@ const SubscriptionApp = {
     }
 
     // 6. Only for Subscriptions Page UI:
-    this.applyLanguage();
-    this.render();
+    // Fetch live config from Supabase FIRST so the page renders directly with 100% fresh data!
+    await this.fetchRemoteConfig();
+
+    if (!this._hasRendered) {
+      this._hasRendered = true;
+      this.applyLanguage();
+      this.render();
+      this.updateSliderUI();
+    }
     this.updateCartBadge();
 
     window.addEventListener('keydown', (e) => {
@@ -1402,10 +1410,6 @@ const SubscriptionApp = {
         this.closeFlyerLightbox();
       }
     });
-    this.updateSliderUI();
-
-    // Fetch live config from Supabase to guarantee accurate pricing and meal schedules
-    await this.fetchRemoteConfig();
   },
 
   toggleLanguage() {
