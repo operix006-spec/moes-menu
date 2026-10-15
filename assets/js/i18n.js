@@ -67,7 +67,7 @@ const Translations = {
     "cart_delivery_sub": "Delivery is available directly via My Things app",
     "cart_delivery_btn": "Order on My Things",
     "menu_order_wa": "WhatsApp (Pickup Only)",
-    "menu_order_eshya": "My Things (Delivery)",
+    "menu_order_eshya": "Order via Mythings",
     
     // Product Tags
     "unavailable": "Sold Out",
@@ -194,7 +194,7 @@ const Translations = {
     "cart_delivery_sub": "خدمة التوصيل متوفرة مباشرة عبر تطبيق أشيائي",
     "cart_delivery_btn": "الطلب عبر My Things",
     "menu_order_wa": "واتساب (استلام فقط)",
-    "menu_order_eshya": "My Things (توصيل)",
+    "menu_order_eshya": "اطلب عبر أشيائي",
     
     // Product Tags
     "unavailable": "غير متوفر",

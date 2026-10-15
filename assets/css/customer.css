@@ -2303,9 +2303,9 @@
   background: linear-gradient(135deg, var(--c-forest) 0%, #17543d 50%, var(--c-forest) 100%);
   color: #FFFFFF !important;
   border-radius: var(--radius-md);
-  padding: 8px 10px;
+  padding: 8px 8px;
   text-decoration: none !important;
-  font-size: 0.78rem;
+  font-size: clamp(0.72rem, 3.2vw, 0.78rem);
   font-weight: 700;
   border: 1px solid rgba(255, 255, 255, 0.14);
   box-shadow: 0 2px 6px rgba(6, 59, 41, 0.15);
