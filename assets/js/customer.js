@@ -376,6 +376,10 @@ const CustomerApp = {
             <a href="#about" class="btn-outline-compact">${i18n("read_our_story")}</a>
           </div>
         </section>
+
+        <!-- Kitchen Location Card -->
+        ${this.getLocationCardHtml()}
+
         <!-- Contact & Social Card -->
         <section class="home-contact-card">
           <h3 class="contact-card-title">${i18n("get_in_touch")}</h3>
@@ -1574,6 +1578,11 @@ const CustomerApp = {
           </div>
         </section>
 
+        <!-- 6.5 Kitchen Location & Directions -->
+        <section class="about-location-section" style="padding: 0 16px; margin-top: 16px;">
+          ${this.getLocationCardHtml()}
+        </section>
+
         <!-- 7. Contact / Social -->
         <section class="about-contact-clean">
           <div class="contact-links-row">
@@ -1609,6 +1618,61 @@ const CustomerApp = {
         </footer>
 
       </div>
+    `;
+  },
+
+  // ==========================================================================
+  // KITCHEN LOCATION CARD
+  // ==========================================================================
+  getLocationCardHtml() {
+    const isAr = (typeof MoeStore !== 'undefined' && MoeStore.getLang) ? MoeStore.getLang() === 'ar' : true;
+    const mapsUrl = "https://www.google.com/maps/place/31%C2%B053'21.0%22N+35%C2%B051'28.4%22E/@31.8891697,35.8553009,17z/data=!3m1!4b1!4m4!3m3!8m2!3d31.8891697!4d35.8578758?hl=en&entry=ttu&g_ep=EgoyMDI2MTAxNC4wIKXMDSoASAFQAw%3D%3D";
+    const embedUrl = `https://maps.google.com/maps?q=31.8891697,35.8578758&hl=${isAr ? 'ar' : 'en'}&z=16&output=embed`;
+
+    return `
+      <section class="kitchen-location-section" aria-label="${i18n('location_title')}">
+        <div class="kitchen-location-card">
+          <div class="location-header-row">
+            <div class="location-pin-icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+            </div>
+            <div class="location-header-info">
+              <span class="location-eyebrow">${i18n("location_title")}</span>
+              <h3 class="location-main-address">${i18n("location_address")}</h3>
+              <p class="location-sub-text">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span>${i18n("location_sub")}</span>
+              </p>
+            </div>
+          </div>
+
+          <div class="location-map-frame-wrap">
+            <iframe
+              title="${i18n('location_title')}"
+              src="${embedUrl}"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              allowfullscreen>
+            </iframe>
+          </div>
+
+          <div class="location-actions-row">
+            <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer" class="btn-open-google-maps" aria-label="${i18n('location_open_maps')}">
+              <svg class="maps-nav-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polygon points="3 11 22 2 13 21 11 13 3 11"/>
+              </svg>
+              <span>${i18n("location_open_maps")}</span>
+              <svg class="maps-external-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="7" y1="17" x2="17" y2="7"/>
+                <polyline points="7 7 17 7 17 17"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </section>
     `;
   },
 

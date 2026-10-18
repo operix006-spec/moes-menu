@@ -45,6 +45,10 @@ const Translations = {
     "instagram": "Instagram",
     "facebook": "Facebook",
     "inquiries_suggestions": "For Inquiries or Suggestions",
+    "location_title": "Our Location",
+    "location_address": "Marj Al-Hamam, opposite Grape Village Hotel",
+    "location_sub": "Amman, Jordan • Kitchen Pickup & Delivery",
+    "location_open_maps": "Open in Google Maps",
     
     // Buttons & Actions
     "add_to_cart": "Add to Cart",
@@ -278,6 +282,10 @@ const Translations = {
     "instagram": "إنستغرام",
     "facebook": "فيسبوك",
     "inquiries_suggestions": "لإستفساراتكم أو اقتراحاتكم",
+    "location_title": "موقعنا",
+    "location_address": "مرج الحمام، مقابل فندق قرية العنب",
+    "location_sub": "عَمّان، الأردن • استلام من المطعم وتوصيل",
+    "location_open_maps": "فتح الموقع في خرائط Google",
     
     "delivery_only_msg": "مطبخ خالٍ من الغلوتين (توصيل واستلام فقط)",
     "jfda_cert_title": "شهادة ترخيص المؤسسة العامة للغذاء والدواء",
