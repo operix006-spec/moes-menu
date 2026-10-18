@@ -292,10 +292,6 @@ const CustomerApp = {
                 ${i18n("explore_subscriptions")}
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
               </a>
-              <button onclick="#" class="btn btn-eshya-compact">
-                <img src="assets/images/eshya_logo.png" alt="My Things" style="width: 18px; height: 18px;" />
-                ${i18n("order_my_things")}
-              </button>
             </div>
           </div>
           
@@ -400,16 +396,6 @@ const CustomerApp = {
               <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
               <span>${i18n("facebook")}</span>
             </a>
-          </div>
-        </section>
-
-        <!-- Delivery App Card -->
-        <section class="home-delivery-app-card">
-          <h3 class="delivery-app-title">${i18n("also_available")}</h3>
-          <div class="delivery-app-content">
-            <img src="assets/images/eshya_logo.png" alt="My Things App Logo" class="delivery-app-logo" />
-            <p>${i18n("delivery_app_text")}</p>
-            <a href="#" class="btn-delivery-app">${i18n("order_my_things")}</a>
           </div>
         </section>
 
@@ -1379,19 +1365,6 @@ const CustomerApp = {
             </div>
           </button>
 
-          <!-- Delivery via My Things Alternative Card -->
-          <div class="cart-delivery-card">
-            <div class="cart-delivery-card-header">
-              <span class="delivery-pill-tag">${CustomerApp.lang === 'ar' ? 'توصيل' : 'Delivery'}</span>
-              <span class="delivery-card-title">${i18n("cart_delivery_prompt")}</span>
-            </div>
-            <p class="cart-delivery-card-desc">${i18n("cart_delivery_sub")}</p>
-            <a href="#" class="btn-cart-delivery-link">
-              <img src="assets/images/eshya_logo.png" alt="My Things" />
-              <span>${i18n("cart_delivery_btn")}</span>
-              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5"><path d="${CustomerApp.lang === 'ar' ? 'M15 19l-7-7 7-7' : 'M9 5l7 7-7 7'}"/></svg>
-            </a>
-          </div>
         </div>
 
         ${this.getFooterHtml()}
