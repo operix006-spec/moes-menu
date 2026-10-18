@@ -1023,9 +1023,20 @@ const SubscriptionApp = {
     // Update counter
     const counter = document.getElementById('slider-counter');
     if (counter) {
-      const currentNum = isAr ? this.toArabicNumeral(index + 1) : (index + 1);
-      const totalNum = isAr ? this.toArabicNumeral(this.flyerSlides.length) : this.flyerSlides.length;
-      counter.textContent = isAr ? `${currentNum} من ${totalNum}` : `${currentNum} of ${totalNum}`;
+      const currentVal = index + 1;
+      const totalVal = this.flyerSlides.length;
+      const currentDisplay = isAr ? this.toArabicNumeral(currentVal) : currentVal;
+      const totalDisplay = isAr ? this.toArabicNumeral(totalVal) : totalVal;
+      const sep = isAr ? 'من' : 'of';
+      const dir = isAr ? 'rtl' : 'ltr';
+
+      counter.innerHTML = `
+        <div class="slider-counter-badge" dir="${dir}">
+          <span class="counter-num">${currentDisplay}</span>
+          <span class="counter-sep">${sep}</span>
+          <span class="counter-total">${totalDisplay}</span>
+        </div>
+      `;
     }
   },
 
@@ -1231,12 +1242,7 @@ const SubscriptionApp = {
           `).join('');
         }
         // Update slider total count
-        const counter = document.getElementById('slider-counter');
-        if (counter) {
-          counter.textContent = this.state.lang === 'ar' 
-            ? `١ من ${remoteConfig.slider.length}`
-            : `1 of ${remoteConfig.slider.length}`;
-        }
+        this.updateSliderUI();
       }
     }
 

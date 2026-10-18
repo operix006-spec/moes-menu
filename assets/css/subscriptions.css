@@ -3292,16 +3292,51 @@ body.sub-modal-open {
 }
 
 .slider-counter {
-  text-align: center;
-  font-size: 0.88rem;
-  font-weight: 800;
-  color: #F5D38A;
-  margin-top: 8px;
-  letter-spacing: 0.5px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-top: 10px !important;
+  width: 100% !important;
 }
 
-[dir="rtl"] .slider-counter {
-  font-family: 'Cairo', var(--font-arabic), sans-serif;
+.slider-counter-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  background: rgba(245, 211, 138, 0.12) !important;
+  border: 1px solid rgba(245, 211, 138, 0.32) !important;
+  padding: 4px 14px !important;
+  border-radius: 20px !important;
+  font-size: 0.82rem !important;
+  font-weight: 800 !important;
+  color: #F5D38A !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16) !important;
+  letter-spacing: 0.5px !important;
+  line-height: 1 !important;
+  backdrop-filter: blur(6px) !important;
+  -webkit-backdrop-filter: blur(6px) !important;
+  user-select: none !important;
+}
+
+.slider-counter-badge .counter-num,
+.slider-counter-badge .counter-total {
+  color: #FFFFFF !important;
+  font-weight: 900 !important;
+  font-size: 0.88rem !important;
+}
+
+.slider-counter-badge .counter-sep {
+  color: #F5D38A !important;
+  font-weight: 600 !important;
+  opacity: 0.9 !important;
+  font-size: 0.8rem !important;
+  margin: 0 2px !important;
+}
+
+[dir="rtl"] .slider-counter-badge {
+  font-family: 'Cairo', var(--font-arabic), sans-serif !important;
+  letter-spacing: normal !important;
 }
 
 /* ==========================================================================
