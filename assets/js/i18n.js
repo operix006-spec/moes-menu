@@ -142,7 +142,7 @@ const Translations = {
     "no_contamination": "No Cross Contamination",
     "fresh_ingredients": "Fresh Ingredients",
     
-    "footer_rights": "All rights reserved. 100% Dedicated Gluten-Free.",
+    "footer_rights": "All rights reserved. Dedicated Gluten-Free.",
     "powered_by": "Powered by",
     
     "delivery_only_msg": "Gluten Free Kitchen (Delivery and Pickup Only)",
@@ -269,7 +269,7 @@ const Translations = {
     "no_contamination": "لا للتلوث التبادلي",
     "fresh_ingredients": "مكونات طازجة",
     
-    "footer_rights": "جميع الحقوق محفوظة. مطبخ خالٍ من الغلوتين 100%.",
+    "footer_rights": "جميع الحقوق محفوظة. مطبخ خالٍ من الغلوتين.",
     "powered_by": "بدعم من",
 
     "also_available": "متوفرون أيضاً على",

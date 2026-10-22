@@ -825,7 +825,7 @@ const SubscriptionApp = {
       whatsapp: 'WhatsApp',
       call_us: 'Call Us',
       inquiries_suggestions: 'For Inquiries or Suggestions',
-      footer_rights: 'All rights reserved. 100% Dedicated Gluten-Free.',
+      footer_rights: 'All rights reserved. Dedicated Gluten-Free.',
       powered_by: 'Powered by',
       cta_call_subtext: 'Or call Moe’s directly: <span dir="ltr" class="sub-call-phone">07 9251 2221</span>',
 
@@ -948,7 +948,7 @@ const SubscriptionApp = {
       whatsapp: 'واتساب',
       call_us: 'اتصل بنا',
       inquiries_suggestions: 'لإستفساراتكم أو اقتراحاتكم',
-      footer_rights: 'جميع الحقوق محفوظة. مطبخ خالٍ من الغلوتين 100%.',
+      footer_rights: 'جميع الحقوق محفوظة. مطبخ خالٍ من الغلوتين.',
       powered_by: 'بدعم من',
       cta_call_subtext: 'أو اتصل بمويز مباشرة: <span dir="ltr" class="sub-call-phone">07 9251 2221</span>',
 
