@@ -476,7 +476,7 @@ const CustomerApp = {
           </div>
 
           <div class="menu-cert-img-wrap" onclick="CustomerApp.openCertificateLightbox()" role="button" tabindex="0" aria-label="${i18n('jfda_cert_zoom')}" onkeydown="if(event.key==='Enter'||event.key===' ')CustomerApp.openCertificateLightbox()">
-            <img src="assets/images/jfda_cert.jpg" alt="${i18n('jfda_cert_title')}" class="menu-cert-img" loading="lazy" />
+            <img src="assets/images/jfda_cert.jpg?v=2" alt="${i18n('jfda_cert_title')}" class="menu-cert-img" loading="lazy" />
             <div class="menu-cert-zoom-overlay">
               <span>${i18n("jfda_cert_zoom")}</span>
             </div>
@@ -588,7 +588,7 @@ const CustomerApp = {
       overlay.innerHTML = `
         <div class="cert-lightbox-box" onclick="event.stopPropagation()">
           <button class="cert-lightbox-close" onclick="CustomerApp.closeCertificateLightbox()" aria-label="Close">✕</button>
-          <img src="assets/images/jfda_cert.jpg" alt="${i18n('jfda_cert_title')}" class="cert-lightbox-img" />
+          <img src="assets/images/jfda_cert.jpg?v=2" alt="${i18n('jfda_cert_title')}" class="cert-lightbox-img" />
           <div class="cert-lightbox-caption">${i18n("jfda_cert_title")} • ${i18n("jfda_cert_sub")}</div>
         </div>
       `;
@@ -1570,7 +1570,7 @@ const CustomerApp = {
             </div>
 
             <div class="menu-cert-img-wrap" onclick="CustomerApp.openCertificateLightbox()" role="button" tabindex="0" aria-label="${i18n('jfda_cert_zoom')}" onkeydown="if(event.key==='Enter'||event.key===' ')CustomerApp.openCertificateLightbox()">
-              <img src="assets/images/jfda_cert.jpg" alt="${i18n('jfda_cert_title')}" class="menu-cert-img" loading="lazy" />
+              <img src="assets/images/jfda_cert.jpg?v=2" alt="${i18n('jfda_cert_title')}" class="menu-cert-img" loading="lazy" />
               <div class="menu-cert-zoom-overlay">
                 <span>${i18n("jfda_cert_zoom")}</span>
               </div>
