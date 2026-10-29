@@ -626,21 +626,16 @@ const CustomerApp = {
     const lang = (typeof MoeStore !== 'undefined' && MoeStore.getLang) ? MoeStore.getLang() : 'ar';
     const isAr = lang === 'ar';
 
-    // On Thursday, tomorrow is Friday: kitchen is OFF for subscriptions
+    // On Thursday, tomorrow is Friday: no subscription meal prep
     if (dayKey === 'fri') {
-      const title = isAr ? 'وجبات الغد (الجمعة) - عطلة أسبوعية' : "Tomorrow's Meals (Friday) - Weekly Day Off";
+      const trialTag = isAr ? 'لتجربة الاشتراكات (OFF)' : 'Subscription Trial (OFF)';
+      const mainTitle = isAr ? 'وجبات الغد (الجمعة)' : "Tomorrow's Meals (Friday)";
+      const title = `${mainTitle} - ${trialTag}`;
       return `
         <section class="tomorrow-preorder-container tomorrow-preorder-off" aria-label="${title}">
           <div class="tomorrow-preorder-header">
-            <div class="tomorrow-preorder-badge-row">
-              <span class="tomorrow-preorder-eyebrow-badge off-badge">
-                <span class="eyebrow-sparkle">✦</span>
-                <span>${isAr ? 'عطلة أسبوعية' : 'Weekly Day Off'}</span>
-              </span>
-            </div>
             <h3 class="tomorrow-preorder-title">
-              ${isAr ? 'وجبات الغد (الجمعة)' : "Tomorrow's Meals (Friday)"} 
-              <span class="tomorrow-preorder-trial-tag off-tag">- ${isAr ? 'عطلة المطبخ (OFF)' : 'Kitchen Rest (OFF)'}</span>
+              ${mainTitle} <span class="tomorrow-preorder-trial-tag off-tag">- ${trialTag}</span>
             </h3>
             <p class="tomorrow-preorder-subtitle">
               ${isAr 
@@ -660,17 +655,13 @@ const CustomerApp = {
                 </svg>
               </div>
               <div class="tomorrow-preorder-off-texts">
-                <div class="tomorrow-preorder-off-status">
-                  <span class="tomorrow-preorder-off-indicator"></span>
-                  <span>${isAr ? 'مطبخ الاشتراكات في استراحة الجمعة (OFF)' : 'Subscription Kitchen Rest (OFF)'}</span>
-                </div>
                 <h4 class="tomorrow-preorder-off-heading">
                   ${isAr ? 'لا تتوفر وجبات لتجربة الاشتراكات غداً الجمعة' : 'No subscription trial meals available tomorrow (Friday)'}
                 </h4>
                 <p class="tomorrow-preorder-off-desc">
                   ${isAr 
-                    ? 'يوم الجمعة هو عطلة المطبخ لتحضير وجبات الاشتراكات، ولا يتوفر حجز وجبات تجربة للغد. بإمكانكم الاستمتاع بطلب كافة الأصناف اليومية من المنيو أدناه، أو استكشاف وجبات السبت وباقات الاشتراكات القادمة!' 
-                    : 'Friday is the subscription kitchen rest day, and trial pre-orders are unavailable for tomorrow. Feel free to explore our daily menu below or discover our Saturday subscription meals!'}
+                    ? 'لا يتوفر تحضير وجبات اشتراكات يوم الجمعة، ولا يتوفر حجز وجبات تجربة للغد. بإمكانكم الاستمتاع بطلب كافة الأصناف اليومية من المنيو أدناه، أو استكشاف وجبات السبت وباقات الاشتراكات القادمة!' 
+                    : 'Subscription meal prep is not active on Fridays, and trial pre-orders are unavailable for tomorrow. Feel free to explore our daily menu below or discover our Saturday subscription meals!'}
                 </p>
               </div>
             </div>
