@@ -620,14 +620,73 @@ const CustomerApp = {
     const targetDate = new Date(now);
     targetDate.setDate(targetDate.getDate() + 1);
     
-    // If tomorrow is Friday (kitchen closed), advance to Saturday
-    if (targetDate.getDay() === 5) {
-      targetDate.setDate(targetDate.getDate() + 1);
-    }
-    
     const daysMap = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
     const dayKey = daysMap[targetDate.getDay()];
-    if (dayKey === 'fri') return '';
+
+    const lang = (typeof MoeStore !== 'undefined' && MoeStore.getLang) ? MoeStore.getLang() : 'ar';
+    const isAr = lang === 'ar';
+
+    // On Thursday, tomorrow is Friday: kitchen is OFF for subscriptions
+    if (dayKey === 'fri') {
+      const title = isAr ? 'وجبات الغد (الجمعة) - عطلة أسبوعية' : "Tomorrow's Meals (Friday) - Weekly Day Off";
+      return `
+        <section class="tomorrow-preorder-container tomorrow-preorder-off" aria-label="${title}">
+          <div class="tomorrow-preorder-header">
+            <div class="tomorrow-preorder-badge-row">
+              <span class="tomorrow-preorder-eyebrow-badge off-badge">
+                <span class="eyebrow-sparkle">✦</span>
+                <span>${isAr ? 'عطلة أسبوعية' : 'Weekly Day Off'}</span>
+              </span>
+            </div>
+            <h3 class="tomorrow-preorder-title">
+              ${isAr ? 'وجبات الغد (الجمعة)' : "Tomorrow's Meals (Friday)"} 
+              <span class="tomorrow-preorder-trial-tag off-tag">- ${isAr ? 'عطلة المطبخ (OFF)' : 'Kitchen Rest (OFF)'}</span>
+            </h3>
+            <p class="tomorrow-preorder-subtitle">
+              ${isAr 
+                ? 'لا تتوفر وجبات اشتراكات غداً الجمعة • يتجدد جدول الاشتراكات كالمعتاد يوم السبت' 
+                : 'No subscription meals on Friday • Subscription schedule resumes on Saturday'}
+            </p>
+          </div>
+          <div class="tomorrow-preorder-off-card">
+            <div class="tomorrow-preorder-off-row">
+              <div class="tomorrow-preorder-off-icon-wrap" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                  <line x1="9" y1="16" x2="15" y2="16"></line>
+                </svg>
+              </div>
+              <div class="tomorrow-preorder-off-texts">
+                <div class="tomorrow-preorder-off-status">
+                  <span class="tomorrow-preorder-off-indicator"></span>
+                  <span>${isAr ? 'مطبخ الاشتراكات في استراحة الجمعة (OFF)' : 'Subscription Kitchen Rest (OFF)'}</span>
+                </div>
+                <h4 class="tomorrow-preorder-off-heading">
+                  ${isAr ? 'لا تتوفر وجبات لتجربة الاشتراكات غداً الجمعة' : 'No subscription trial meals available tomorrow (Friday)'}
+                </h4>
+                <p class="tomorrow-preorder-off-desc">
+                  ${isAr 
+                    ? 'يوم الجمعة هو عطلة المطبخ لتحضير وجبات الاشتراكات، ولا يتوفر حجز وجبات تجربة للغد. بإمكانكم الاستمتاع بطلب كافة الأصناف اليومية من المنيو أدناه، أو استكشاف وجبات السبت وباقات الاشتراكات القادمة!' 
+                    : 'Friday is the subscription kitchen rest day, and trial pre-orders are unavailable for tomorrow. Feel free to explore our daily menu below or discover our Saturday subscription meals!'}
+                </p>
+              </div>
+            </div>
+            <div class="tomorrow-preorder-off-actions">
+              <a href="subscriptions.html" class="tomorrow-preorder-off-btn">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                </svg>
+                <span>${isAr ? 'استكشف باقات وجداول الاشتراكات' : 'Explore Subscriptions'}</span>
+              </a>
+            </div>
+          </div>
+        </section>
+      `;
+    }
 
     // Calculate which Saturday of the month began this subscription week
     const daysSinceSat = (targetDate.getDay() + 1) % 7;
@@ -646,8 +705,6 @@ const CustomerApp = {
     const mealIds = SubscriptionApp.dailyOptionsSchedule[weekKey]?.[dayKey];
     if (!mealIds || mealIds.length === 0) return '';
     
-    const lang = MoeStore.getLang();
-    const isAr = lang === 'ar';
     const currencyStr = isAr ? 'د.أ' : (settings?.currency || 'JOD');
 
     const dayNames = {
@@ -656,7 +713,8 @@ const CustomerApp = {
       mon: { ar: 'الاثنين', en: 'Monday' },
       tue: { ar: 'الثلاثاء', en: 'Tuesday' },
       wed: { ar: 'الأربعاء', en: 'Wednesday' },
-      thu: { ar: 'الخميس', en: 'Thursday' }
+      thu: { ar: 'الخميس', en: 'Thursday' },
+      fri: { ar: 'الجمعة', en: 'Friday' }
     };
     
     const weekNames = {
@@ -669,10 +727,7 @@ const CustomerApp = {
     const targetDayName = isAr ? dayNames[dayKey]?.ar : dayNames[dayKey]?.en;
     const currentWeekName = isAr ? weekNames[weekNum]?.ar : weekNames[weekNum]?.en;
 
-    const isDirectTomorrow = (targetDate.getTime() - now.getTime()) <= (2 * 24 * 60 * 60 * 1000);
-    const dayLabel = isAr 
-      ? (isDirectTomorrow ? `الغد (${targetDayName})` : `يوم ${targetDayName}`)
-      : (isDirectTomorrow ? `Tomorrow (${targetDayName})` : targetDayName);
+    const dayLabel = isAr ? `الغد (${targetDayName})` : `Tomorrow (${targetDayName})`;
 
     const trialTag = isAr ? 'لتجربة الاشتراكات' : 'Subscription Trial';
     const mainTitle = isAr ? `وجبات ${dayLabel}` : `Tomorrow's Meals (${targetDayName})`;
