@@ -522,11 +522,34 @@ const CustomerApp = {
     this.scheduleMidnightRefresh();
   },
 
+  getJordanDate() {
+    const now = new Date();
+    try {
+      return new Date(now.toLocaleString("en-US", { timeZone: "Asia/Amman" }));
+    } catch (e) {
+      const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+      return new Date(utc + (3 * 3600000));
+    }
+  },
+
   scheduleMidnightRefresh() {
     if (this._midnightTimer) clearTimeout(this._midnightTimer);
-    const now = new Date();
-    const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 2);
-    const msUntilMidnight = midnight.getTime() - now.getTime();
+    
+    // Automatically refresh at Jordan cutoffs:
+    // Window 1 (12:00 AM - 11:00 AM): Today's meals (order before 11:00 AM)
+    // Window 2 (11:00 AM - 12:00 AM midnight): Tomorrow's meals
+    const jNow = this.getJordanDate();
+    const jHour = jNow.getHours();
+    let nextTarget = new Date(jNow);
+    
+    if (jHour < 11) {
+      nextTarget.setHours(11, 0, 2, 0);
+    } else {
+      nextTarget.setDate(nextTarget.getDate() + 1);
+      nextTarget.setHours(0, 0, 2, 0);
+    }
+    
+    const msUntilNext = Math.max(nextTarget.getTime() - jNow.getTime(), 1000);
     
     this._midnightTimer = setTimeout(() => {
       const preorderContainer = document.getElementById("tomorrow-preorder-container");
@@ -535,19 +558,19 @@ const CustomerApp = {
         preorderContainer.innerHTML = this.getTomorrowMealsHTML(settings);
       }
       this.scheduleMidnightRefresh();
-    }, Math.max(msUntilMidnight, 1000));
+    }, msUntilNext);
   },
 
-  orderPreOrderWhatsApp(mealId, dayName, weekName, qty) {
-    const meal = typeof SubscriptionApp !== 'undefined' ? SubscriptionApp.mealLibrary?.[mealId] : null;
+  orderPreOrderWhatsApp(mealId, dayName, weekName, qty, isToday) {
+    const meal = typeof SubscriptionApp !== "undefined" ? SubscriptionApp.mealLibrary?.[mealId] : null;
     const settings = MoeStore.getSettings();
     let rawNumber = (settings.whatsappNumber || "962792512221").replace(/[^0-9]/g, "");
-    if (rawNumber.startsWith('0')) rawNumber = '962' + rawNumber.slice(1);
-    if (rawNumber.startsWith('7')) rawNumber = '962' + rawNumber;
+    if (rawNumber.startsWith("0")) rawNumber = "962" + rawNumber.slice(1);
+    if (rawNumber.startsWith("7")) rawNumber = "962" + rawNumber;
 
     const lang = MoeStore.getLang();
-    const isAr = lang === 'ar';
-    const currencyStr = isAr ? 'د.أ' : (settings?.currency || 'JOD');
+    const isAr = lang === "ar";
+    const currencyStr = isAr ? "د.أ" : (settings?.currency || "JOD");
     
     let mealName = mealId;
     if (meal) {
@@ -556,18 +579,22 @@ const CustomerApp = {
         : meal.name;
     }
 
-    const count = (typeof qty === 'number' && qty > 0) ? qty : 1;
-    const dayText = dayName || (isAr ? "الغد" : "Tomorrow");
+    const count = (typeof qty === "number" && qty > 0) ? qty : 1;
+    const dayText = dayName || (isToday ? (isAr ? "اليوم" : "Today") : (isAr ? "الغد" : "Tomorrow"));
     const weekText = weekName ? ` (${weekName})` : "";
     const mealPrice = (meal && meal.price !== undefined) ? Number(meal.price) : 5.50;
     const totalPrice = (mealPrice * count).toFixed(2);
     
-    const qtyLineAr = count > 1 ? `🔢 العدد: ${count}\n` : '';
-    const qtyLineEn = count > 1 ? `🔢 Quantity: ${count}\n` : '';
+    const qtyLineAr = count > 1 ? `🔢 العدد: ${count}\n` : "";
+    const qtyLineEn = count > 1 ? `🔢 Quantity: ${count}\n` : "";
 
     const msgText = isAr
-      ? `مرحباً Moe's PureBite، أود طلب وجبة الغد المسبقة:\n🍽️ الوجبة: ${mealName}\n📅 اليوم: ${dayText}${weekText}\n${qtyLineAr}💰 السعر الإجمالي: ${totalPrice} ${currencyStr}\nيرجى تأكيد التوصيل مع جدول الوجبات.`
-      : `Hello Moe's PureBite, I would like to pre-order tomorrow's meal:\n🍽️ Meal: ${mealName}\n📅 Day: ${dayText}${weekText}\n${qtyLineEn}💰 Total Price: ${totalPrice} ${currencyStr}\nPlease confirm delivery with tomorrow's schedule.`;
+      ? (isToday
+          ? `مرحباً Moe's PureBite، أود طلب وجبة اليوم (طلب قبل 11:00 صباحاً):\n🍽️ الوجبة: ${mealName}\n📅 اليوم: ${dayText}${weekText}\n${qtyLineAr}💰 السعر الإجمالي: ${totalPrice} ${currencyStr}\nيرجى تأكيد التوصيل اليوم.`
+          : `مرحباً Moe's PureBite، أود طلب وجبة الغد المسبقة:\n🍽️ الوجبة: ${mealName}\n📅 اليوم: ${dayText}${weekText}\n${qtyLineAr}💰 السعر الإجمالي: ${totalPrice} ${currencyStr}\nيرجى تأكيد التوصيل مع جدول الوجبات.`)
+      : (isToday
+          ? `Hello Moe's PureBite, I would like to order today's meal (ordered before 11:00 AM):\n🍽️ Meal: ${mealName}\n📅 Day: ${dayText}${weekText}\n${qtyLineEn}💰 Total Price: ${totalPrice} ${currencyStr}\nPlease confirm today's delivery.`
+          : `Hello Moe's PureBite, I would like to pre-order tomorrow's meal:\n🍽️ Meal: ${mealName}\n📅 Day: ${dayText}${weekText}\n${qtyLineEn}💰 Total Price: ${totalPrice} ${currencyStr}\nPlease confirm delivery with tomorrow's schedule.`);
       
     const msg = encodeURIComponent(msgText);
     App.showToast(isAr ? `جاري فتح واتساب لتأكيد طلب وجبة ${dayText}... 💬` : `Opening WhatsApp to confirm meal pre-order... 💬`, "success");
@@ -608,39 +635,65 @@ const CustomerApp = {
   },
 
   getTomorrowMealsHTML(settings) {
-    if (typeof SubscriptionApp === 'undefined') return '';
-    if (typeof MoeStore !== 'undefined' && MoeStore.getSubscriptionConfig) {
+    if (typeof SubscriptionApp === "undefined") return "";
+    if (typeof MoeStore !== "undefined" && MoeStore.getSubscriptionConfig) {
       const cfg = MoeStore.getSubscriptionConfig();
-      if (cfg && Object.keys(cfg).length > 0 && typeof SubscriptionApp.mergeRemoteConfig === 'function') {
+      if (cfg && Object.keys(cfg).length > 0 && typeof SubscriptionApp.mergeRemoteConfig === "function") {
         SubscriptionApp.mergeRemoteConfig(cfg);
       }
     }
-    if (!SubscriptionApp.dailyOptionsSchedule) return '';
-    const now = new Date();
-    const targetDate = new Date(now);
-    targetDate.setDate(targetDate.getDate() + 1);
+    if (!SubscriptionApp.dailyOptionsSchedule) return "";
     
-    const daysMap = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+    const jNow = this.getJordanDate();
+    const jHour = jNow.getHours();
+    
+    // Timing windows (Jordan Time):
+    // 12:00 AM midnight to 11:00 AM: Today's meals (order before 11:00 AM)
+    // 11:00 AM to 12:00 AM midnight: Tomorrow's meals
+    const isToday = jHour < 11;
+    const targetDate = new Date(jNow);
+    if (!isToday) {
+      targetDate.setDate(targetDate.getDate() + 1);
+    }
+    
+    const daysMap = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
     const dayKey = daysMap[targetDate.getDay()];
 
-    const lang = (typeof MoeStore !== 'undefined' && MoeStore.getLang) ? MoeStore.getLang() : 'ar';
-    const isAr = lang === 'ar';
+    const lang = (typeof MoeStore !== "undefined" && MoeStore.getLang) ? MoeStore.getLang() : "ar";
+    const isAr = lang === "ar";
 
-    // On Thursday, tomorrow is Friday: no subscription meal prep
-    if (dayKey === 'fri') {
-      const trialTag = isAr ? 'لتجربة الاشتراكات (OFF)' : 'Subscription Trial (OFF)';
-      const mainTitle = isAr ? 'وجبات الغد (الجمعة)' : "Tomorrow's Meals (Friday)";
-      const title = `${mainTitle} - ${trialTag}`;
+    // If target day is Friday: kitchen is OFF for subscriptions
+    if (dayKey === "fri") {
+      const mainTitle = isToday
+        ? (isAr ? "وجبات اليوم (الجمعة)" : "Today's Meals (Friday)")
+        : (isAr ? "وجبات الغد (الجمعة)" : "Tomorrow's Meals (Friday)");
+      const title = `${mainTitle} - (OFF)`;
+      const subtitle = isToday
+        ? (isAr 
+            ? "لا تتوفر وجبات اشتراكات اليوم الجمعة • يتجدد جدول الاشتراكات كالمعتاد يوم السبت" 
+            : "No subscription meals today (Friday) • Subscription schedule resumes on Saturday")
+        : (isAr 
+            ? "لا تتوفر وجبات اشتراكات غداً الجمعة • يتجدد جدول الاشتراكات كالمعتاد يوم السبت" 
+            : "No subscription meals on Friday • Subscription schedule resumes on Saturday");
+      const heading = isToday
+        ? (isAr ? "لا تتوفر وجبات اشتراكات اليوم الجمعة" : "No subscription meals available today (Friday)")
+        : (isAr ? "لا تتوفر وجبات اشتراكات غداً الجمعة" : "No subscription meals available tomorrow (Friday)");
+      const desc = isToday
+        ? (isAr 
+            ? "لا يتوفر تحضير وجبات اشتراكات يوم الجمعة. بإمكانكم الاستمتاع بطلب كافة الأصناف اليومية من المنيو أدناه، أو استكشاف وجبات السبت وباقات الاشتراكات القادمة!" 
+            : "Subscription meal prep is not active on Fridays. Feel free to explore our daily menu below or discover our Saturday subscription meals!")
+        : (isAr 
+            ? "لا يتوفر تحضير وجبات اشتراكات يوم الجمعة، ولا يتوفر حجز وجبات للغد. بإمكانكم الاستمتاع بطلب كافة الأصناف اليومية من المنيو أدناه، أو استكشاف وجبات السبت وباقات الاشتراكات القادمة!" 
+            : "Subscription meal prep is not active on Fridays, and pre-orders are unavailable for tomorrow. Feel free to explore our daily menu below or discover our Saturday subscription meals!");
+
       return `
         <section class="tomorrow-preorder-container tomorrow-preorder-off" aria-label="${title}">
           <div class="tomorrow-preorder-header">
             <h3 class="tomorrow-preorder-title">
-              ${mainTitle} <span class="tomorrow-preorder-trial-tag off-tag">- ${trialTag}</span>
+              ${mainTitle} <span class="tomorrow-preorder-trial-tag off-tag">- (OFF)</span>
             </h3>
             <p class="tomorrow-preorder-subtitle">
-              ${isAr 
-                ? 'لا تتوفر وجبات اشتراكات غداً الجمعة • يتجدد جدول الاشتراكات كالمعتاد يوم السبت' 
-                : 'No subscription meals on Friday • Subscription schedule resumes on Saturday'}
+              ${subtitle}
             </p>
           </div>
           <div class="tomorrow-preorder-off-card">
@@ -656,12 +709,10 @@ const CustomerApp = {
               </div>
               <div class="tomorrow-preorder-off-texts">
                 <h4 class="tomorrow-preorder-off-heading">
-                  ${isAr ? 'لا تتوفر وجبات لتجربة الاشتراكات غداً الجمعة' : 'No subscription trial meals available tomorrow (Friday)'}
+                  ${heading}
                 </h4>
                 <p class="tomorrow-preorder-off-desc">
-                  ${isAr 
-                    ? 'لا يتوفر تحضير وجبات اشتراكات يوم الجمعة، ولا يتوفر حجز وجبات تجربة للغد. بإمكانكم الاستمتاع بطلب كافة الأصناف اليومية من المنيو أدناه، أو استكشاف وجبات السبت وباقات الاشتراكات القادمة!' 
-                    : 'Subscription meal prep is not active on Fridays, and trial pre-orders are unavailable for tomorrow. Feel free to explore our daily menu below or discover our Saturday subscription meals!'}
+                  ${desc}
                 </p>
               </div>
             </div>
@@ -671,7 +722,7 @@ const CustomerApp = {
                   <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
                   <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
                 </svg>
-                <span>${isAr ? 'استكشف باقات وجداول الاشتراكات' : 'Explore Subscriptions'}</span>
+                <span>${isAr ? "استكشف باقات وجداول الاشتراكات" : "Explore Subscriptions"}</span>
               </a>
             </div>
           </div>
@@ -691,66 +742,79 @@ const CustomerApp = {
       satIndex = 1;
     }
     const weekNum = ((satIndex - 1) % 4) + 1;
-    const weekKey = 'week' + weekNum;
+    const weekKey = "week" + weekNum;
 
     const mealIds = SubscriptionApp.dailyOptionsSchedule[weekKey]?.[dayKey];
-    if (!mealIds || mealIds.length === 0) return '';
+    if (!mealIds || mealIds.length === 0) return "";
     
-    const currencyStr = isAr ? 'د.أ' : (settings?.currency || 'JOD');
+    const currencyStr = isAr ? "د.أ" : (settings?.currency || "JOD");
 
     const dayNames = {
-      sat: { ar: 'السبت', en: 'Saturday' },
-      sun: { ar: 'الأحد', en: 'Sunday' },
-      mon: { ar: 'الاثنين', en: 'Monday' },
-      tue: { ar: 'الثلاثاء', en: 'Tuesday' },
-      wed: { ar: 'الأربعاء', en: 'Wednesday' },
-      thu: { ar: 'الخميس', en: 'Thursday' },
-      fri: { ar: 'الجمعة', en: 'Friday' }
+      sat: { ar: "السبت", en: "Saturday" },
+      sun: { ar: "الأحد", en: "Sunday" },
+      mon: { ar: "الاثنين", en: "Monday" },
+      tue: { ar: "الثلاثاء", en: "Tuesday" },
+      wed: { ar: "الأربعاء", en: "Wednesday" },
+      thu: { ar: "الخميس", en: "Thursday" },
+      fri: { ar: "الجمعة", en: "Friday" }
     };
     
     const weekNames = {
-      1: { ar: 'الأسبوع الأول', en: 'Week 1' },
-      2: { ar: 'الأسبوع الثاني', en: 'Week 2' },
-      3: { ar: 'الأسبوع الثالث', en: 'Week 3' },
-      4: { ar: 'الأسبوع الرابع', en: 'Week 4' }
+      1: { ar: "الأسبوع الأول", en: "Week 1" },
+      2: { ar: "الأسبوع الثاني", en: "Week 2" },
+      3: { ar: "الأسبوع الثالث", en: "Week 3" },
+      4: { ar: "الأسبوع الرابع", en: "Week 4" }
     };
 
     const targetDayName = isAr ? dayNames[dayKey]?.ar : dayNames[dayKey]?.en;
     const currentWeekName = isAr ? weekNames[weekNum]?.ar : weekNames[weekNum]?.en;
 
-    const dayLabel = isAr ? `الغد (${targetDayName})` : `Tomorrow (${targetDayName})`;
+    let mainTitle = "";
+    let titleTag = "";
+    let subtitle = "";
 
-    const trialTag = isAr ? 'لتجربة الاشتراكات' : 'Subscription Trial';
-    const mainTitle = isAr ? `وجبات ${dayLabel}` : `Tomorrow's Meals (${targetDayName})`;
-    const title = `${mainTitle} - ${trialTag}`;
-    const subtitle = isAr 
-      ? `طلب مسبق • ${currentWeekName} • تُحضّر طازجة مع جدول الاشتراكات` 
-      : `Pre-Order • ${currentWeekName} • Prepared fresh daily with subscriptions`;
+    if (isToday) {
+      // 12:00 AM midnight to 11:00 AM Jordan time
+      mainTitle = isAr ? `وجبات اليوم (${targetDayName})` : `Today's Meals (${targetDayName})`;
+      titleTag = isAr ? "طلب قبل 11:00 صباحاً" : "Order Before 11:00 AM";
+      subtitle = isAr 
+        ? `يُرجى طلب الأصناف التالية قبل الساعة 11:00 صباحاً لليوم • ${currentWeekName} • تُحضّر طازجة مع جدول الاشتراكات` 
+        : `Please order before 11:00 AM for today • ${currentWeekName} • Prepared fresh daily with subscriptions`;
+    } else {
+      // 11:00 AM to 12:00 AM midnight Jordan time
+      mainTitle = isAr ? `وجبات الغد (${targetDayName})` : `Tomorrow's Meals (${targetDayName})`;
+      titleTag = ""; // Removed "تجربة الاشتراكات" as requested
+      subtitle = isAr 
+        ? `طلب مسبق • ${currentWeekName} • تُحضّر طازجة مع جدول الاشتراكات` 
+        : `Pre-Order • ${currentWeekName} • Prepared fresh daily with subscriptions`;
+    }
 
-    let itemsHtml = '';
+    const title = titleTag ? `${mainTitle} - ${titleTag}` : mainTitle;
+
+    let itemsHtml = "";
     mealIds.forEach(id => {
       const meal = SubscriptionApp.mealLibrary?.[id];
       if (meal) {
-        const fakeId = 'preorder_' + id;
-        const nameEn = typeof meal.name === 'object' ? (meal.name.en || meal.name.ar) : meal.name;
-        const nameAr = typeof meal.name === 'object' ? (meal.name.ar || meal.name.en) : meal.name;
-        const descEn = typeof meal.desc === 'object' ? (meal.desc.en || meal.desc.ar) : (meal.desc || '');
-        const descAr = typeof meal.desc === 'object' ? (meal.desc.ar || meal.desc.en) : (meal.desc || '');
+        const fakeId = "preorder_" + id;
+        const nameEn = typeof meal.name === "object" ? (meal.name.en || meal.name.ar) : meal.name;
+        const nameAr = typeof meal.name === "object" ? (meal.name.ar || meal.name.en) : meal.name;
+        const descEn = typeof meal.desc === "object" ? (meal.desc.en || meal.desc.ar) : (meal.desc || "");
+        const descAr = typeof meal.desc === "object" ? (meal.desc.ar || meal.desc.en) : (meal.desc || "");
         
         const currentName = isAr ? nameAr : nameEn;
         const currentDesc = isAr ? descAr : descEn;
 
-        let typeLabel = '';
-        let typeClass = 'chicken';
-        if (meal.type === 'chicken') {
-          typeLabel = isAr ? 'دجاج' : 'Chicken';
-          typeClass = 'chicken';
-        } else if (meal.type === 'meat') {
-          typeLabel = isAr ? 'لحم' : 'Meat';
-          typeClass = 'meat';
-        } else if (meal.type === 'fish' || id.includes('fish')) {
-          typeLabel = isAr ? 'سمك' : 'Fish';
-          typeClass = 'fish';
+        let typeLabel = "";
+        let typeClass = "chicken";
+        if (meal.type === "chicken") {
+          typeLabel = isAr ? "دجاج" : "Chicken";
+          typeClass = "chicken";
+        } else if (meal.type === "meat") {
+          typeLabel = isAr ? "لحم" : "Meat";
+          typeClass = "meat";
+        } else if (meal.type === "fish" || id.includes("fish")) {
+          typeLabel = isAr ? "سمك" : "Fish";
+          typeClass = "fish";
         }
 
         const mealPrice = (meal && meal.price !== undefined) ? Number(meal.price) : 5.50;
@@ -764,12 +828,13 @@ const CustomerApp = {
           description: descEn,
           description_ar: descAr,
           basePrice: mealPrice,
-          image: meal.image || '',
+          image: meal.image || "",
           available: true,
-          isPreOrder24h: true,
+          isPreOrder24h: !isToday,
+          isTodayMeal: isToday,
           targetDayName: targetDayName,
           currentWeekName: currentWeekName,
-          tags: [isAr ? 'خالي من الغلوتين' : 'Gluten-Free', isAr ? 'طلب مسبق' : 'Pre-Order'],
+          tags: [isAr ? "خالي من الغلوتين" : "Gluten-Free", isToday ? (isAr ? "طلب اليوم (قبل 11)" : "Today (Before 11 AM)") : (isAr ? "طلب مسبق" : "Pre-Order")],
           optionGroups: []
         };
         
@@ -780,13 +845,13 @@ const CustomerApp = {
           <div 
             class="tomorrow-preorder-item" 
             onclick="CustomerApp.openPreorderMealModal('${id}', '${targetDayName}', '${currentWeekName}')"
-            title="${isAr ? 'اضغط لعرض تفاصيل ومكونات الوجبة' : 'Click to view meal details & ingredients'}"
+            title="${isAr ? "اضغط لعرض تفاصيل ومكونات الوجبة" : "Click to view meal details & ingredients"}"
           >
             <!-- Top Tier: Name, Category Tag & Price -->
             <div class="tomorrow-preorder-row-top">
               <div class="tomorrow-preorder-name-group">
                 <h4 class="tomorrow-preorder-item-name">${currentName}</h4>
-                ${typeLabel ? `<span class="tomorrow-preorder-type-badge ${typeClass}">${typeLabel}</span>` : ''}
+                ${typeLabel ? `<span class="tomorrow-preorder-type-badge ${typeClass}">${typeLabel}</span>` : ""}
               </div>
               <div class="tomorrow-preorder-item-price">
                 <span class="price-val">${formattedPrice}</span> <small class="price-curr">${currencyStr}</small>
@@ -803,20 +868,20 @@ const CustomerApp = {
                   <circle cx="11" cy="11" r="8"></circle>
                   <line x1="21" cy="21" x2="16.65" y2="16.65"></line>
                 </svg>
-                <span>${isAr ? 'عرض التفاصيل والمكونات' : 'View Ingredients & Details'}</span>
+                <span>${isAr ? "عرض التفاصيل والمكونات" : "View Ingredients & Details"}</span>
               </span>
 
               <button 
                 type="button" 
                 class="tomorrow-preorder-btn-wa" 
-                onclick="event.stopPropagation(); CustomerApp.orderPreOrderWhatsApp('${id}', '${targetDayName}', '${currentWeekName}')"
-                aria-label="${isAr ? 'حجز عبر واتساب' : 'Order via WhatsApp'}"
-                title="${isAr ? 'حجز عبر واتساب' : 'Order via WhatsApp'}"
+                onclick="event.stopPropagation(); CustomerApp.orderPreOrderWhatsApp('${id}', '${targetDayName}', '${currentWeekName}', 1, ${isToday})"
+                aria-label="${isAr ? (isToday ? "طلب عبر واتساب" : "حجز عبر واتساب") : "Order via WhatsApp"}"
+                title="${isAr ? (isToday ? "طلب عبر واتساب" : "حجز عبر واتساب") : "Order via WhatsApp"}"
               >
                 <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true">
                   <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.41a8.16 8.16 0 0 1 2.4 5.83c0 4.54-3.7 8.24-8.24 8.24-1.44 0-2.85-.38-4.09-1.11l-.29-.17-3.04.8.81-2.96-.19-.31a8.188 8.188 0 0 1-1.25-4.49c0-4.54 3.7-8.24 8.24-8.24m-3.57 3.52c-.2 0-.44.07-.67.33-.23.26-.88.86-.88 2.09s.9 2.42 1.02 2.59c.13.16 1.74 2.76 4.29 3.78.61.24 1.08.39 1.45.51.61.19 1.16.17 1.6-.01.49-.2 1.5-.61 1.71-1.21.21-.59.21-1.1.15-1.21-.06-.11-.23-.17-.49-.3-.26-.13-1.5-.74-1.73-.83-.23-.08-.4-.13-.57.13-.17.26-.66.83-.81.99-.15.17-.3.19-.56.06-.26-.13-1.1-.41-2.1-1.3-.77-.69-1.3-1.54-1.45-1.8-.15-.26-.02-.4.11-.53.12-.11.26-.3.39-.46.13-.15.17-.26.26-.43.09-.17.04-.32-.02-.45-.07-.13-.59-1.42-.81-1.95-.21-.51-.43-.44-.59-.45-.15-.01-.33-.01-.5-.01z"/>
                 </svg>
-                <span>${isAr ? 'حجز واتساب' : 'WhatsApp'}</span>
+                <span>${isAr ? (isToday ? "طلب واتساب" : "حجز واتساب") : "WhatsApp"}</span>
               </button>
             </div>
           </div>
@@ -824,12 +889,12 @@ const CustomerApp = {
       }
     });
 
-    if (!itemsHtml) return '';
+    if (!itemsHtml) return "";
 
     return `
       <section class="tomorrow-preorder-container" aria-label="${title}">
         <div class="tomorrow-preorder-header">
-          <h3 class="tomorrow-preorder-title">${mainTitle} <span class="tomorrow-preorder-trial-tag">- ${trialTag}</span></h3>
+          <h3 class="tomorrow-preorder-title">${mainTitle} ${titleTag ? `<span class="tomorrow-preorder-trial-tag">- ${titleTag}</span>` : ""}</h3>
           <p class="tomorrow-preorder-subtitle">${subtitle}</p>
         </div>
         <div class="tomorrow-preorder-items">
@@ -1064,7 +1129,7 @@ const CustomerApp = {
             ✕
           </button>
           <div style="font-weight: 700; font-size: 0.95rem; color: var(--c-forest); display: flex; align-items: center; gap: 6px;">
-            <span>${p.originalMealId ? (MoeStore.getLang() === 'ar' ? `وجبة طلب مسبق (${p.targetDayName || 'الغد'})` : `Pre-Order Meal (${p.targetDayName || 'Tomorrow'})`) : CustomerApp.T(p, "name")}</span>
+            <span>${p.originalMealId ? (MoeStore.getLang() === 'ar' ? (p.isTodayMeal ? `وجبة اليوم (${p.targetDayName || 'اليوم'}) - قبل 11:00 ص` : `وجبة طلب مسبق (${p.targetDayName || 'الغد'})`) : (p.isTodayMeal ? `Today's Meal (${p.targetDayName || 'Today'}) - Before 11 AM` : `Pre-Order Meal (${p.targetDayName || 'Tomorrow'})`)) : CustomerApp.T(p, "name")}</span>
           </div>
           <button onclick="CustomerApp.directWhatsAppContact()" class="btn-modal-close" title="Chat on WhatsApp" style="color: #25D366;">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12C2 13.85 2.5 15.58 3.38 17.07L2 22L7.07 20.65C8.54 21.5 10.22 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z"/></svg>
