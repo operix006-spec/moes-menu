@@ -730,18 +730,19 @@ const CustomerApp = {
       `;
     }
 
-    // Calculate which Saturday of the month began this subscription week
+    // Continuous 4-week subscription rotation starting every Saturday:
+    // Anchor: Saturday, Nov 7, 2026 = Week 2 (anchorWeek = 2)
     const daysSinceSat = (targetDate.getDay() + 1) % 7;
-    const satDate = new Date(targetDate);
-    satDate.setDate(targetDate.getDate() - daysSinceSat);
-
-    let satIndex;
-    if (satDate.getMonth() === targetDate.getMonth()) {
-      satIndex = Math.floor((satDate.getDate() - 1) / 7) + 1;
-    } else {
-      satIndex = 1;
-    }
-    const weekNum = ((satIndex - 1) % 4) + 1;
+    const satDate = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate() - daysSinceSat);
+    
+    const anchorSat = new Date(2026, 10, 7); // Sat Nov 7, 2026 = Week 2 (Month is 0-indexed: 10 = Nov)
+    const anchorWeek = 2;
+    
+    const diffDays = Math.round((satDate.getTime() - anchorSat.getTime()) / (24 * 60 * 60 * 1000));
+    const diffWeeks = Math.floor(diffDays / 7);
+    
+    // Continuous modulo 4 rotation: 1 -> 2 -> 3 -> 4 -> 1 ...
+    const weekNum = ((((anchorWeek - 1 + diffWeeks) % 4) + 4) % 4) + 1;
     const weekKey = "week" + weekNum;
 
     const mealIds = SubscriptionApp.dailyOptionsSchedule[weekKey]?.[dayKey];
