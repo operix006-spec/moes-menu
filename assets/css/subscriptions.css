@@ -4284,3 +4284,54 @@ body.sub-modal-open {
     font-size: 0.60rem;
   }
 }
+
+/* ==========================================================================
+   Subscriptions Initial Loading Overlay (Matches Home Loading Experience)
+   ========================================================================== */
+.sub-initial-loader {
+  position: fixed;
+  inset: 0;
+  background: var(--sub-bg, #FAF6F0);
+  z-index: 998;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 20px;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.sub-initial-loader.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.sub-initial-spinner {
+  width: 44px;
+  height: 44px;
+  border: 3.5px solid rgba(6, 59, 41, 0.12);
+  border-top-color: var(--sub-amber, #E08A26);
+  border-right-color: var(--sub-forest, #063B29);
+  border-radius: 50%;
+  animation: subSpinLoader 0.75s linear infinite;
+}
+
+@keyframes subSpinLoader {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.sub-loader-text {
+  font-family: 'Cairo', 'Tajawal', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--sub-forest, #063B29);
+  margin: 0;
+  text-align: center;
+}
+

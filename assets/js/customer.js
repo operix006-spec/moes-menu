@@ -258,6 +258,27 @@ const CustomerApp = {
     const container = document.getElementById("main-view-container");
     if (!container) return;
 
+    // Guaranteed Zero Stale Data: If data is still loading from Supabase, show loading spinner
+    if (window.MoeStore && !window.MoeStore.isLoaded) {
+      const isAr = MoeStore.getLang() === 'ar';
+      container.innerHTML = `
+        <div class="app-initial-loader" id="home-initial-loader">
+          <div class="app-initial-spinner"></div>
+          <p style="color: var(--c-forest, #063B29); font-weight: 700; font-size: 0.95rem; margin-top: 10px; font-family: 'Cairo', 'Tajawal', sans-serif;">
+            ${isAr ? 'جاري التحميل...' : 'Loading...'}
+          </p>
+        </div>
+      `;
+      if (window.MoeStore.dataReady) {
+        window.MoeStore.dataReady.then(() => {
+          if (App.currentRoute === 'home') {
+            this.renderHome();
+          }
+        });
+      }
+      return;
+    }
+
     const settings = MoeStore.getSettings();
     const homeContent = MoeStore.getHomeContent();
     const trustIndicators = MoeStore.getTrustIndicators();
@@ -423,6 +444,27 @@ const CustomerApp = {
   renderMenu() {
     const container = document.getElementById("main-view-container");
     if (!container) return;
+
+    // Guaranteed Zero Stale Data: If data is still loading from Supabase, show loading spinner (like Home)
+    if (window.MoeStore && !window.MoeStore.isLoaded) {
+      const isAr = MoeStore.getLang() === 'ar';
+      container.innerHTML = `
+        <div class="app-initial-loader" id="menu-initial-loader">
+          <div class="app-initial-spinner"></div>
+          <p style="color: var(--c-forest, #063B29); font-weight: 700; font-size: 0.95rem; margin-top: 10px; font-family: 'Cairo', 'Tajawal', sans-serif;">
+            ${isAr ? 'جاري تحميل قائمة الطعام...' : 'Loading menu...'}
+          </p>
+        </div>
+      `;
+      if (window.MoeStore.dataReady) {
+        window.MoeStore.dataReady.then(() => {
+          if (App.currentRoute === 'menu') {
+            this.renderMenu();
+          }
+        });
+      }
+      return;
+    }
 
     if (MoeStore.state && Array.isArray(MoeStore.state.products)) {
       MoeStore.state.products = MoeStore.state.products.filter(p => p && p.id && !p.id.startsWith('preorder_'));
@@ -1589,6 +1631,27 @@ const CustomerApp = {
   renderAbout() {
     const container = document.getElementById("main-view-container");
     if (!container) return;
+
+    // Guaranteed Zero Stale Data: If data is still loading from Supabase, show loading spinner
+    if (window.MoeStore && !window.MoeStore.isLoaded) {
+      const isAr = MoeStore.getLang() === 'ar';
+      container.innerHTML = `
+        <div class="app-initial-loader" id="about-initial-loader">
+          <div class="app-initial-spinner"></div>
+          <p style="color: var(--c-forest, #063B29); font-weight: 700; font-size: 0.95rem; margin-top: 10px; font-family: 'Cairo', 'Tajawal', sans-serif;">
+            ${isAr ? 'جاري التحميل...' : 'Loading...'}
+          </p>
+        </div>
+      `;
+      if (window.MoeStore.dataReady) {
+        window.MoeStore.dataReady.then(() => {
+          if (App.currentRoute === 'about') {
+            this.renderAbout();
+          }
+        });
+      }
+      return;
+    }
 
     const settings = MoeStore.getSettings();
     const aboutContent = MoeStore.getAboutContent();

@@ -717,6 +717,7 @@ const SubscriptionApp = {
   // Bilingual Static Content
   content: {
     en: {
+      loading_subscriptions: 'Loading latest subscription schedules...',
       sub_page_title: 'Subscriptions',
       hero_badge: 'Monthly & Weekly Meal Subscriptions',
       hero_title: 'Pure Food, Planned for You',
@@ -839,6 +840,7 @@ const SubscriptionApp = {
       order_wa: 'Order via WhatsApp'
     },
     ar: {
+      loading_subscriptions: 'جاري تحميل أحدث جداول وباقات الاشتراكات...',
       sub_page_title: 'الاشتراكات',
       hero_badge: 'اشتراك الوجبات الشهرية والأسبوعية',
       hero_title: 'طعام نقي، محضّر خصيصاً لك',
@@ -1313,6 +1315,16 @@ const SubscriptionApp = {
     }
   },
 
+  hideLoader() {
+    const loader = document.getElementById('sub-initial-loader');
+    if (loader && !loader.classList.contains('hidden')) {
+      loader.classList.add('hidden');
+      setTimeout(() => {
+        loader.style.display = 'none';
+      }, 350);
+    }
+  },
+
   isSubscriptionsPage() {
     return !!document.getElementById('sub-all-weeks-grid') || 
            !!document.getElementById('sub-builder-chapter') ||
@@ -1405,8 +1417,28 @@ const SubscriptionApp = {
     }
 
     // 6. Only for Subscriptions Page UI:
+    // Update loader text according to current language
+    const loaderTextEl = document.getElementById('sub-loader-text');
+    if (loaderTextEl) {
+      loaderTextEl.textContent = this.state.lang === 'en'
+        ? 'Loading latest subscription schedules...'
+        : 'جاري تحميل أحدث جداول وباقات الاشتراكات...';
+    }
+
+    // Safety fallback: if remote config fetch takes more than 3.5s, reveal content anyway
+    const fallbackTimer = setTimeout(() => {
+      if (!this._hasRendered) {
+        this._hasRendered = true;
+        this.applyLanguage();
+        this.render();
+        this.updateSliderUI();
+      }
+      this.hideLoader();
+    }, 3500);
+
     // Fetch live config from Supabase FIRST so the page renders directly with 100% fresh data!
     await this.fetchRemoteConfig();
+    clearTimeout(fallbackTimer);
 
     if (!this._hasRendered) {
       this._hasRendered = true;
@@ -1414,6 +1446,7 @@ const SubscriptionApp = {
       this.render();
       this.updateSliderUI();
     }
+    this.hideLoader();
     this.updateCartBadge();
 
     window.addEventListener('keydown', (e) => {

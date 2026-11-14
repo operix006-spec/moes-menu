@@ -8,6 +8,7 @@ class PureBiteStore {
     this.CART_KEY = "moes_purebite_cart_v1";
     this.listeners = [];
     this.dynamicPreorders = {};
+    this.isLoaded = false;
     this.state = this.loadDatabase();
     if (this.state && Array.isArray(this.state.products)) {
       this.state.products = this.state.products.filter(p => p && p.id && !p.id.startsWith('preorder_'));
@@ -16,6 +17,15 @@ class PureBiteStore {
     
     // Automatically fetch latest data from Supabase on load
     this.dataReady = this.initSupabaseData();
+
+    // Fallback timer: ensure isLoaded becomes true after 4s even if offline/disconnected
+    setTimeout(() => {
+      if (!this.isLoaded) {
+        console.warn("MoeStore live load timeout reached, falling back to cached state.");
+        this.isLoaded = true;
+        this.emit("data-updated", this.state);
+      }
+    }, 4000);
   }
 
   async initSupabaseData() {
@@ -88,6 +98,8 @@ class PureBiteStore {
       this.saveDatabase(); // Persist and trigger UI update
     } catch (e) {
       console.error("Failed to load data from Supabase", e);
+      this.isLoaded = true;
+      this.emit("data-updated", this.state);
     }
   }
 
