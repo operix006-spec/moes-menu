@@ -27,7 +27,7 @@ class PureBiteStore {
 
     try {
       if (isSubPage) {
-        // Subscriptions page only needs subscription config & contact settings (ultra-fast, skips 5.3MB products!)
+        // Subscriptions page only needs subscription config & contact settings (ultra-fast)
         const [
           { data: settingsData },
           { data: subConfigData }
@@ -124,6 +124,13 @@ class PureBiteStore {
       const cached = localStorage.getItem(this.STORAGE_KEY);
       if (cached) {
         const parsed = JSON.parse(cached);
+        // If cached DB contains obsolete bloated base64 data, purge it to reclaim quota and avoid stale render
+        const hasBloatedBase64 = Array.isArray(parsed.products) && parsed.products.some(p => p && p.image && p.image.startsWith('data:'));
+        if (hasBloatedBase64) {
+          console.info("Purging obsolete bloated base64 cache from localStorage...");
+          try { localStorage.removeItem(this.STORAGE_KEY); } catch (e) {}
+          return defaults;
+        }
         const merged = { ...defaults, ...parsed };
         merged.settings = merged.settings || {};
         merged.settings.lang = userPrefLang;
