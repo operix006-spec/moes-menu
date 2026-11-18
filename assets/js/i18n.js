@@ -146,6 +146,8 @@ const Translations = {
     "powered_by": "Powered by",
     
     "delivery_only_msg": "Gluten Free Kitchen (Delivery and Pickup Only)",
+    "celiac_society_discount": "10% discount for the members of the Celiac Care Providers Society - Jordan.",
+    "celiac_society_offer_badge": "Permanent Offer",
     "jfda_cert_title": "Official License from Jordan Food & Drug Administration",
     "jfda_cert_sub": "Certified approval for preparing & selling 100% gluten-free foods",
     "jfda_cert_zoom": "🔍 Tap to view & inspect full certificate",
@@ -288,6 +290,8 @@ const Translations = {
     "location_open_maps": "فتح الموقع في خرائط Google",
     
     "delivery_only_msg": "مطبخ خالٍ من الغلوتين (توصيل واستلام فقط)",
+    "celiac_society_discount": "خصم ١٠٪ لاعضاء جمعية رعاية مرضى السيلياك الخيرية الاردنية.",
+    "celiac_society_offer_badge": "عرض دائم",
     "jfda_cert_title": "شهادة ترخيص المؤسسة العامة للغذاء والدواء",
     "jfda_cert_sub": "تصريح رسمي معتمد لإعداد وبيع أطعمة خالية من الجلوتين",
     "jfda_cert_zoom": "🔍 اضغط لتكبير الشهادة وقراءة الاعتماد",

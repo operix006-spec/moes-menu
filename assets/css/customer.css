@@ -3598,6 +3598,43 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
 }
 
+/* ==========================================================================
+   Celiac Society Permanent Discount Banner
+   ========================================================================== */
+.menu-celiac-offer-banner {
+  background: linear-gradient(135deg, #FFFDF8 0%, #FFF8EE 48%, #FBF0DE 100%);
+  border: 1.5px solid rgba(217, 119, 6, 0.42);
+  border-radius: var(--radius-md, 14px);
+  margin-top: 12px;
+  margin-bottom: 2px;
+  padding: 14px 18px;
+  box-shadow: 0 4px 18px rgba(217, 119, 6, 0.09), 0 1px 3px rgba(6, 59, 41, 0.04);
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.menu-celiac-offer-banner::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3.5px;
+  background: linear-gradient(90deg, #D97706 0%, #F59E0B 50%, #D97706 100%);
+}
+
+.menu-celiac-offer-title {
+  margin: 0;
+  font-family: 'Cairo', 'Tajawal', sans-serif;
+  font-size: clamp(0.88rem, 2.8vw, 1.02rem);
+  font-weight: 800;
+  color: var(--c-forest, #063B29);
+  line-height: 1.5;
+  letter-spacing: -0.1px;
+}
+
 /* Extra Small Phones (max-width: 360px, e.g. iPhone SE 1st gen, small Galaxy A) */
 @media (max-width: 360px) {
   .site-header {

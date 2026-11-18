@@ -530,6 +530,13 @@ const CustomerApp = {
           ${i18n("delivery_only_msg")}
         </div>
 
+        <!-- Celiac Society Permanent Discount Banner -->
+        <div class="menu-celiac-offer-banner" role="note" aria-label="${i18n('celiac_society_discount')}">
+          <h3 class="menu-celiac-offer-title">
+            ${i18n('celiac_society_discount')}
+          </h3>
+        </div>
+
         <!-- Next-Day Pre-Order Dynamic Section (Separated Above Menu, Full Width) -->
         <div id="tomorrow-preorder-container">
           ${this.getTomorrowMealsHTML(settings)}
