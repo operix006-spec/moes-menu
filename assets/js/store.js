@@ -78,7 +78,15 @@ class PureBiteStore {
       ]);
 
       if (categories) this.state.categories = categories;
-      if (products) this.state.products = products;
+      if (products) {
+        this.state.products = products.map(p => {
+          if (typeof p.isImmediateDelivery !== 'boolean') {
+            const isSnackFastFood = ['burgers', 'sandwiches-quesadilla', 'chicken-boxes', 'salads'].includes(p.category);
+            p.isImmediateDelivery = !p.isPreOrder24h && isSnackFastFood;
+          }
+          return p;
+        });
+      }
       if (settingsData) {
         const clientLang = this.getLang();
         this.state.settings = { ...this.state.settings, ...settingsData };
@@ -147,7 +155,13 @@ class PureBiteStore {
         merged.settings = merged.settings || {};
         merged.settings.lang = userPrefLang;
         if (Array.isArray(merged.products)) {
-          merged.products = merged.products.filter(p => p && p.id && !p.id.startsWith('preorder_'));
+          merged.products = merged.products.filter(p => p && p.id && !p.id.startsWith('preorder_')).map(p => {
+            if (typeof p.isImmediateDelivery !== 'boolean') {
+              const isSnackFastFood = ['burgers', 'sandwiches-quesadilla', 'chicken-boxes', 'salads'].includes(p.category);
+              p.isImmediateDelivery = !p.isPreOrder24h && isSnackFastFood;
+            }
+            return p;
+          });
         }
         return merged;
       }
@@ -302,7 +316,17 @@ class PureBiteStore {
     this.saveDatabase();
     
     if (window.supabaseClient) {
-      const { error } = await window.supabaseClient.from('products').upsert(productData);
+      let { error } = await window.supabaseClient.from('products').upsert(productData);
+      if (error && error.message && error.message.includes('isImmediateDelivery')) {
+        console.warn("isImmediateDelivery column missing in Supabase, retrying without it:", error.message);
+        const { isImmediateDelivery, ...safeProductData } = productData;
+        const retryRes = await window.supabaseClient.from('products').upsert(safeProductData);
+        if (!retryRes.error) {
+          error = null;
+        } else {
+          error = retryRes.error;
+        }
+      }
       if (error) {
         console.error("Supabase products save error:", error);
         this.state.products = oldProducts;

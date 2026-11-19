@@ -291,6 +291,7 @@ const AdminApp = {
                       <div>
                         <strong>${p.name}</strong>
                         ${p.isPreOrder24h ? `<span class="badge badge-preorder" style="margin-left: 6px;">24H PRE-ORDER</span>` : ""}
+                        ${p.isImmediateDelivery ? `<span class="badge badge-immediate" style="margin-left: 6px;">⚡ IMMEDIATE</span>` : ""}
                       </div>
                     </div>
                   </td>
@@ -369,9 +370,10 @@ const AdminApp = {
                   <td>
                     <div style="font-weight: 800; color: var(--c-forest);">${p.name} 🌿</div>
                     <div style="font-size: 0.76rem; color: var(--c-text-muted); max-width: 240px;">${p.description}</div>
-                    <div style="margin-top: 4px;">
+                    <div style="margin-top: 4px; display: flex; gap: 4px; flex-wrap: wrap;">
                       ${p.isBestSeller ? `<span class="badge badge-bestseller">Best Seller</span>` : ""}
                       ${p.isPreOrder24h ? `<span class="badge badge-preorder">24H Pre-Order</span>` : ""}
+                      ${p.isImmediateDelivery ? `<span class="badge badge-immediate">⚡ Immediate</span>` : ""}
                     </div>
                   </td>
                   <td><span class="badge badge-gf">${p.category}</span></td>
@@ -503,6 +505,7 @@ const AdminApp = {
         isBestSeller: false,
         isFeatured: false,
         isPreOrder24h: false,
+        isImmediateDelivery: false,
         ingredients: [
           { id: "gf-base", name: "Gluten-Free Base", desc: "GF bread/wrap", icon: "assets/images/ing_bun.png", removable: false }
         ],
@@ -595,8 +598,12 @@ const AdminApp = {
                 <span>Feature on Homepage</span>
               </label>
               <label class="admin-form-checkbox-row">
-                <input type="checkbox" id="builder-preorder" ${p.isPreOrder24h ? "checked" : ""} />
+                <input type="checkbox" id="builder-preorder" ${p.isPreOrder24h ? "checked" : ""} onchange="if(this.checked){const im=document.getElementById('builder-immediatedelivery');if(im)im.checked=false;}" />
                 <span>⚠️ 24-Hour Pre-Order Required</span>
+              </label>
+              <label class="admin-form-checkbox-row">
+                <input type="checkbox" id="builder-immediatedelivery" ${p.isImmediateDelivery ? "checked" : ""} onchange="if(this.checked){const po=document.getElementById('builder-preorder');if(po)po.checked=false;}" />
+                <span>⚡ Immediate Delivery</span>
               </label>
             </div>
 
@@ -732,6 +739,9 @@ const AdminApp = {
     
     const preOrder = document.getElementById("builder-preorder")?.checked;
     if (preOrder !== undefined) this.currentBuilderProduct.isPreOrder24h = preOrder;
+
+    const immediateDelivery = document.getElementById("builder-immediatedelivery")?.checked;
+    if (immediateDelivery !== undefined) this.currentBuilderProduct.isImmediateDelivery = immediateDelivery;
   },
 
   addIngredientRow() {

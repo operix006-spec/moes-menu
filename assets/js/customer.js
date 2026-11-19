@@ -1001,7 +1001,11 @@ const CustomerApp = {
               <div class="preorder-warning-banner">
                 <span>${i18n("preorder_warn")}</span>
               </div>
-            ` : ""}
+            ` : (p.isImmediateDelivery ? `
+              <div class="immediate-delivery-banner">
+                <span>${i18n("immediate_delivery_warn")}</span>
+              </div>
+            ` : "")}
           </div>
           <div class="product-card-bottom">
             <div class="product-card-price">${p.basePrice.toFixed(2)} <span>${settings.currency}</span></div>
@@ -1051,7 +1055,8 @@ const CustomerApp = {
         selectedOptions: [],
         removedIngredients: [],
         addedModifiers: [],
-        isPreOrder24h: !!product.isPreOrder24h
+        isPreOrder24h: !!product.isPreOrder24h,
+        isImmediateDelivery: !!product.isImmediateDelivery
       });
       const lang = MoeStore.getLang();
       App.showToast(lang === "ar" ? `تم إضافة ${CustomerApp.T(product, "name")} لطلبك! 🍔` : `Added ${CustomerApp.T(product, "name")} to your order! 🍔`);
@@ -1207,7 +1212,11 @@ const CustomerApp = {
               <div class="preorder-warning-banner modal-preorder-banner">
                 <span>${i18n("preorder_warn")}</span>
               </div>
-            ` : "")}
+            ` : (p.isImmediateDelivery ? `
+              <div class="immediate-delivery-banner modal-immediate-banner">
+                <span>${i18n("immediate_delivery_warn")}</span>
+              </div>
+            ` : ""))}
           </div>
 
         <!-- Ingredients Section (Removable Customization) -->
@@ -1426,7 +1435,8 @@ const CustomerApp = {
       selectedOptions: selectedOptionsList,
       removedIngredients: removedNames,
       addedModifiers: addedModifiersList,
-      isPreOrder24h: !!p.isPreOrder24h
+      isPreOrder24h: !!p.isPreOrder24h,
+      isImmediateDelivery: !!p.isImmediateDelivery
     });
 
     this.closeProductModal();
