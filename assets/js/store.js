@@ -121,7 +121,18 @@ class PureBiteStore {
     } catch (e) {}
 
     const defaults = {
-      settings: { lang: userPrefLang, currency: 'JOD' },
+      settings: {
+        restaurantName: "Moe's PureBite",
+        whatsappNumber: "962792512221",
+        currency: "JOD",
+        logoPath: "assets/images/logo_new.jpg",
+        tagline: "PURE FOOD. PURE LIFE.",
+        phoneDisplay: "079-251-2221",
+        phoneCallable: "+96279-251-2221",
+        instagram: "moespurebite",
+        facebook: "https://www.facebook.com/profile.php?id=61593905459420",
+        lang: userPrefLang
+      },
       categories: [],
       products: [],
       homeContent: {},
@@ -144,12 +155,13 @@ class PureBiteStore {
       const cached = localStorage.getItem(this.STORAGE_KEY);
       if (cached) {
         const parsed = JSON.parse(cached);
-        // If cached DB contains obsolete bloated base64 data, purge it to reclaim quota and avoid stale render
-        const hasBloatedBase64 = Array.isArray(parsed.products) && parsed.products.some(p => p && p.image && p.image.startsWith('data:'));
-        if (hasBloatedBase64) {
-          console.info("Purging obsolete bloated base64 cache from localStorage...");
-          try { localStorage.removeItem(this.STORAGE_KEY); } catch (e) {}
-          return defaults;
+        // Sanitize any legacy bloated base64 strings in cached products without throwing away the database
+        if (Array.isArray(parsed.products)) {
+          parsed.products.forEach(p => {
+            if (p && p.image && p.image.startsWith('data:')) {
+              p.image = `assets/images/products/${p.id}.webp`;
+            }
+          });
         }
         const merged = { ...defaults, ...parsed };
         merged.settings = merged.settings || {};

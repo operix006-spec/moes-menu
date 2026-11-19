@@ -445,8 +445,9 @@ const CustomerApp = {
     const container = document.getElementById("main-view-container");
     if (!container) return;
 
-    // Guaranteed Zero Stale Data: If data is still loading from Supabase, show loading spinner (like Home)
-    if (window.MoeStore && !window.MoeStore.isLoaded) {
+    // Show loading spinner if data is still loading from Supabase AND no cached products are available yet
+    const hasProducts = MoeStore.state && Array.isArray(MoeStore.state.products) && MoeStore.state.products.length > 0;
+    if (window.MoeStore && !window.MoeStore.isLoaded && !hasProducts) {
       const isAr = MoeStore.getLang() === 'ar';
       container.innerHTML = `
         <div class="app-initial-loader" id="menu-initial-loader">
