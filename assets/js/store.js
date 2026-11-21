@@ -3,6 +3,29 @@
  */
 
 class PureBiteStore {
+  static get DEFAULT_SETTINGS() {
+    return {
+      restaurantName: "Moe's PureBite",
+      whatsappNumber: "962792512221",
+      currency: "JOD",
+      logoPath: "assets/images/logo_new.jpg",
+      tagline: "PURE FOOD. PURE LIFE.",
+      phoneDisplay: "079-251-2221",
+      phoneCallable: "+96279-251-2221",
+      instagram: "moespurebite",
+      facebook: "https://www.facebook.com/profile.php?id=61593905459420",
+      workingHours: JSON.stringify({
+        enabled: true,
+        openTime: "10:00",
+        closeTime: "19:00",
+        fridayMode: "tawasi_only",
+        messageAr: "أهلاً وسهلاً بكم في مطبخ Moe’s PureBite الخالي من الجلوتين .\n\nأوقات عملنا الحاليه من السبت إلى الخميس من الساعه ١٠ صباحا ولغاية 7 مساء .. ويوم الجمعة للتواصي فقط قبل بيوم.\n\nللطلبات والاستفسارات، يرجى الاتصال أو التواصل عبر واتساب على الرقم: ٠٧٩٢٥١٢٢٢١",
+        messageEn: "Welcome to Moe's PureBite 100% Gluten-Free Kitchen.\n\nOur current operating hours are Saturday to Thursday, 10:00 AM to 7:00 PM. Fridays are dedicated to advance pre-orders only (1 day prior).\n\nFor inquiries and orders, please call or WhatsApp us at: 079-251-2221"
+      }),
+      lang: "ar"
+    };
+  }
+
   constructor() {
     this.STORAGE_KEY = "moes_purebite_db_v1";
     this.CART_KEY = "moes_purebite_cart_v1";
@@ -48,10 +71,11 @@ class PureBiteStore {
 
         if (settingsData) {
           const clientLang = this.getLang();
-          this.state.settings = { ...defaults.settings, ...this.state.settings, ...settingsData };
+          const defs = PureBiteStore.DEFAULT_SETTINGS;
+          this.state.settings = { ...defs, ...this.state.settings, ...settingsData };
           ['restaurantName', 'phoneDisplay', 'phoneCallable', 'whatsappNumber', 'currency'].forEach(k => {
             if (!this.state.settings[k] || this.state.settings[k] === "undefined" || this.state.settings[k] === "null") {
-              this.state.settings[k] = defaults.settings[k];
+              this.state.settings[k] = defs[k];
             }
           });
           this.state.settings.lang = clientLang;
@@ -94,10 +118,11 @@ class PureBiteStore {
       }
       if (settingsData) {
         const clientLang = this.getLang();
-        this.state.settings = { ...defaults.settings, ...this.state.settings, ...settingsData };
+        const defs = PureBiteStore.DEFAULT_SETTINGS;
+        this.state.settings = { ...defs, ...this.state.settings, ...settingsData };
         ['restaurantName', 'phoneDisplay', 'phoneCallable', 'whatsappNumber', 'currency'].forEach(k => {
           if (!this.state.settings[k] || this.state.settings[k] === "undefined" || this.state.settings[k] === "null") {
-            this.state.settings[k] = defaults.settings[k];
+            this.state.settings[k] = defs[k];
           }
         });
         // User language is a client device preference, NEVER overwritten by remote database settings
@@ -130,25 +155,10 @@ class PureBiteStore {
       }
     } catch (e) {}
 
+    const defaultSettings = PureBiteStore.DEFAULT_SETTINGS;
     const defaults = {
       settings: {
-        restaurantName: "Moe's PureBite",
-        whatsappNumber: "962792512221",
-        currency: "JOD",
-        logoPath: "assets/images/logo_new.jpg",
-        tagline: "PURE FOOD. PURE LIFE.",
-        phoneDisplay: "079-251-2221",
-        phoneCallable: "+96279-251-2221",
-        instagram: "moespurebite",
-        facebook: "https://www.facebook.com/profile.php?id=61593905459420",
-        workingHours: JSON.stringify({
-          enabled: true,
-          openTime: "10:00",
-          closeTime: "19:00",
-          fridayMode: "tawasi_only",
-          messageAr: "أهلاً وسهلاً بكم في مطبخ Moe’s PureBite الخالي من الجلوتين .\n\nأوقات عملنا الحاليه من السبت إلى الخميس من الساعه ١٠ صباحا ولغاية 7 مساء .. ويوم الجمعة للتواصي فقط قبل بيوم.\n\nللطلبات والاستفسارات، يرجى الاتصال أو التواصل عبر واتساب على الرقم: ٠٧٩٢٥١٢٢٢١",
-          messageEn: "Welcome to Moe's PureBite 100% Gluten-Free Kitchen.\n\nOur current operating hours are Saturday to Thursday, 10:00 AM to 7:00 PM. Fridays are for advance pre-orders only (1 day prior).\n\nFor inquiries and orders, please call or WhatsApp us at: 079-251-2221"
-        }),
+        ...defaultSettings,
         lang: userPrefLang
       },
       categories: [],
@@ -185,7 +195,7 @@ class PureBiteStore {
         merged.settings = { ...defaults.settings, ...(parsed.settings || {}) };
         ['restaurantName', 'phoneDisplay', 'phoneCallable', 'whatsappNumber', 'currency'].forEach(k => {
           if (!merged.settings[k] || merged.settings[k] === "undefined" || merged.settings[k] === "null") {
-            merged.settings[k] = defaults.settings[k];
+            merged.settings[k] = defaultSettings[k];
           }
         });
         merged.settings.lang = userPrefLang;
@@ -256,17 +266,7 @@ class PureBiteStore {
   // --- GETTERS ---
   getSettings() { 
     const s = this.state.settings || {};
-    const d = {
-      restaurantName: "Moe's PureBite",
-      whatsappNumber: "962792512221",
-      currency: "JOD",
-      logoPath: "assets/images/logo_new.jpg",
-      tagline: "PURE FOOD. PURE LIFE.",
-      phoneDisplay: "079-251-2221",
-      phoneCallable: "+96279-251-2221",
-      instagram: "moespurebite",
-      facebook: "https://www.facebook.com/profile.php?id=61593905459420"
-    };
+    const d = PureBiteStore.DEFAULT_SETTINGS;
 
     return {
       ...d,
@@ -276,6 +276,10 @@ class PureBiteStore {
       phoneCallable: (s.phoneCallable && s.phoneCallable !== "undefined" && s.phoneCallable !== "null") ? s.phoneCallable : d.phoneCallable,
       whatsappNumber: (s.whatsappNumber && s.whatsappNumber !== "undefined" && s.whatsappNumber !== "null") ? s.whatsappNumber : d.whatsappNumber,
       currency: (s.currency && s.currency !== "undefined" && s.currency !== "null") ? s.currency : d.currency,
+      instagram: (s.instagram && s.instagram !== "undefined" && s.instagram !== "null") ? s.instagram : d.instagram,
+      facebook: (s.facebook && s.facebook !== "undefined" && s.facebook !== "null") ? s.facebook : d.facebook,
+      logoPath: (s.logoPath && s.logoPath !== "undefined" && s.logoPath !== "null") ? s.logoPath : d.logoPath,
+      tagline: (s.tagline && s.tagline !== "undefined" && s.tagline !== "null") ? s.tagline : d.tagline,
       lang: this.getLang()
     };
   }

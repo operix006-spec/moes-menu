@@ -1974,6 +1974,18 @@ const CustomerApp = {
     };
   },
 
+  formatTime12h(timeStr, isAr) {
+    if (!timeStr) return "";
+    const parts = timeStr.split(":");
+    let h = parseInt(parts[0], 10);
+    let m = parseInt(parts[1], 10) || 0;
+    if (isNaN(h)) return timeStr;
+    const period = isAr ? (h >= 12 ? "م" : "ص") : (h >= 12 ? "PM" : "AM");
+    const h12 = h % 12 || 12;
+    const mStr = m > 0 ? `:${m < 10 ? '0' + m : m}` : ":00";
+    return `${h12}${mStr} ${period}`;
+  },
+
   updateWorkingHoursTopBar() {
     const bar = document.getElementById("working-hours-sticky-bar");
     if (!bar) return;
@@ -1989,16 +2001,20 @@ const CustomerApp = {
     bar.className = `working-hours-sticky-bar ${status.isOpen ? "open" : (status.isFridayTawasi ? "tawasi" : "closed")}`;
     bar.style.display = "flex";
 
+    const openFmt = this.formatTime12h(status.config?.openTime || "10:00", isAr);
+    const closeFmt = this.formatTime12h(status.config?.closeTime || "19:00", isAr);
+    const timeRangeStr = `(${openFmt} - ${closeFmt})`;
+
     let text = "";
     let btnText = isAr ? "أوقات العمل" : "Hours";
 
     if (status.isOpen) {
-      text = isAr ? "المطبخ مفتوح الآن (10:00 ص - 7:00 م)" : "Kitchen Open Now (10:00 AM - 7:00 PM)";
+      text = isAr ? `المطبخ مفتوح الآن ${timeRangeStr}` : `Kitchen Open Now ${timeRangeStr}`;
     } else if (status.isFridayTawasi) {
       text = isAr ? "يوم الجمعة: استقبال التواصي مسبقاً فقط" : "Friday: Advance Pre-Orders Only";
       btnText = isAr ? "التفاصيل" : "Details";
     } else {
-      text = isAr ? "خارج ساعات العمل الحالية (10:00 ص - 7:00 م)" : "Outside Operating Hours (10:00 AM - 7:00 PM)";
+      text = isAr ? `خارج ساعات العمل الحالية ${timeRangeStr}` : `Outside Operating Hours ${timeRangeStr}`;
     }
 
     bar.innerHTML = `
