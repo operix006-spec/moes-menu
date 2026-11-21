@@ -1981,9 +1981,14 @@ const CustomerApp = {
     if (status.isOpen) {
       return `
         <div class="menu-hours-status-pill open" onclick="CustomerApp.openWorkingHoursModal()" role="button" tabindex="0" title="${isAr ? 'انقر لعرض أوقات العمل' : 'Click to view working hours'}">
-          <span class="hours-dot"></span>
-          <span class="hours-text">${isAr ? 'المطبخ مفتوح الآن (السبت - الخميس: 10 ص - 7 م)' : 'Kitchen Open Now (Sat - Thu: 10 AM - 7 PM)'}</span>
-          <span class="hours-hint">${isAr ? 'عرض الأوقات 🕒' : 'View Hours 🕒'}</span>
+          <div class="hours-info-group">
+            <span class="hours-dot"></span>
+            <span class="hours-text">${isAr ? 'المطبخ مفتوح الآن (10:00 ص - 7:00 م)' : 'Kitchen Open Now (10:00 AM - 7:00 PM)'}</span>
+          </div>
+          <span class="hours-btn-badge">
+            <span>${isAr ? 'أوقات العمل' : 'Hours'}</span>
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </span>
         </div>
       `;
     }
@@ -1991,18 +1996,28 @@ const CustomerApp = {
     if (status.isFridayTawasi) {
       return `
         <div class="menu-hours-status-pill tawasi" onclick="CustomerApp.openWorkingHoursModal()" role="button" tabindex="0" title="${isAr ? 'انقر لتفاصيل التواصي' : 'Click for pre-order details'}">
-          <span class="hours-dot"></span>
-          <span class="hours-text">${isAr ? 'يوم الجمعة: استقبال التواصي فقط قبل بيوم' : 'Friday: Advance Pre-Orders Only'}</span>
-          <span class="hours-hint">${isAr ? 'تفاصيل وتواصل 💬' : 'Details 💬'}</span>
+          <div class="hours-info-group">
+            <span class="hours-dot"></span>
+            <span class="hours-text">${isAr ? 'يوم الجمعة: استقبال التواصي مسبقاً فقط' : 'Friday: Advance Pre-Orders Only'}</span>
+          </div>
+          <span class="hours-btn-badge">
+            <span>${isAr ? 'التفاصيل' : 'Details'}</span>
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </span>
         </div>
       `;
     }
 
     return `
       <div class="menu-hours-status-pill closed" onclick="CustomerApp.openWorkingHoursModal()" role="button" tabindex="0" title="${isAr ? 'انقر لعرض أوقات العمل' : 'Click to view operating hours'}">
-        <span class="hours-dot"></span>
-        <span class="hours-text">${isAr ? 'خارج ساعات العمل الحالية (10 ص - 7 م) • نرحب بكم عبر واتساب' : 'Outside Operating Hours (10 AM - 7 PM) • Inquiries via WhatsApp'}</span>
-        <span class="hours-hint">${isAr ? 'أوقات العمل 🕒' : 'Hours 🕒'}</span>
+        <div class="hours-info-group">
+          <span class="hours-dot"></span>
+          <span class="hours-text">${isAr ? 'خارج ساعات العمل الحالية (10:00 ص - 7:00 م)' : 'Outside Operating Hours (10:00 AM - 7:00 PM)'}</span>
+        </div>
+        <span class="hours-btn-badge">
+          <span>${isAr ? 'أوقات العمل' : 'Hours'}</span>
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </span>
       </div>
     `;
   },

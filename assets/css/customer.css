@@ -4199,80 +4199,111 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 12px;
   margin-top: 10px;
-  padding: 10px 14px;
-  border-radius: var(--radius-md, 12px);
+  padding: 8px 14px;
+  border-radius: 50px;
   cursor: pointer;
   font-family: 'Cairo', 'Tajawal', sans-serif;
   font-size: 0.82rem;
   font-weight: 700;
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   user-select: none;
+  box-sizing: border-box;
 }
 
 .menu-hours-status-pill:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(6, 59, 41, 0.08);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+.menu-hours-status-pill .hours-info-group {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex: 1;
+  min-width: 0;
 }
 
 .menu-hours-status-pill .hours-dot {
-  width: 8px;
-  height: 8px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
   flex-shrink: 0;
 }
 
 .menu-hours-status-pill .hours-text {
-  flex: 1;
-  text-align: right;
-  line-height: 1.4;
+  font-size: clamp(0.76rem, 2.9vw, 0.84rem);
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.2px;
 }
 
-[dir="ltr"] .menu-hours-status-pill .hours-text {
-  text-align: left;
-}
-
-.menu-hours-status-pill .hours-hint {
+.menu-hours-status-pill .hours-btn-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   font-size: 0.74rem;
   font-weight: 800;
-  opacity: 0.85;
+  padding: 4px 10px;
+  border-radius: 20px;
   white-space: nowrap;
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  flex-shrink: 0;
+  transition: background 0.18s ease;
 }
 
 /* Open State */
 .menu-hours-status-pill.open {
-  background: #EDF7F1;
-  color: #10633C;
-  border: 1px solid rgba(16, 99, 60, 0.22);
+  background: #F4FBF7;
+  color: #0F5132;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  box-shadow: 0 1px 4px rgba(16, 185, 129, 0.06);
 }
 .menu-hours-status-pill.open .hours-dot {
   background: #10B981;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.22);
+}
+.menu-hours-status-pill.open .hours-btn-badge {
+  background: rgba(16, 185, 129, 0.12);
+  color: #0F5132;
 }
 
 /* Tawasi Friday State */
 .menu-hours-status-pill.tawasi {
-  background: #FFF7ED;
-  color: #C2410C;
-  border: 1px solid rgba(194, 65, 12, 0.22);
+  background: #FFFBF5;
+  color: #9A3412;
+  border: 1px solid rgba(234, 88, 12, 0.22);
+  box-shadow: 0 1px 4px rgba(234, 88, 12, 0.06);
 }
 .menu-hours-status-pill.tawasi .hours-dot {
   background: #F97316;
-  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.25);
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.22);
+}
+.menu-hours-status-pill.tawasi .hours-btn-badge {
+  background: rgba(249, 115, 22, 0.12);
+  color: #9A3412;
 }
 
 /* Closed State */
 .menu-hours-status-pill.closed {
-  background: #FDF4F3;
-  color: #991B1B;
-  border: 1px solid rgba(153, 27, 27, 0.2);
+  background: #FFFDFD;
+  color: #842029;
+  border: 1px solid rgba(186, 26, 26, 0.18);
+  box-shadow: 0 1px 4px rgba(186, 26, 26, 0.05);
 }
 .menu-hours-status-pill.closed .hours-dot {
-  background: #EF4444;
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25);
+  background: #DC3545;
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.2);
+}
+.menu-hours-status-pill.closed .hours-btn-badge {
+  background: rgba(220, 53, 69, 0.09);
+  color: #842029;
+}
+.menu-hours-status-pill.closed:hover .hours-btn-badge {
+  background: rgba(220, 53, 69, 0.15);
+}
 }
 
 /* 2. Modal Overlay & Card */
