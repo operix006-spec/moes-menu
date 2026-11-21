@@ -829,15 +829,15 @@ const CustomerApp = {
       mainTitle = isAr ? `وجبات اليوم (${targetDayName})` : `Today's Meals (${targetDayName})`;
       titleTag = isAr ? "طلب قبل 11:00 صباحاً" : "Order Before 11:00 AM";
       subtitle = isAr 
-        ? `يُرجى طلب الأصناف التالية قبل الساعة 11:00 صباحاً لليوم • ${currentWeekName} • تُحضّر طازجة مع جدول الاشتراكات` 
-        : `Please order before 11:00 AM for today • ${currentWeekName} • Prepared fresh daily with subscriptions`;
+        ? `يُرجى طلب الأصناف التالية قبل الساعة 11:00 صباحاً لليوم • تُحضّر طازجة مع جدول الاشتراكات` 
+        : `Please order before 11:00 AM for today • Prepared fresh daily with subscriptions`;
     } else {
       // 11:00 AM to 12:00 AM midnight Jordan time
       mainTitle = isAr ? `وجبات الغد (${targetDayName})` : `Tomorrow's Meals (${targetDayName})`;
       titleTag = ""; // Removed "تجربة الاشتراكات" as requested
       subtitle = isAr 
-        ? `طلب مسبق • ${currentWeekName} • تُحضّر طازجة مع جدول الاشتراكات` 
-        : `Pre-Order • ${currentWeekName} • Prepared fresh daily with subscriptions`;
+        ? `تُحضّر طازجة مع جدول الاشتراكات` 
+        : `Prepared fresh daily with subscriptions`;
     }
 
     const title = titleTag ? `${mainTitle} - ${titleTag}` : mainTitle;
@@ -1207,7 +1207,7 @@ const CustomerApp = {
             <p class="modal-product-desc">${CustomerApp.T(p, "description")}</p>
             ${p.originalMealId ? `
               <div class="preorder-warning-banner modal-preorder-banner" style="background: rgba(6, 59, 41, 0.08); color: var(--c-forest); border: 1px solid rgba(6, 59, 41, 0.18); font-weight: 700; border-radius: 8px; padding: 8px 12px;">
-                <span>${MoeStore.getLang() === 'ar' ? `وجبة طلب مسبق (${p.targetDayName || 'الغد'}) • تُحضّر طازجة مع جدول الاشتراكات` : `Pre-Order Meal (${p.targetDayName || 'Tomorrow'}) • Prepared fresh with daily subscriptions`}</span>
+                <span>${MoeStore.getLang() === 'ar' ? `تُحضّر طازجة مع جدول الاشتراكات` : `Prepared fresh with daily subscriptions`}</span>
               </div>
             ` : (p.isPreOrder24h ? `
               <div class="preorder-warning-banner modal-preorder-banner">
