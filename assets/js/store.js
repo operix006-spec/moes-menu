@@ -48,7 +48,12 @@ class PureBiteStore {
 
         if (settingsData) {
           const clientLang = this.getLang();
-          this.state.settings = { ...this.state.settings, ...settingsData };
+          this.state.settings = { ...defaults.settings, ...this.state.settings, ...settingsData };
+          ['restaurantName', 'phoneDisplay', 'phoneCallable', 'whatsappNumber', 'currency'].forEach(k => {
+            if (!this.state.settings[k] || this.state.settings[k] === "undefined" || this.state.settings[k] === "null") {
+              this.state.settings[k] = defaults.settings[k];
+            }
+          });
           this.state.settings.lang = clientLang;
         }
         if (subConfigData) {
@@ -89,7 +94,12 @@ class PureBiteStore {
       }
       if (settingsData) {
         const clientLang = this.getLang();
-        this.state.settings = { ...this.state.settings, ...settingsData };
+        this.state.settings = { ...defaults.settings, ...this.state.settings, ...settingsData };
+        ['restaurantName', 'phoneDisplay', 'phoneCallable', 'whatsappNumber', 'currency'].forEach(k => {
+          if (!this.state.settings[k] || this.state.settings[k] === "undefined" || this.state.settings[k] === "null") {
+            this.state.settings[k] = defaults.settings[k];
+          }
+        });
         // User language is a client device preference, NEVER overwritten by remote database settings
         this.state.settings.lang = clientLang;
       }
@@ -131,6 +141,14 @@ class PureBiteStore {
         phoneCallable: "+96279-251-2221",
         instagram: "moespurebite",
         facebook: "https://www.facebook.com/profile.php?id=61593905459420",
+        workingHours: JSON.stringify({
+          enabled: true,
+          openTime: "10:00",
+          closeTime: "19:00",
+          fridayMode: "tawasi_only",
+          messageAr: "أهلاً وسهلاً بكم في مطبخ Moe’s PureBite الخالي من الجلوتين .\n\nأوقات عملنا الحاليه من السبت إلى الخميس من الساعه ١٠ صباحا ولغاية 7 مساء .. ويوم الجمعة للتواصي فقط قبل بيوم.\n\nللطلبات والاستفسارات، يرجى الاتصال أو التواصل عبر واتساب على الرقم: ٠٧٩٢٥١٢٢٢١",
+          messageEn: "Welcome to Moe's PureBite 100% Gluten-Free Kitchen.\n\nOur current operating hours are Saturday to Thursday, 10:00 AM to 7:00 PM. Fridays are for advance pre-orders only (1 day prior).\n\nFor inquiries and orders, please call or WhatsApp us at: 079-251-2221"
+        }),
         lang: userPrefLang
       },
       categories: [],
@@ -164,7 +182,12 @@ class PureBiteStore {
           });
         }
         const merged = { ...defaults, ...parsed };
-        merged.settings = merged.settings || {};
+        merged.settings = { ...defaults.settings, ...(parsed.settings || {}) };
+        ['restaurantName', 'phoneDisplay', 'phoneCallable', 'whatsappNumber', 'currency'].forEach(k => {
+          if (!merged.settings[k] || merged.settings[k] === "undefined" || merged.settings[k] === "null") {
+            merged.settings[k] = defaults.settings[k];
+          }
+        });
         merged.settings.lang = userPrefLang;
         if (Array.isArray(merged.products)) {
           merged.products = merged.products.filter(p => p && p.id && !p.id.startsWith('preorder_')).map(p => {
@@ -232,9 +255,58 @@ class PureBiteStore {
 
   // --- GETTERS ---
   getSettings() { 
-    return { ...this.state.settings, lang: this.getLang() }; 
+    const s = this.state.settings || {};
+    const d = {
+      restaurantName: "Moe's PureBite",
+      whatsappNumber: "962792512221",
+      currency: "JOD",
+      logoPath: "assets/images/logo_new.jpg",
+      tagline: "PURE FOOD. PURE LIFE.",
+      phoneDisplay: "079-251-2221",
+      phoneCallable: "+96279-251-2221",
+      instagram: "moespurebite",
+      facebook: "https://www.facebook.com/profile.php?id=61593905459420"
+    };
+
+    return {
+      ...d,
+      ...s,
+      restaurantName: (s.restaurantName && s.restaurantName !== "undefined" && s.restaurantName !== "null") ? s.restaurantName : d.restaurantName,
+      phoneDisplay: (s.phoneDisplay && s.phoneDisplay !== "undefined" && s.phoneDisplay !== "null") ? s.phoneDisplay : d.phoneDisplay,
+      phoneCallable: (s.phoneCallable && s.phoneCallable !== "undefined" && s.phoneCallable !== "null") ? s.phoneCallable : d.phoneCallable,
+      whatsappNumber: (s.whatsappNumber && s.whatsappNumber !== "undefined" && s.whatsappNumber !== "null") ? s.whatsappNumber : d.whatsappNumber,
+      currency: (s.currency && s.currency !== "undefined" && s.currency !== "null") ? s.currency : d.currency,
+      lang: this.getLang()
+    };
   }
   
+  getWorkingHoursConfig() {
+    const raw = this.state.settings ? this.state.settings.workingHours : null;
+    const defaults = {
+      enabled: true,
+      openTime: "10:00",
+      closeTime: "19:00",
+      fridayMode: "tawasi_only",
+      messageAr: "أهلاً وسهلاً بكم في مطبخ Moe’s PureBite الخالي من الجلوتين .\n\nأوقات عملنا الحاليه من السبت إلى الخميس من الساعه ١٠ صباحا ولغاية 7 مساء .. ويوم الجمعة للتواصي فقط قبل بيوم.\n\nللطلبات والاستفسارات، يرجى الاتصال أو التواصل عبر واتساب على الرقم: ٠٧٩٢٥١٢٢٢١",
+      messageEn: "Welcome to Moe's PureBite 100% Gluten-Free Kitchen.\n\nOur current operating hours are Saturday to Thursday, 10:00 AM to 7:00 PM. Fridays are dedicated to advance pre-orders only (1 day prior).\n\nFor inquiries and orders, please call or WhatsApp us at: 079-251-2221"
+    };
+
+    if (!raw) return defaults;
+    if (typeof raw === 'object' && raw !== null) return { ...defaults, ...raw };
+    if (typeof raw === 'string') {
+      try {
+        if (raw.trim().startsWith('{')) {
+          const parsed = JSON.parse(raw);
+          return { ...defaults, ...parsed };
+        }
+      } catch (e) {}
+      if (raw.trim().length > 0) {
+        return { ...defaults, messageAr: raw.trim() };
+      }
+    }
+    return defaults;
+  }
+
   getLang() {
     try {
       const explicit = localStorage.getItem('moe_lang');

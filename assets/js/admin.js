@@ -1625,6 +1625,14 @@ const AdminApp = {
   // ==========================================================================
   renderSettingsTab() {
     const s = MoeStore.getSettings();
+    const hoursCfg = MoeStore.getWorkingHoursConfig ? MoeStore.getWorkingHoursConfig() : {
+      enabled: true,
+      openTime: "10:00",
+      closeTime: "19:00",
+      fridayMode: "tawasi_only",
+      messageAr: "أهلاً وسهلاً بكم في مطبخ Moe’s PureBite الخالي من الجلوتين .\n\nأوقات عملنا الحاليه من السبت إلى الخميس من الساعه ١٠ صباحا ولغاية 7 مساء .. ويوم الجمعة للتواصي فقط قبل بيوم.\n\nللطلبات والاستفسارات، يرجى الاتصال أو التواصل عبر واتساب على الرقم: ٠٧٩٢٥١٢٢٢١",
+      messageEn: "Welcome to Moe's PureBite 100% Gluten-Free Kitchen.\n\nOur current operating hours are Saturday to Thursday, 10:00 AM to 7:00 PM. Fridays are dedicated to advance pre-orders only (1 day prior).\n\nFor inquiries and orders, please call or WhatsApp us at: 079-251-2221"
+    };
 
     return `
       <div class="admin-panel-card">
@@ -1659,12 +1667,61 @@ const AdminApp = {
 
           <div class="admin-form-row">
             <div class="admin-form-group">
-              <label class="admin-form-label">Restaurant Currency</label>
-              <input type="text" id="settings-curr" class="admin-form-input" value="${s.currency}" />
+              <label class="admin-form-label">Restaurant Brand Name</label>
+              <input type="text" id="settings-name" class="admin-form-input" value="${s.restaurantName || "Moe's PureBite"}" placeholder="Moe's PureBite" />
             </div>
             <div class="admin-form-group">
-              <label class="admin-form-label">Working Hours</label>
-              <input type="text" id="settings-hours" class="admin-form-input" value="${s.workingHours}" />
+              <label class="admin-form-label">Restaurant Currency</label>
+              <input type="text" id="settings-curr" class="admin-form-input" value="${s.currency || 'JOD'}" />
+            </div>
+          </div>
+
+          <!-- Working Hours & Automatic Notice Configuration -->
+          <div style="background: #FDFBF7; border: 1.5px solid rgba(6, 59, 41, 0.16); border-radius: 14px; padding: 20px; margin-top: 6px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 12px; border-bottom: 1px solid #ECE6DB; padding-bottom: 12px;">
+              <div>
+                <h4 style="margin: 0; font-size: 1.05rem; font-weight: 800; color: var(--c-forest); display: flex; align-items: center; gap: 8px;">
+                  <span>🕒</span>
+                  <span>Working Hours & Auto-Notice Popup (أوقات العمل والنافذة التلقائية)</span>
+                </h4>
+                <p style="margin: 4px 0 0; font-size: 0.78rem; color: var(--c-text-muted);">
+                  Shows a popup note to visitors outside operating hours with WhatsApp & menu browsing buttons.
+                </p>
+              </div>
+              <label class="admin-form-checkbox-row" style="margin: 0; font-weight: 800; color: var(--c-forest);">
+                <input type="checkbox" id="settings-hours-enabled" ${hoursCfg.enabled ? "checked" : ""} />
+                <span>Enable Outside-Hours Notice (تفعيل النافذة خارج أوقات العمل)</span>
+              </label>
+            </div>
+
+            <div class="admin-form-row" style="margin-bottom: 12px;">
+              <div class="admin-form-group">
+                <label class="admin-form-label">Sat – Thu Open Time (وقت فتح المطبخ)</label>
+                <input type="time" id="settings-hours-open" class="admin-form-input" value="${hoursCfg.openTime || '10:00'}" />
+              </div>
+              <div class="admin-form-group">
+                <label class="admin-form-label">Sat – Thu Close Time (وقت إغلاق المطبخ)</label>
+                <input type="time" id="settings-hours-close" class="admin-form-input" value="${hoursCfg.closeTime || '19:00'}" />
+              </div>
+              <div class="admin-form-group">
+                <label class="admin-form-label">Friday Policy (نظام يوم الجمعة)</label>
+                <select id="settings-hours-friday" class="admin-form-select">
+                  <option value="tawasi_only" ${hoursCfg.fridayMode === 'tawasi_only' ? 'selected' : ''}>🥘 Pre-Order Tawasi Only (تواصي فقط قبل بيوم)</option>
+                  <option value="closed" ${hoursCfg.fridayMode === 'closed' ? 'selected' : ''}>⛔ Closed All Day (مغلق تماماً)</option>
+                  <option value="regular" ${hoursCfg.fridayMode === 'regular' ? 'selected' : ''}>⚡ Regular Hours as Sat-Thu (نفس ساعات العمل)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="admin-form-row">
+              <div class="admin-form-group">
+                <label class="admin-form-label">Notice Message (Arabic - نص الملاحظة الترحيبية للزوار)</label>
+                <textarea id="settings-hours-msg-ar" class="admin-form-textarea" rows="4" dir="rtl" style="font-family: inherit; font-size: 0.88rem; line-height: 1.6;">${hoursCfg.messageAr || ''}</textarea>
+              </div>
+              <div class="admin-form-group">
+                <label class="admin-form-label">Notice Message (English - Notice for English Visitors)</label>
+                <textarea id="settings-hours-msg-en" class="admin-form-textarea" rows="4" style="font-family: inherit; font-size: 0.88rem; line-height: 1.6;">${hoursCfg.messageEn || ''}</textarea>
+              </div>
             </div>
           </div>
 
@@ -3314,14 +3371,35 @@ const AdminApp = {
   },
 
   async saveSettings() {
+    const hoursEnabled = document.getElementById("settings-hours-enabled")?.checked ?? true;
+    const hoursOpen = document.getElementById("settings-hours-open")?.value.trim() || "10:00";
+    const hoursClose = document.getElementById("settings-hours-close")?.value.trim() || "19:00";
+    const fridayMode = document.getElementById("settings-hours-friday")?.value || "tawasi_only";
+    const messageAr = document.getElementById("settings-hours-msg-ar")?.value.trim();
+    const messageEn = document.getElementById("settings-hours-msg-en")?.value.trim();
+
+    const hoursConfig = {
+      enabled: hoursEnabled,
+      openTime: hoursOpen,
+      closeTime: hoursClose,
+      fridayMode: fridayMode,
+      messageAr: messageAr,
+      messageEn: messageEn
+    };
+
+    const rawDisp = document.getElementById("settings-phone-disp")?.value.trim() || "079-251-2221";
+    const rawWa = document.getElementById("settings-wa")?.value.trim() || "962792512221";
+    const restName = document.getElementById("settings-name")?.value.trim() || "Moe's PureBite";
+
     const updated = {
-      whatsappNumber: document.getElementById("settings-wa")?.value.trim(),
-      phoneDisplay: document.getElementById("settings-phone-disp")?.value.trim(),
-      phoneCallable: "+962" + document.getElementById("settings-phone-disp")?.value.trim().replace(/^0+/, ""),
-      instagram: document.getElementById("settings-insta")?.value.trim(),
-      facebook: document.getElementById("settings-fb")?.value.trim(),
+      restaurantName: restName,
+      whatsappNumber: rawWa,
+      phoneDisplay: rawDisp,
+      phoneCallable: "+962" + rawDisp.replace(/^0+/, "").replace(/[^0-9]/g, ""),
+      instagram: document.getElementById("settings-insta")?.value.trim() || "moespurebite",
+      facebook: document.getElementById("settings-fb")?.value.trim() || "https://www.facebook.com/profile.php?id=61593905459420",
       currency: document.getElementById("settings-curr")?.value.trim() || "JOD",
-      workingHours: document.getElementById("settings-hours")?.value.trim()
+      workingHours: JSON.stringify(hoursConfig)
     };
     App.showToast("Saving settings...", "info");
     const res = await MoeStore.updateSettings(updated);

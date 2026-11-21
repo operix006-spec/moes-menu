@@ -76,31 +76,38 @@ const App = {
     if (loginContainer) loginContainer.style.display = "none";
 
     const settings = MoeStore.getSettings();
+    const restName = (settings && settings.restaurantName && settings.restaurantName !== "undefined" && settings.restaurantName !== "null") ? settings.restaurantName : "Moe's PureBite";
 
     if (hash === "#home" || hash === "" || hash === "#") {
       this.currentRoute = "home";
-      document.title = `${settings.restaurantName} — 100% Gluten-Free Restaurant`;
+      document.title = `${restName} — 100% Gluten-Free Restaurant`;
       if (headerTitle) {
-        headerTitle.innerHTML = `<span class="header-page-title">Moe's PureBite</span>`;
+        headerTitle.innerHTML = `<span class="header-page-title">${restName}</span>`;
       }
       CustomerApp.renderHome();
+      if (typeof CustomerApp.checkAndShowWorkingHoursModal === "function") {
+        CustomerApp.checkAndShowWorkingHoursModal();
+      }
     } else if (hash === "#menu") {
       this.currentRoute = "menu";
-      document.title = `${i18n("nav_menu")} | ${settings.restaurantName}`;
+      document.title = `${i18n("nav_menu")} | ${restName}`;
       if (headerTitle) {
         headerTitle.innerHTML = `<span class="header-page-title" data-i18n="nav_menu">${i18n("nav_menu")}</span>`;
       }
       CustomerApp.renderMenu();
+      if (typeof CustomerApp.checkAndShowWorkingHoursModal === "function") {
+        CustomerApp.checkAndShowWorkingHoursModal();
+      }
     } else if (hash === "#cart") {
       this.currentRoute = "cart";
-      document.title = `${i18n("your_order")} | ${settings.restaurantName}`;
+      document.title = `${i18n("your_order")} | ${restName}`;
       if (headerTitle) {
         headerTitle.innerHTML = `<span class="header-page-title" data-i18n="your_order">${i18n("your_order")}</span>`;
       }
       CustomerApp.renderCart();
     } else if (hash === "#about") {
       this.currentRoute = "about";
-      document.title = `${i18n("nav_about")} | ${settings.restaurantName}`;
+      document.title = `${i18n("nav_about")} | ${restName}`;
       if (headerTitle) {
         headerTitle.innerHTML = `<span class="header-page-title" data-i18n="nav_about">${i18n("nav_about")}</span>`;
       }

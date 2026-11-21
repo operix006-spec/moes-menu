@@ -81,6 +81,7 @@ const CustomerApp = {
     this.updateStickyCart();
     this.updateCartBadge();
     this.scheduleMidnightRefresh();
+    this.checkAndShowWorkingHoursModal();
   },
 
   bindEvents() {
@@ -94,6 +95,7 @@ const CustomerApp = {
       // Re-render current active view if in customer mode
       if (!window.location.hash.startsWith("#admin")) {
         this.renderCurrentView();
+        this.checkAndShowWorkingHoursModal();
       }
     });
 
@@ -530,6 +532,9 @@ const CustomerApp = {
         <div style="background: linear-gradient(135deg, var(--c-forest) 0%, #17543d 50%, var(--c-forest) 100%); color: #fff; margin-top: 12px; border-radius: var(--radius-md); padding: 9px 10px; text-align: center; font-size: clamp(0.72rem, 3.1vw, 0.8rem); font-weight: 700; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(6, 59, 41, 0.15); white-space: nowrap;">
           ${i18n("delivery_only_msg")}
         </div>
+
+        <!-- Working Hours Live Status Bar -->
+        ${this.getWorkingHoursStatusBarHtml()}
 
         <!-- Celiac Society Permanent Discount Banner -->
         <div class="menu-celiac-offer-banner" role="note" aria-label="${i18n('celiac_society_discount')}">
@@ -1791,16 +1796,16 @@ const CustomerApp = {
           </div>
           <div class="contact-inquiry-box">
             <span class="contact-inquiry-title">${i18n("inquiries_suggestions")}</span>
-            <a href="tel:${settings.phoneCallable}" class="contact-phone-block-clean" aria-label="Phone: ${settings.phoneDisplay}">
+            <a href="tel:${settings.phoneCallable || '+96279-251-2221'}" class="contact-phone-block-clean" aria-label="Phone: ${settings.phoneDisplay || '079-251-2221'}">
               <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-              <span class="contact-phone-number" dir="ltr">${settings.phoneDisplay}</span>
+              <span class="contact-phone-number" dir="ltr">${settings.phoneDisplay || '079-251-2221'}</span>
             </a>
           </div>
         </section>
 
         <!-- 8. Minimal Footer -->
         <footer class="about-minimal-footer">
-          <p><span dir="ltr">© ${new Date().getFullYear()} ${settings.restaurantName}</span> - ${i18n("footer_rights")}</p>
+          <p><span dir="ltr">© ${new Date().getFullYear()} ${settings.restaurantName || "Moe's PureBite"}</span> - ${i18n("footer_rights")}</p>
           <div style="margin-top: 12px; font-size: 0.85rem; color: var(--c-text-muted); display: flex; align-items: center; justify-content: center; gap: 6px;">
             <span>${i18n("powered_by")}</span>
             <a href="https://www.operixsys.online/" target="_blank" class="btn-operix" rel="noopener noreferrer">Operix</a>
@@ -1871,14 +1876,18 @@ const CustomerApp = {
   // ==========================================================================
   getFooterHtml() {
     const settings = MoeStore.getSettings();
+    const dispPhone = (settings && settings.phoneDisplay && settings.phoneDisplay !== "undefined") ? settings.phoneDisplay : "079-251-2221";
+    const callPhone = (settings && settings.phoneCallable && settings.phoneCallable !== "undefined") ? settings.phoneCallable : "+96279-251-2221";
+    const restName = (settings && settings.restaurantName && settings.restaurantName !== "undefined") ? settings.restaurantName : "Moe's PureBite";
+
     return `
       <section class="about-contact-clean" style="margin-top: 32px;">
         <div class="contact-links-row">
-          <a href="https://instagram.com/${settings.instagram}" target="_blank" class="clean-social-link">
+          <a href="https://instagram.com/${settings.instagram || 'moespurebite'}" target="_blank" class="clean-social-link">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
             <span>${i18n("instagram")}</span>
           </a>
-          <a href="${settings.facebook}" target="_blank" class="clean-social-link">
+          <a href="${settings.facebook || '#'}" target="_blank" class="clean-social-link">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
             <span>${i18n("facebook")}</span>
           </a>
@@ -1890,20 +1899,235 @@ const CustomerApp = {
         
         <div class="contact-inquiry-box">
           <span class="contact-inquiry-title">${i18n("inquiries_suggestions")}</span>
-          <a href="tel:${settings.phoneCallable}" class="contact-phone-block-clean" aria-label="Phone: ${settings.phoneDisplay}">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-            <span class="contact-phone-number" dir="ltr">${settings.phoneDisplay}</span>
+          <a href="tel:${callPhone}" class="contact-phone-block-clean" aria-label="Phone: ${dispPhone}">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <span class="contact-phone-number" dir="ltr">${dispPhone}</span>
           </a>
         </div>
       </section>
       <footer class="about-minimal-footer">
-        <p><span dir="ltr">© ${new Date().getFullYear()} ${settings.restaurantName}</span> - ${i18n("footer_rights")}</p>
+        <p><span dir="ltr">© ${new Date().getFullYear()} ${restName}</span> - ${i18n("footer_rights")}</p>
         <div style="margin-top: 12px; font-size: 0.85rem; color: var(--c-text-muted); display: flex; align-items: center; justify-content: center; gap: 6px;">
           <span>${i18n("powered_by")}</span>
           <a href="https://www.operixsys.online/" target="_blank" class="btn-operix" rel="noopener noreferrer">Operix</a>
         </div>
       </footer>
     `;
+  },
+
+  // ==========================================================================
+  // WORKING HOURS & AUTO-NOTICE MODAL
+  // ==========================================================================
+  getKitchenWorkingStatus() {
+    const config = (typeof MoeStore !== "undefined" && MoeStore.getWorkingHoursConfig)
+      ? MoeStore.getWorkingHoursConfig()
+      : {
+          enabled: true,
+          openTime: "10:00",
+          closeTime: "19:00",
+          fridayMode: "tawasi_only"
+        };
+
+    const jNow = this.getJordanDate();
+    const day = jNow.getDay(); // 0 = Sun, 1 = Mon, ..., 5 = Fri, 6 = Sat
+    const currentMin = jNow.getHours() * 60 + jNow.getMinutes();
+
+    const [openH, openM] = (config.openTime || "10:00").split(":").map(n => parseInt(n, 10) || 0);
+    const [closeH, closeM] = (config.closeTime || "19:00").split(":").map(n => parseInt(n, 10) || 0);
+    const openMin = openH * 60 + openM;
+    const closeMin = closeH * 60 + closeM;
+
+    const isFriday = (day === 5);
+    let isOpen = false;
+    let isFridayTawasi = false;
+    let isClosed = false;
+
+    if (isFriday) {
+      if (config.fridayMode === "regular") {
+        isOpen = (currentMin >= openMin && currentMin < closeMin);
+        isClosed = !isOpen;
+      } else if (config.fridayMode === "tawasi_only") {
+        isFridayTawasi = true;
+        isOpen = false;
+      } else {
+        isClosed = true;
+        isOpen = false;
+      }
+    } else {
+      // Sat – Thu
+      if (currentMin >= openMin && currentMin < closeMin) {
+        isOpen = true;
+      } else {
+        isClosed = true;
+      }
+    }
+
+    return {
+      enabled: config.enabled !== false,
+      isOpen,
+      isFridayTawasi,
+      isClosed,
+      config,
+      jNow
+    };
+  },
+
+  getWorkingHoursStatusBarHtml() {
+    const status = this.getKitchenWorkingStatus();
+    if (!status.enabled) return "";
+
+    const isAr = (typeof MoeStore !== "undefined" && MoeStore.getLang) ? MoeStore.getLang() === "ar" : true;
+
+    if (status.isOpen) {
+      return `
+        <div class="menu-hours-status-pill open" onclick="CustomerApp.openWorkingHoursModal()" role="button" tabindex="0" title="${isAr ? 'انقر لعرض أوقات العمل' : 'Click to view working hours'}">
+          <span class="hours-dot"></span>
+          <span class="hours-text">${isAr ? 'المطبخ مفتوح الآن (السبت - الخميس: 10 ص - 7 م)' : 'Kitchen Open Now (Sat - Thu: 10 AM - 7 PM)'}</span>
+          <span class="hours-hint">${isAr ? 'عرض الأوقات 🕒' : 'View Hours 🕒'}</span>
+        </div>
+      `;
+    }
+
+    if (status.isFridayTawasi) {
+      return `
+        <div class="menu-hours-status-pill tawasi" onclick="CustomerApp.openWorkingHoursModal()" role="button" tabindex="0" title="${isAr ? 'انقر لتفاصيل التواصي' : 'Click for pre-order details'}">
+          <span class="hours-dot"></span>
+          <span class="hours-text">${isAr ? 'يوم الجمعة: استقبال التواصي فقط قبل بيوم' : 'Friday: Advance Pre-Orders Only'}</span>
+          <span class="hours-hint">${isAr ? 'تفاصيل وتواصل 💬' : 'Details 💬'}</span>
+        </div>
+      `;
+    }
+
+    return `
+      <div class="menu-hours-status-pill closed" onclick="CustomerApp.openWorkingHoursModal()" role="button" tabindex="0" title="${isAr ? 'انقر لعرض أوقات العمل' : 'Click to view operating hours'}">
+        <span class="hours-dot"></span>
+        <span class="hours-text">${isAr ? 'خارج ساعات العمل الحالية (10 ص - 7 م) • نرحب بكم عبر واتساب' : 'Outside Operating Hours (10 AM - 7 PM) • Inquiries via WhatsApp'}</span>
+        <span class="hours-hint">${isAr ? 'أوقات العمل 🕒' : 'Hours 🕒'}</span>
+      </div>
+    `;
+  },
+
+  checkAndShowWorkingHoursModal() {
+    const status = this.getKitchenWorkingStatus();
+    if (!status.enabled) return;
+
+    // Only show auto-popup when outside working hours (closed or Friday tawasi)
+    if (status.isOpen) return;
+
+    // Show once per session so it never annoys the user ("ما يعجق اشي")
+    try {
+      if (sessionStorage.getItem("moe_hours_modal_seen")) return;
+    } catch (e) {}
+
+    // Delay slightly for smooth page entrance
+    setTimeout(() => {
+      // Re-verify route in case user already navigated
+      if (App.currentRoute === "menu" || App.currentRoute === "home") {
+        this.openWorkingHoursModal(true);
+      }
+    }, 700);
+  },
+
+  openWorkingHoursModal(isAuto = false) {
+    if (isAuto) {
+      try {
+        sessionStorage.setItem("moe_hours_modal_seen", "1");
+      } catch (e) {}
+    }
+
+    const isAr = (typeof MoeStore !== "undefined" && MoeStore.getLang) ? MoeStore.getLang() === "ar" : true;
+    const settings = MoeStore.getSettings();
+    const config = MoeStore.getWorkingHoursConfig();
+    const status = this.getKitchenWorkingStatus();
+
+    let existingModal = document.getElementById("working-hours-modal-overlay");
+    if (existingModal) existingModal.remove();
+
+    const rawWa = (settings.whatsappNumber || "962792512221").replace(/[^0-9]/g, "");
+    const dispPhone = (settings.phoneDisplay && settings.phoneDisplay !== "undefined") ? settings.phoneDisplay : "079-251-2221";
+
+    const defaultMsgAr = `أهلاً وسهلاً بكم في مطبخ Moe’s PureBite الخالي من الجلوتين .\n\nأوقات عملنا الحاليه من السبت إلى الخميس من الساعه ١٠ صباحا ولغاية 7 مساء .. ويوم الجمعة للتواصي فقط قبل بيوم.\n\nللطلبات والاستفسارات، يرجى الاتصال أو التواصل عبر واتساب على الرقم: ٠٧٩٢٥١٢٢٢١`;
+    const defaultMsgEn = `Welcome to Moe’s PureBite 100% Gluten-Free Kitchen.\n\nOur current operating hours are Saturday to Thursday from 10:00 AM to 7:00 PM. Fridays are dedicated to advance pre-orders only (1 day prior).\n\nFor inquiries and orders, please call or WhatsApp us at: 079-251-2221`;
+
+    const noteText = isAr ? (config.messageAr || defaultMsgAr) : (config.messageEn || defaultMsgEn);
+    const paragraphsHtml = noteText.split("\n\n").map(p => `<p class="hours-modal-p">${p.replace(/\n/g, "<br/>")}</p>`).join("");
+
+    let badgeText = "";
+    let badgeClass = "badge-closed";
+    if (status.isOpen) {
+      badgeText = isAr ? "🟢 المطبخ مفتوح الآن" : "🟢 Kitchen Open Now";
+      badgeClass = "badge-open";
+    } else if (status.isFridayTawasi) {
+      badgeText = isAr ? "🥘 الجمعة للتواصي فقط قبل بيوم" : "🥘 Friday Tawasi Pre-Orders Only";
+      badgeClass = "badge-tawasi";
+    } else {
+      badgeText = isAr ? "🕒 خارج ساعات العمل الحالية" : "🕒 Outside Operating Hours";
+      badgeClass = "badge-closed";
+    }
+
+    const overlay = document.createElement("div");
+    overlay.id = "working-hours-modal-overlay";
+    overlay.className = "working-hours-overlay";
+    overlay.setAttribute("role", "dialog");
+    overlay.setAttribute("aria-modal", "true");
+
+    const waMsg = encodeURIComponent(isAr ? "مرحباً مطبخ Moe's PureBite، أود الاستفسار بخصوص الطلبات وأوقات العمل." : "Hello Moe's PureBite, I'd like to inquire about orders and working hours.");
+
+    overlay.innerHTML = `
+      <div class="working-hours-card" onclick="event.stopPropagation()">
+        <button class="working-hours-close" onclick="CustomerApp.closeWorkingHoursModal()" aria-label="${isAr ? 'إغلاق' : 'Close'}">✕</button>
+        
+        <div class="working-hours-header">
+          <div class="working-hours-icon-ring">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </div>
+          <span class="working-hours-badge ${badgeClass}">${badgeText}</span>
+          <h3 class="working-hours-title">${isAr ? "أوقات عمل مطبخ Moe's PureBite" : "Moe's PureBite Working Hours"}</h3>
+        </div>
+
+        <div class="working-hours-body">
+          ${paragraphsHtml}
+
+          <div class="working-hours-phone-bar">
+            <a href="tel:${settings.phoneCallable || '+962792512221'}" class="hours-phone-link" aria-label="Phone: ${dispPhone}">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              <span dir="ltr">${dispPhone}</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="working-hours-actions">
+          <a href="https://wa.me/${rawWa}?text=${waMsg}" target="_blank" rel="noopener noreferrer" class="btn-hours-action btn-hours-wa" onclick="CustomerApp.closeWorkingHoursModal()">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <span>${isAr ? "تواصل عبر واتساب" : "Chat on WhatsApp"}</span>
+          </a>
+          <button type="button" class="btn-hours-action btn-hours-browse" onclick="CustomerApp.closeWorkingHoursModal(true)">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/></svg>
+            <span>${isAr ? "تصفح المنيو" : "Browse Menu"}</span>
+          </button>
+        </div>
+      </div>
+    `;
+
+    overlay.onclick = () => CustomerApp.closeWorkingHoursModal();
+    document.body.appendChild(overlay);
+    requestAnimationFrame(() => overlay.classList.add("active"));
+    document.body.style.overflow = "hidden";
+  },
+
+  closeWorkingHoursModal(browseMenu = false) {
+    const overlay = document.getElementById("working-hours-modal-overlay");
+    if (overlay) {
+      overlay.classList.remove("active");
+      setTimeout(() => overlay.remove(), 260);
+    }
+    document.body.style.overflow = "";
+    if (browseMenu && window.location.hash !== "#menu") {
+      window.location.hash = "#menu";
+    }
   }
 };
 
