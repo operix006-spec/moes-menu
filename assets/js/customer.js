@@ -2052,17 +2052,9 @@ const CustomerApp = {
     const noteText = isAr ? (config.messageAr || defaultMsgAr) : (config.messageEn || defaultMsgEn);
     const paragraphsHtml = noteText.split("\n\n").map(p => `<p class="hours-modal-p">${p.replace(/\n/g, "<br/>")}</p>`).join("");
 
-    let badgeText = "";
-    let badgeClass = "badge-closed";
+    let modalTitle = isAr ? "خارج ساعات العمل الحالية" : "Outside Operating Hours";
     if (status.isOpen) {
-      badgeText = isAr ? "🟢 المطبخ مفتوح الآن" : "🟢 Kitchen Open Now";
-      badgeClass = "badge-open";
-    } else if (status.isFridayTawasi) {
-      badgeText = isAr ? "🥘 الجمعة للتواصي فقط قبل بيوم" : "🥘 Friday Tawasi Pre-Orders Only";
-      badgeClass = "badge-tawasi";
-    } else {
-      badgeText = isAr ? "🕒 خارج ساعات العمل الحالية" : "🕒 Outside Operating Hours";
-      badgeClass = "badge-closed";
+      modalTitle = isAr ? "أوقات عمل مطبخ Moe's PureBite" : "Moe's PureBite Working Hours";
     }
 
     const overlay = document.createElement("div");
@@ -2084,8 +2076,7 @@ const CustomerApp = {
               <polyline points="12 6 12 12 16 14"/>
             </svg>
           </div>
-          <span class="working-hours-badge ${badgeClass}">${badgeText}</span>
-          <h3 class="working-hours-title">${isAr ? "أوقات عمل مطبخ Moe's PureBite" : "Moe's PureBite Working Hours"}</h3>
+          <h3 class="working-hours-title">${modalTitle}</h3>
         </div>
 
         <div class="working-hours-body">
