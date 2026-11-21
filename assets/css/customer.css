@@ -24,13 +24,19 @@
 }
 
 /* ==========================================================================
-   Top Navigation Bar
+   Top Navigation Bar & Sticky Wrapper
    ========================================================================== */
-.site-header {
+.site-header-sticky-wrapper {
   position: sticky;
   top: 0;
   z-index: 1000;
-  background-color: rgba(247, 243, 234, 0.95);
+  width: 100%;
+}
+
+.site-header {
+  position: relative;
+  z-index: 1000;
+  background-color: rgba(247, 243, 234, 0.96);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--c-cream-border);
@@ -4304,6 +4310,124 @@
 .menu-hours-status-pill.closed:hover .hours-btn-badge {
   background: rgba(220, 53, 69, 0.15);
 }
+
+/* ==========================================================================
+   Sticky Working Hours Top Alert Bar
+   ========================================================================== */
+.working-hours-sticky-bar {
+  width: 100%;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  font-family: 'Cairo', 'Tajawal', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  user-select: none;
+  box-sizing: border-box;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.working-hours-sticky-bar .hours-bar-info {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex: 1;
+  min-width: 0;
+}
+
+.working-hours-sticky-bar .hours-bar-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.working-hours-sticky-bar .hours-bar-text {
+  font-size: clamp(0.74rem, 2.9vw, 0.83rem);
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.2px;
+}
+
+.working-hours-sticky-bar .hours-bar-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.18s ease;
+}
+
+/* Closed State */
+.working-hours-sticky-bar.closed {
+  background: #FFF7F6;
+  color: #842029;
+  border-bottom: 1px solid rgba(220, 53, 69, 0.18);
+  box-shadow: 0 2px 6px rgba(220, 53, 69, 0.04);
+}
+.working-hours-sticky-bar.closed .hours-bar-dot {
+  background: #DC3545;
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.2);
+}
+.working-hours-sticky-bar.closed .hours-bar-badge {
+  background: rgba(220, 53, 69, 0.09);
+  color: #842029;
+}
+.working-hours-sticky-bar.closed:hover {
+  background: #FFEEED;
+}
+
+/* Tawasi Friday State */
+.working-hours-sticky-bar.tawasi {
+  background: #FFFBF5;
+  color: #9A3412;
+  border-bottom: 1px solid rgba(234, 88, 12, 0.18);
+  box-shadow: 0 2px 6px rgba(234, 88, 12, 0.04);
+}
+.working-hours-sticky-bar.tawasi .hours-bar-dot {
+  background: #F97316;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
+}
+.working-hours-sticky-bar.tawasi .hours-bar-badge {
+  background: rgba(249, 115, 22, 0.09);
+  color: #9A3412;
+}
+.working-hours-sticky-bar.tawasi:hover {
+  background: #FFF6E8;
+}
+
+/* Open State */
+.working-hours-sticky-bar.open {
+  background: #F4FBF7;
+  color: #0F5132;
+  border-bottom: 1px solid rgba(16, 185, 129, 0.18);
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.04);
+}
+.working-hours-sticky-bar.open .hours-bar-dot {
+  background: #10B981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+}
+.working-hours-sticky-bar.open .hours-bar-badge {
+  background: rgba(16, 185, 129, 0.09);
+  color: #0F5132;
+}
+.working-hours-sticky-bar.open:hover {
+  background: #E8F7EF;
+}
+
+@media (min-width: 768px) {
+  .working-hours-sticky-bar {
+    padding: 8px 36px;
+  }
 }
 
 /* 2. Modal Overlay & Card */

@@ -121,6 +121,9 @@ const App = {
     CustomerApp.updateSidebarActiveLink();
     CustomerApp.updateStickyCart();
     CustomerApp.updateCartBadge();
+    if (typeof CustomerApp.updateWorkingHoursTopBar === "function") {
+      CustomerApp.updateWorkingHoursTopBar();
+    }
 
     // Scroll to top
     window.scrollTo({ top: 0, behavior: "smooth" });

@@ -81,6 +81,7 @@ const CustomerApp = {
     this.updateStickyCart();
     this.updateCartBadge();
     this.scheduleMidnightRefresh();
+    this.updateWorkingHoursTopBar();
     this.checkAndShowWorkingHoursModal();
   },
 
@@ -95,6 +96,7 @@ const CustomerApp = {
       // Re-render current active view if in customer mode
       if (!window.location.hash.startsWith("#admin")) {
         this.renderCurrentView();
+        this.updateWorkingHoursTopBar();
         this.checkAndShowWorkingHoursModal();
       }
     });
@@ -160,9 +162,12 @@ const CustomerApp = {
         el.textContent = i18n(key);
       }
     });
+
+    this.updateWorkingHoursTopBar();
   },
 
   renderCurrentView() {
+    this.updateWorkingHoursTopBar();
     const hash = window.location.hash || "#home";
     if (hash === "#home" || hash === "") {
       this.renderHome();
@@ -532,9 +537,6 @@ const CustomerApp = {
         <div style="background: linear-gradient(135deg, var(--c-forest) 0%, #17543d 50%, var(--c-forest) 100%); color: #fff; margin-top: 12px; border-radius: var(--radius-md); padding: 9px 10px; text-align: center; font-size: clamp(0.72rem, 3.1vw, 0.8rem); font-weight: 700; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(6, 59, 41, 0.15); white-space: nowrap;">
           ${i18n("delivery_only_msg")}
         </div>
-
-        <!-- Working Hours Live Status Bar -->
-        ${this.getWorkingHoursStatusBarHtml()}
 
         <!-- Celiac Society Permanent Discount Banner -->
         <div class="menu-celiac-offer-banner" role="note" aria-label="${i18n('celiac_society_discount')}">
@@ -1972,54 +1974,47 @@ const CustomerApp = {
     };
   },
 
-  getWorkingHoursStatusBarHtml() {
+  updateWorkingHoursTopBar() {
+    const bar = document.getElementById("working-hours-sticky-bar");
+    if (!bar) return;
+
     const status = this.getKitchenWorkingStatus();
-    if (!status.enabled) return "";
+    if (!status.enabled) {
+      bar.style.display = "none";
+      return;
+    }
 
     const isAr = (typeof MoeStore !== "undefined" && MoeStore.getLang) ? MoeStore.getLang() === "ar" : true;
 
+    bar.className = `working-hours-sticky-bar ${status.isOpen ? "open" : (status.isFridayTawasi ? "tawasi" : "closed")}`;
+    bar.style.display = "flex";
+
+    let text = "";
+    let btnText = isAr ? "أوقات العمل" : "Hours";
+
     if (status.isOpen) {
-      return `
-        <div class="menu-hours-status-pill open" onclick="CustomerApp.openWorkingHoursModal()" role="button" tabindex="0" title="${isAr ? 'انقر لعرض أوقات العمل' : 'Click to view working hours'}">
-          <div class="hours-info-group">
-            <span class="hours-dot"></span>
-            <span class="hours-text">${isAr ? 'المطبخ مفتوح الآن (10:00 ص - 7:00 م)' : 'Kitchen Open Now (10:00 AM - 7:00 PM)'}</span>
-          </div>
-          <span class="hours-btn-badge">
-            <span>${isAr ? 'أوقات العمل' : 'Hours'}</span>
-            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          </span>
-        </div>
-      `;
+      text = isAr ? "المطبخ مفتوح الآن (10:00 ص - 7:00 م)" : "Kitchen Open Now (10:00 AM - 7:00 PM)";
+    } else if (status.isFridayTawasi) {
+      text = isAr ? "يوم الجمعة: استقبال التواصي مسبقاً فقط" : "Friday: Advance Pre-Orders Only";
+      btnText = isAr ? "التفاصيل" : "Details";
+    } else {
+      text = isAr ? "خارج ساعات العمل الحالية (10:00 ص - 7:00 م)" : "Outside Operating Hours (10:00 AM - 7:00 PM)";
     }
 
-    if (status.isFridayTawasi) {
-      return `
-        <div class="menu-hours-status-pill tawasi" onclick="CustomerApp.openWorkingHoursModal()" role="button" tabindex="0" title="${isAr ? 'انقر لتفاصيل التواصي' : 'Click for pre-order details'}">
-          <div class="hours-info-group">
-            <span class="hours-dot"></span>
-            <span class="hours-text">${isAr ? 'يوم الجمعة: استقبال التواصي مسبقاً فقط' : 'Friday: Advance Pre-Orders Only'}</span>
-          </div>
-          <span class="hours-btn-badge">
-            <span>${isAr ? 'التفاصيل' : 'Details'}</span>
-            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          </span>
-        </div>
-      `;
-    }
-
-    return `
-      <div class="menu-hours-status-pill closed" onclick="CustomerApp.openWorkingHoursModal()" role="button" tabindex="0" title="${isAr ? 'انقر لعرض أوقات العمل' : 'Click to view operating hours'}">
-        <div class="hours-info-group">
-          <span class="hours-dot"></span>
-          <span class="hours-text">${isAr ? 'خارج ساعات العمل الحالية (10:00 ص - 7:00 م)' : 'Outside Operating Hours (10:00 AM - 7:00 PM)'}</span>
-        </div>
-        <span class="hours-btn-badge">
-          <span>${isAr ? 'أوقات العمل' : 'Hours'}</span>
-          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        </span>
+    bar.innerHTML = `
+      <div class="hours-bar-info">
+        <span class="hours-bar-dot"></span>
+        <span class="hours-bar-text">${text}</span>
       </div>
+      <span class="hours-bar-badge">
+        <span>${btnText}</span>
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </span>
     `;
+  },
+
+  getWorkingHoursStatusBarHtml() {
+    return "";
   },
 
   checkAndShowWorkingHoursModal() {
